@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard Template for Bootstrap</title>
+    <link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet"></link>
+    <script src="asserts/js/jquery-3.4.0.min.js"></script>
+    <script src="asserts/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <form role="form" method="post" th:action="@{/user/update}">
+            <!--发送put请求修改员工数据，form的method只有get与post两种，使用put方式，步骤如下：
+                1、SpringMVC 中配置 HiddenHttpMethodFilter;（SpringBoot 已自动配置好，不用管了）
+                2、页面创建一个post表单，上面已经建好
+                3、创建一个input项，name强制为 "_method"，value的值就是指定此form请求的方式，如下所示为 put
+            -->
+            <!-- th:if：条件满足时生成标签，否则不生成标签
+            1、修改是要传递用户id过去的，所以做成隐藏域-->
+            <input type="hidden" name="_method" value="put" th:if="${user!=null}"/>
+            <input type="hidden" name="id" th:if="${user!=null}" th:value="${user.id}">
+            <div class="form-group">
+                <label>密码</label>
+                <input name="password" type="text" class="form-control" placeholder="1"  th:value="${user!=null}?${user.password}">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input name="email" type="text" class="form-control" placeholder="001"  th:value="${user!=null}?${user.email}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">修改</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>
