@@ -1,6 +1,7 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,6 +27,8 @@ public class Book implements Serializable {
     @Column(name = "isbn")
     private String isbn;
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "publishDate")
     private Date publishDate;
 

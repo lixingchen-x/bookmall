@@ -15,12 +15,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUser(User user) {
 
-        System.out.println(user);
         User oldUser = userRepository.getOne(user.getId());
         oldUser.setPassword(user.getPassword());
         oldUser.setEmail(user.getEmail());
         userRepository.saveAndFlush(oldUser);
     }
-
     //ToDo
 }

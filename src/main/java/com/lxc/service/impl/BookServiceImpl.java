@@ -9,23 +9,37 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Iterator;
 
 @Service
 public class BookServiceImpl implements IBookService {
+
+    private final int PAGE_SIZE=10;
 
     @Autowired
     private BookRepository bookRepository;
 
     @Override
-    public Iterator<Book> findAll(int pageNum, int pageSize) {
+    public Page<Book> findAllByPage(int pageNum) {
 
-        Sort sort = new Sort(Sort.Direction.DESC,"id");
-        Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
-        Page<Book> books = bookRepository.findAll(pageable);
-        System.out.println("page为： "+books);
-        Iterator<Book> bookIterator = books.iterator();
-        return bookIterator;
+        Sort sort = new Sort(Sort.Direction.ASC,"id");
+        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, sort);
+        return bookRepository.findAll(pageable);
     }
+
+    @Override
+    public void updateBook(Book book) {
+
+        Book oldBook = bookRepository.getOne(book.getId());
+        oldBook.setBookName(book.getBookName());
+        oldBook.setAuthor(book.getAuthor());
+        oldBook.setPublishDate(book.getPublishDate());
+        oldBook.setIsbn(book.getIsbn());
+        oldBook.setPrice(book.getPrice());
+        oldBook.setIntro(book.getIntro());
+        oldBook.setStock(book.getStock());
+        oldBook.setImage(book.getImage()); //ToDo
+        bookRepository.saveAndFlush(oldBook);
+    }
+
     //ToDo
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>上架图书</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <form role="form" method="post" th:action="@{/book/add}">
+            <div class="form-group">
+                <label>书名</label>
+                <input name="bookName" type="text" class="form-control" placeholder="书名">
+            </div>
+            <div class="form-group">
+                <label>作者</label>
+                <input name="author" type="text" class="form-control" placeholder="作者">
+            </div>
+            <div class="form-group">
+                <label>isbn</label>
+                <input name="isbn" type="text" class="form-control" placeholder="isbn">
+            </div>
+            <div class="form-group">
+                <label>出版日期</label>
+                <input name="publishDate" type="text" class="form-control" placeholder="yyyy-MM-dd">
+            </div>
+            <div class="form-group">
+                <label>价格</label>
+                <input name="price" type="text" class="form-control" placeholder="售价">
+            </div>
+            <div class="form-group">
+                <label>库存</label>
+                <input name="stock" type="text" class="form-control" placeholder="库存">
+            </div>
+            <div class="form-group">
+                <label>简介</label>
+                <input name="intro" type="text" class="form-control" placeholder="简介">
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">新增图书</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

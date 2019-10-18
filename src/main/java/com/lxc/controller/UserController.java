@@ -61,7 +61,7 @@ public class UserController {
     public String findAll(Model model){
         List<User> userList = userRepository.findAll();
         model.addAttribute("userList",userList);
-        return "userList";
+        return "userManagement/userList.html";
     }
 
     /**
@@ -70,7 +70,7 @@ public class UserController {
      */
     @GetMapping("add")
     public String toAddUser(){
-        return "addUser";
+        return "userManagement/addUser.html";
     }
 
     /**
@@ -94,7 +94,7 @@ public class UserController {
     public String toUpdateUser(@PathVariable("userId") Integer id, Model model){
         User user = userRepository.getOne(id);
         model.addAttribute("user",user);
-        return "editUser";
+        return "userManagement/editUser.html";
     }
 
     /**

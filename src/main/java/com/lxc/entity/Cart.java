@@ -51,6 +51,5 @@ public class Cart implements Serializable {
     public void removeCartItem(CartItem item){
         cartItems.remove(item);
     }
-
     //ToDo
 }

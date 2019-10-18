@@ -6,22 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Dashboard Template for Bootstrap</title>
+    <title>用户信息后台管理</title>
     <!-- Bootstrap core CSS -->
-    <link th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet"></link>
-    <script src="asserts/js/jquery-3.4.0.min.js"></script>
-    <script src="asserts/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 
 <body>
-
 <div ></div>
-
 <div class="container-fluid">
     <div class="row">
-
         <div></div>
-
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <h2><a th:href="@{/user/add}" class="btn btn-primary">用户添加</a></h2>
             <div class="table-responsive">
@@ -48,16 +44,13 @@
                             <a class="btn btn-sm btn-primary" th:href="@{/user/delete/}+${user.id}">删除</a>
                         </td>
                     </tr>
-
                     </tbody>
                 </table>
             </div>
-
         </main>
     </div>
 </div>
-
-<form id="deleteUser"  method="post">
+<!--<form id="deleteUser"  method="post">
     <input type="hidden" name="_method"  value="delete"/>
 </form>
 <script>
@@ -66,7 +59,6 @@
         $("#deleteUser").attr("action",$(this).attr("del_url")).submit();
 
     });
-</script>
+</script>-->
 </body>
-
 </html>

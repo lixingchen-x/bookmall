@@ -1,11 +1,12 @@
 package com.lxc.service;
 
 import com.lxc.entity.Book;
-
-import java.util.Iterator;
+import org.springframework.data.domain.Page;
 
 public interface IBookService {
 
-    Iterator<Book> findAll(int pageNum, int pageSize);
+    Page<Book> findAllByPage(int pageNum);
+
+    void updateBook(Book book);
     //ToDo
 }
