@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookServiceImpl implements IBookService {
 
@@ -41,5 +43,39 @@ public class BookServiceImpl implements IBookService {
         bookRepository.saveAndFlush(oldBook);
     }
 
-    //ToDo
+    @Override
+    public List<Book> findByBookName(String bookName) {
+
+        return bookRepository.findByBookName(bookName);
+    }
+
+    @Override
+    public List<Book> findByAuthor(String author) {
+
+        return bookRepository.findByAuthor(author);
+    }
+
+    @Override
+    public List<Book> findByIsbn(String isbn) {
+
+        return bookRepository.findByIsbn(isbn);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+
+        bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Book getOne(Integer id) {
+
+        return bookRepository.getOne(id);
+    }
+
+    @Override
+    public void saveBook(Book book) {
+
+        bookRepository.saveAndFlush(book);
+    }
 }

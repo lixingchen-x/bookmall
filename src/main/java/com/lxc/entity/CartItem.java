@@ -22,6 +22,9 @@ public class CartItem implements Serializable {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "sub_total")
+    private Double subTotal;
+
     public Integer getId() {
         return id;
     }
@@ -52,5 +55,11 @@ public class CartItem implements Serializable {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Double getSubTotal(){
+
+        this.subTotal = book.getPrice() * quantity;
+        return subTotal;
     }
 }

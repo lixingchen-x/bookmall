@@ -1,0 +1,20 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" id="header">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <span class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
+        </div>
+        <div class="navbar-right row">
+            <span class="navbar-brand col-md-1"><span class="glyphicon glyphicon-log-out" onclick="logout()"></span></span>
+        </div>
+    </div>
+    <script>
+        function logout() {
+            window.location.href="/logout";
+        }
+    </script>
+</nav>
+</body>
+</html>
+

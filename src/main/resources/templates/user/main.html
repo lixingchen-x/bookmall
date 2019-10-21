@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>网上书城</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{webjars/bootstrap/3.3.7/css/bootstrap.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{resource/css/dashboard.css}" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="common/navheader :: #header"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <div th:replace="common/usersidebar :: #sidebar (url='main')"></div>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h2 class="sub-header">图书列表</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>书名</th>
+                        <th>作者</th>
+                        <th>isbn</th>
+                        <th>出版日期</th>
+                        <th>价格</th>
+                        <th>库存</th>
+                        <th>简介</th>
+                        <th>数量</th>
+                        <th>操作</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book,stat:${bookList}">
+                        <td th:text="${book.bookName}"></td>
+                        <td th:text="${book.author}"></td>
+                        <td th:text="${book.isbn}"></td>
+                        <td th:text="${book.publishDate}"></td>
+                        <td th:text="${book.price}"></td>
+                        <td th:text="${book.stock}"></td>
+                        <td th:text="${book.intro}"></td>
+                        <td><input type="number" class="bookNumber" value="1" min="1" ></td>
+                        <td>
+                            <a class="btn btn-default" th:onclick="'javascript:addCartFun('+${book.id}+','+${stat.index}+');'">加入购物车</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div align="center">
+    <div>当前第<span th:text="${page}"></span>页</div>
+    <span><a th:if="${page} > 0" th:href="@{/book/books(page=${page} - 1)}">上一页</a></span>
+    <span><a th:if="${page} < ${totalPages} - 1" th:href="@{/book/books(page=${page} + 1)}">下一页</a></span>
+</div>
+<script type="text/javascript">
+    function addCartFun(id,index) {
+        var number = document.getElementsByClassName("bookNumber");
+        var num = number[index].value;
+        var ajax;
+        if (window.XMLHttpRequest){
+            ajax = new XMLHttpRequest();
+        } else if (window.ActiveXObject){
+            ajax = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        ajax.onreadystatechange = function () {
+            if (ajax.readyState == 4){
+                if (ajax.status == 200){
+
+                }
+            }
+        }
+        ajax.open("post","user",true);
+        ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        ajax.send("id=" + id + "&number=" + num);
+
+    }
+</script>
+</body>
+</html>

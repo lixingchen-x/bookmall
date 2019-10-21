@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @ResponseBody
+    //@ResponseBody
     public String login(HttpServletRequest request, User user){
 
         User u = userRepository.findByUsername(user.getUsername());
@@ -46,8 +46,8 @@ public class UserController {
         String incomingPassword = user.getPassword();
         String correctPassword = u.getPassword();
         if(incomingPassword.equals(correctPassword)){
-            request.getSession().setAttribute("currentUser",user); //ToDo
-            return "Login successfully!";
+            request.getSession().setAttribute("user",user); //ToDo
+            return "redirect:/book/books";
         }
         return "Login failed!";
     }
@@ -59,6 +59,7 @@ public class UserController {
      */
     @GetMapping("users")
     public String findAll(Model model){
+
         List<User> userList = userRepository.findAll();
         model.addAttribute("userList",userList);
         return "userManagement/userList.html";
@@ -80,6 +81,7 @@ public class UserController {
      */
     @PostMapping("add")
     public String addUser(User user){
+
         userRepository.saveAndFlush(user);
         return "redirect:/user/users";
     }
@@ -92,6 +94,7 @@ public class UserController {
      */
     @GetMapping("update/{userId}")
     public String toUpdateUser(@PathVariable("userId") Integer id, Model model){
+
         User user = userRepository.getOne(id);
         model.addAttribute("user",user);
         return "userManagement/editUser.html";
@@ -104,6 +107,7 @@ public class UserController {
      */
     @PutMapping("update")
     public String updateUser(User user){
+
         userService.updateUser(user);
         return "redirect:/user/users";
     }
@@ -115,7 +119,9 @@ public class UserController {
      */
     @RequestMapping("delete/{userId}")
     public String deleteUser(@PathVariable("userId") Integer id){
+
         userRepository.deleteById(id);
         return "redirect:/user/users";
     }
+
 }

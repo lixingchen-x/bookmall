@@ -18,9 +18,6 @@ import java.util.List;
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
     private BookServiceImpl bookService;
 
     /**
@@ -59,7 +56,8 @@ public class BookController {
      */
     @PostMapping("add")
     public String addBook(Book book){
-        bookRepository.saveAndFlush(book);
+
+        bookService.saveBook(book);
         return "redirect:/book/books";
     }
 
@@ -71,7 +69,8 @@ public class BookController {
      */
     @GetMapping("update/{bookId}")
     public String toUpdateBook(@PathVariable("bookId") Integer id, Model model){
-        Book book = bookRepository.getOne(id);
+
+        Book book = bookService.getOne(id);
         model.addAttribute("book",book);
         return "bookManagement/editBook.html";
     }
@@ -83,6 +82,7 @@ public class BookController {
      */
     @PutMapping("update")
     public String updateBook(Book book){
+
         bookService.updateBook(book);
         return "redirect:/book/books";
     }
@@ -94,9 +94,27 @@ public class BookController {
      */
     @RequestMapping("delete/{bookId}")
     public String deleteBook(@PathVariable("bookId") Integer id){
-        bookRepository.deleteById(id);
+
+        bookService.deleteById(id);
         return "redirect:/book/books";
     }
 
-    //查询 ToDo
+    @RequestMapping("find")
+    public String findBookByContition(@RequestParam(value = "num") Integer num, @RequestParam(value = "keyword") String keyword, Model model){
+
+        List<Book> bookList = null;
+        if (num == 2){
+            bookList = bookService.findByBookName(keyword);
+        }else if(num == 3){
+            bookList = bookService.findByAuthor(keyword);
+        }else if(num == 4){
+            bookList = bookService.findByIsbn(keyword);
+        }else if(num == 1){
+            return "redirect:/book/books";
+        }
+        model.addAttribute("bookList", bookList);
+        model.addAttribute("totalPages", 1);
+        model.addAttribute("page", 0);
+        return "bookManagement/bookList.html";
+    }
 }
