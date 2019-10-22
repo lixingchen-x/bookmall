@@ -15,6 +15,7 @@
 
 <body>
 <div ></div>
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
         <div></div>
@@ -48,17 +49,8 @@
                 </table>
             </div>
         </main>
+        <h4><a th:href="@{/index}" class="btn btn-primary">返回首页</a></h4>&nbsp;<h4><a th:href="@{/doLogout}" class="btn btn-primary">退出登录</a></h4>
     </div>
 </div>
-<!--<form id="deleteUser"  method="post">
-    <input type="hidden" name="_method"  value="delete"/>
-</form>
-<script>
-    $(".deleteBtn").click(function(){
-        //删除当前员工的
-        $("#deleteUser").attr("action",$(this).attr("del_url")).submit();
-
-    });
-</script>-->
 </body>
 </html>

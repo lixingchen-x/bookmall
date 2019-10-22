@@ -2,7 +2,7 @@ package com.lxc.service.impl;
 
 import com.lxc.entity.Book;
 import com.lxc.repository.BookRepository;
-import com.lxc.service.IBookService;
+import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BookServiceImpl implements IBookService {
+public class BookServiceImpl implements BookService {
 
     private final int PAGE_SIZE=10;
 
@@ -29,7 +29,7 @@ public class BookServiceImpl implements IBookService {
     }
 
     @Override
-    public void updateBook(Book book) {
+    public void update(Book book) {
 
         Book oldBook = bookRepository.getOne(book.getId());
         oldBook.setBookName(book.getBookName());
@@ -68,14 +68,30 @@ public class BookServiceImpl implements IBookService {
     }
 
     @Override
-    public Book getOne(Integer id) {
+    public Book findById(Integer id) {
 
         return bookRepository.getOne(id);
     }
 
     @Override
-    public void saveBook(Book book) {
+    public void save(Book book) {
 
         bookRepository.saveAndFlush(book);
+    }
+
+    @Override
+    public void decreaseStock(Book book) {
+
+        Book oldBook = bookRepository.getOne(book.getId());
+        oldBook.setStock(book.getStock() - 1);
+        bookRepository.saveAndFlush(oldBook);
+    }
+
+    @Override
+    public void increaseStock(Book book) {
+
+        Book oldBook = bookRepository.getOne(book.getId());
+        oldBook.setStock(book.getStock() + 1);
+        bookRepository.saveAndFlush(oldBook);
     }
 }

@@ -9,28 +9,22 @@ import java.util.List;
  */
 public class Cart implements Serializable {
 
-    private Integer userId;
+    private User user;
     private List<CartItem> cartItems;
     private Double totalPrice;
 
-    public Cart(Integer userId, List<CartItem> cartItems) {
+    public Cart(User user, List<CartItem> cartItems) {
 
-        this.userId = userId;
+        this.user = user;
         this.cartItems = cartItems;
     }
 
-    public Cart(Integer userId) {
-
-        this.userId = userId;
-        this.cartItems = new ArrayList<>();
+    public User getUser() {
+        return user;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<CartItem> getCartItems() {

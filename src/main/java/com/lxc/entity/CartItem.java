@@ -25,6 +25,12 @@ public class CartItem implements Serializable {
     @Column(name = "sub_total")
     private Double subTotal;
 
+    public CartItem(Book book, Integer quantity, Double subTotal) {
+        this.book = book;
+        this.quantity = quantity;
+        this.subTotal = subTotal;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -61,5 +67,15 @@ public class CartItem implements Serializable {
 
         this.subTotal = book.getPrice() * quantity;
         return subTotal;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", book=" + book +
+                ", quantity=" + quantity +
+                ", subTotal=" + subTotal +
+                '}';
     }
 }

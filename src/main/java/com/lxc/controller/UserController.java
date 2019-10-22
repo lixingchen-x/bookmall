@@ -18,39 +18,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserServiceImpl userService;
-
-    @PostMapping("/register")
-    @ResponseBody
-    public String register(User user){
-
-        User u=userRepository.findByUsername(user.getUsername());
-        if(u != null){
-            return "The user exists!";
-        }
-        userRepository.save(user);
-        return "Register successfully!";
-    }
-
-    @PostMapping("/login")
-    //@ResponseBody
-    public String login(HttpServletRequest request, User user){
-
-        User u = userRepository.findByUsername(user.getUsername());
-        if(u == null){
-            return "The user does not exist!";
-        }
-        String incomingPassword = user.getPassword();
-        String correctPassword = u.getPassword();
-        if(incomingPassword.equals(correctPassword)){
-            request.getSession().setAttribute("user",user); //ToDo
-            return "redirect:/book/books";
-        }
-        return "Login failed!";
-    }
 
     /**
      * 用户后台管理页面
@@ -60,7 +28,7 @@ public class UserController {
     @GetMapping("users")
     public String findAll(Model model){
 
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userService.findAll();
         model.addAttribute("userList",userList);
         return "userManagement/userList.html";
     }
@@ -80,9 +48,9 @@ public class UserController {
      * @return
      */
     @PostMapping("add")
-    public String addUser(User user){
+    public String add(User user){
 
-        userRepository.saveAndFlush(user);
+        userService.save(user);
         return "redirect:/user/users";
     }
 
@@ -95,7 +63,7 @@ public class UserController {
     @GetMapping("update/{userId}")
     public String toUpdateUser(@PathVariable("userId") Integer id, Model model){
 
-        User user = userRepository.getOne(id);
+        User user = userService.findById(id);
         model.addAttribute("user",user);
         return "userManagement/editUser.html";
     }
@@ -106,9 +74,9 @@ public class UserController {
      * @return
      */
     @PutMapping("update")
-    public String updateUser(User user){
+    public String update(User user){
 
-        userService.updateUser(user);
+        userService.update(user);
         return "redirect:/user/users";
     }
 
@@ -118,10 +86,17 @@ public class UserController {
      * @return
      */
     @RequestMapping("delete/{userId}")
-    public String deleteUser(@PathVariable("userId") Integer id){
+    public String delete(@PathVariable("userId") Integer id){
 
-        userRepository.deleteById(id);
+        userService.deleteById(id);
         return "redirect:/user/users";
+    }
+
+    @RequestMapping("settings")
+    public String changeSettings(){
+
+        // ToDo
+        return "";
     }
 
 }

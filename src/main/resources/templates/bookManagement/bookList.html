@@ -13,16 +13,18 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <!-- Custom styles for this template -->
     <link th:href="@{resource/css/dashboard.css}" rel="stylesheet">
+    <link rel="icon" href="../../favicon.ico">
 </head>
 
 <body>
 <div ></div>
-<div th:replace="common/navheader :: #header"></div>
+<!--<div th:replace="common/navheader :: #header"></div>-->
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-            <div th:replace="common/usersidebar :: #sidebar (url='main')"></div>
-        </div>
+        <!--<div class="col-sm-3 col-md-2 sidebar">
+            <div th:replace="common/adminsidebar :: #sidebar (url='admin')"></div>
+        </div>-->
         <div></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <h3><a th:href="@{/book/add}" class="btn btn-primary">新增图书</a></h3>
@@ -31,11 +33,11 @@
                     <table>
                         <tr>
                             <td>
-                                <select  class="form-control" name="num">
-                                    <option value="1">查询所有</option>
-                                    <option value="2">根据书名查询</option>
-                                    <option value="3">根据作者查询</option>
-                                    <option value="4">根据isbn查询</option>
+                                <select  class="form-control" name="key">
+                                    <option value="all">查询所有</option>
+                                    <option value="name">根据书名查询</option>
+                                    <option value="author">根据作者查询</option>
+                                    <option value="isbn">根据isbn查询</option>
                                 </select>
                             </td>
                             <td>
@@ -82,6 +84,7 @@
                     </table>
             </div>
         </main>
+        <h4><a th:href="@{/index}" class="btn btn-primary">返回首页</a></h4>&nbsp;<h4><a th:href="@{/doLogout}" class="btn btn-primary">退出登录</a></h4>
     </div>
 </div>
 <div align="center">

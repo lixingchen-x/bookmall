@@ -22,7 +22,7 @@ public class User implements Serializable {
     @Column(name = "username")
     private String username;
 
-    @Size(min = 6,message = "Password must be at least 6 characters!")
+    @Size(min = 6, message = "Password must be at least 6 characters!")
     @Column(name = "password")
     private String password;
 

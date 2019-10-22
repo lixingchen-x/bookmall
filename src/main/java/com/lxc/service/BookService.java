@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface IBookService {
+public interface BookService {
 
     Page<Book> findAllByPage(int pageNum);
 
@@ -15,12 +15,15 @@ public interface IBookService {
 
     List<Book> findByIsbn(String isbn);
 
-    void updateBook(Book book);
+    void update(Book book);
 
     void deleteById(Integer id);
 
-    Book getOne(Integer id);
+    Book findById(Integer id);
 
-    void saveBook(Book book);
-    //ToDo
+    void save(Book book);
+
+    void decreaseStock(Book book);
+
+    void increaseStock(Book book);
 }

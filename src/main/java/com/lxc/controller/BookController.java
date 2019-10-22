@@ -1,7 +1,6 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Book;
-import com.lxc.repository.BookRepository;
 import com.lxc.service.impl.BookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,7 +56,7 @@ public class BookController {
     @PostMapping("add")
     public String addBook(Book book){
 
-        bookService.saveBook(book);
+        bookService.save(book);
         return "redirect:/book/books";
     }
 
@@ -70,7 +69,7 @@ public class BookController {
     @GetMapping("update/{bookId}")
     public String toUpdateBook(@PathVariable("bookId") Integer id, Model model){
 
-        Book book = bookService.getOne(id);
+        Book book = bookService.findById(id);
         model.addAttribute("book",book);
         return "bookManagement/editBook.html";
     }
@@ -83,7 +82,7 @@ public class BookController {
     @PutMapping("update")
     public String updateBook(Book book){
 
-        bookService.updateBook(book);
+        bookService.update(book);
         return "redirect:/book/books";
     }
 
@@ -99,17 +98,24 @@ public class BookController {
         return "redirect:/book/books";
     }
 
+    /**
+     * 条件查询
+     * @param key
+     * @param keyword
+     * @param model
+     * @return
+     */
     @RequestMapping("find")
-    public String findBookByContition(@RequestParam(value = "num") Integer num, @RequestParam(value = "keyword") String keyword, Model model){
+    public String findBookByContition(@RequestParam(value = "key") String key, @RequestParam(value = "keyword") String keyword, Model model){
 
         List<Book> bookList = null;
-        if (num == 2){
+        if (key.equals("name")){
             bookList = bookService.findByBookName(keyword);
-        }else if(num == 3){
+        }else if(key.equals("author")){
             bookList = bookService.findByAuthor(keyword);
-        }else if(num == 4){
+        }else if(key.equals("isbn")){
             bookList = bookService.findByIsbn(keyword);
-        }else if(num == 1){
+        }else if(key.equals("all")){
             return "redirect:/book/books";
         }
         model.addAttribute("bookList", bookList);

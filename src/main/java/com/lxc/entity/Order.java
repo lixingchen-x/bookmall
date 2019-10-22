@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "order_1")
+@Table(name = "`order`")
 public class Order implements Serializable {
 
     @Id

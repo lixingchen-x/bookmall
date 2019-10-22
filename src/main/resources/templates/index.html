@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
 </head>
 <body>
-<a href="login.html">登录</a><br>
-<a href="register.html">注册</a><br>
-<a href="/book/books">图书管理</a><br>
-<a href="/user/users">用户管理</a><br>
+<div th:if="${session.user != null}" th:text="${'欢迎您，' + session.user.username}" style="color: dodgerblue; float: left;"></div><br><br>
+<div th:switch="${session.user.username}">
+    <div th:case="'admin'">
+        <a href="/book/books">图书后台管理</a><br>
+        <a href="/user/users">用户管理系统</a><br>
+    </div>
+    <div th:case="*">
+        <a href="/shopping/display">图书列表</a><br>
+        <a href="/shopping/cart">购物车</a><br>
+        <a href="/shopping/orders">订单管理</a><br>
+        <a href="/uesr/settings">个人中心</a><br>
+    </div>
+</div>
+<div style="color: dodgerblue;float: right;"><a href="doLogout">注销</a></div>
 </body>
 </html>
+
