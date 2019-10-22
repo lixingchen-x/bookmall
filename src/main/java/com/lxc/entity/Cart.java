@@ -37,11 +37,7 @@ public class Cart implements Serializable {
 
     public Double getTotalPrice() {
 
-        Double count = 0.0;
-        for(CartItem item:cartItems){
-            count = count + item.getSubTotal();
-        }
-        totalPrice = count;
+        cartItems.forEach(cartItem -> totalPrice += cartItem.getSubTotal());
         return totalPrice;
     }
 

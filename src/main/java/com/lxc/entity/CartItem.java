@@ -69,6 +69,10 @@ public class CartItem implements Serializable {
         return subTotal;
     }
 
+    public void setSubTotal(Double subTotal) {
+        this.subTotal = subTotal;
+    }
+
     @Override
     public String toString() {
         return "CartItem{" +

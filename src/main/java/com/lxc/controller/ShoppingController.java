@@ -66,10 +66,9 @@ public class ShoppingController {
         Cart cart = (Cart)session.getAttribute("cart");
         // 购物车中没有书
         if(cart == null){
-            CartItem cartItem = new CartItem(book, 1, book.getPrice());
-            decreaseStock(book, session);
             List<CartItem> cartItems = new ArrayList<>();
-            cartItems.add(cartItem);
+            cartItems.add(new CartItem(book, 1, book.getPrice()));
+            decreaseStock(book, session);
             cart = new Cart(user, cartItems);
             session.setAttribute("cart", cart);
             return "redirect:/shopping/display";
@@ -80,6 +79,7 @@ public class ShoppingController {
             if(item.getBook().getId() == book.getId()){
                 // 购物车中已有此书，增加1购买数量
                 item.increaseQuantity(); //购物车里+1
+                item.setSubTotal(item.getSubTotal()); //更新subTotal
                 decreaseStock(book, session); // 库存-1
             }
             updateCart(cart, session, cartItems);
@@ -113,6 +113,7 @@ public class ShoppingController {
      * @param cartItems
      */
     private void updateCart(Cart cart, HttpSession session, List<CartItem> cartItems){
+
         cart.setCartItems(cartItems);
         session.setAttribute("cart", cart);
     }
