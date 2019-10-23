@@ -24,12 +24,8 @@ public class ShoppingController {
     BookServiceImpl bookService;
 
     @RequestMapping("display")
-    public String display(Model model, @RequestParam(value = "page", required = false) Integer page){
+    public String display(Model model, @RequestParam(defaultValue = "0") Integer page){
 
-        if(page == null){
-            page = 0;
-            model.addAttribute("page", 0);
-        }
         Page<Book> bookPages = bookService.findAllByPage(page);
         List<Book> bookList=bookPages.getContent();
         model.addAttribute("bookList", bookList);
@@ -39,17 +35,9 @@ public class ShoppingController {
     }
 
     @RequestMapping("cart")
-    public String cartEdit(){
+    public String cart(){
 
-        // ToDo
         return "/user/cart.html";
-    }
-
-    @RequestMapping("orders")
-    public String orders(){
-
-        // ToDo
-        return "/user/orders.html";
     }
 
     /**
@@ -81,9 +69,10 @@ public class ShoppingController {
                 item.increaseQuantity(); //购物车里+1
                 item.setSubTotal(item.getSubTotal()); //更新subTotal
                 decreaseStock(book, session); // 库存-1
+                updateCart(cart, session, cartItems);
+                return "redirect:/shopping/display";
             }
-            updateCart(cart, session, cartItems);
-            return "redirect:/shopping/display";
+
         }
         //购物车中还没有此书
         cartItems.add(new CartItem(book, 1, book.getPrice()));
@@ -99,11 +88,6 @@ public class ShoppingController {
         }else {
             session.setAttribute("msg", "库存不足");
         }
-    }
-
-    private void increaseStock(Book book){
-
-        bookService.increaseStock(book);
     }
 
     /**

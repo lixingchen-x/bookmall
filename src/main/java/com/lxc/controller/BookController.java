@@ -25,12 +25,8 @@ public class BookController {
      * @return
      */
     @GetMapping("books")
-    public String findAll(Model model, @RequestParam(value = "page", required = false) Integer page){
+    public String findAll(Model model, @RequestParam(defaultValue = "0") Integer page){
 
-        if(page == null){
-            page = 0;
-            model.addAttribute("page", 0);
-        }
         Page<Book> bookPages = bookService.findAllByPage(page);
         List<Book> bookList=bookPages.getContent();
         model.addAttribute("bookList", bookList);
@@ -109,13 +105,13 @@ public class BookController {
     public String findBookByContition(@RequestParam(value = "key") String key, @RequestParam(value = "keyword") String keyword, Model model){
 
         List<Book> bookList = null;
-        if (key.equals("name")){
+        if ("name".equals(key)){
             bookList = bookService.findByBookName(keyword);
-        }else if(key.equals("author")){
+        }else if("author".equals(key)){
             bookList = bookService.findByAuthor(keyword);
-        }else if(key.equals("isbn")){
+        }else if("isbn".equals(key)){
             bookList = bookService.findByIsbn(keyword);
-        }else if(key.equals("all")){
+        }else if("all".equals(key)){
             return "redirect:/book/books";
         }
         model.addAttribute("bookList", bookList);

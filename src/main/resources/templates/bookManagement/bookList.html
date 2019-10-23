@@ -18,13 +18,9 @@
 
 <body>
 <div ></div>
-<!--<div th:replace="common/navheader :: #header"></div>-->
 <span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
-        <!--<div class="col-sm-3 col-md-2 sidebar">
-            <div th:replace="common/adminsidebar :: #sidebar (url='admin')"></div>
-        </div>-->
         <div></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <h3><a th:href="@{/book/add}" class="btn btn-primary">新增图书</a></h3>

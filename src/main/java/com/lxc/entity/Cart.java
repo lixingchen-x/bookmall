@@ -11,7 +11,6 @@ public class Cart implements Serializable {
 
     private User user;
     private List<CartItem> cartItems;
-    private Double totalPrice;
 
     public Cart(User user, List<CartItem> cartItems) {
 
@@ -37,7 +36,10 @@ public class Cart implements Serializable {
 
     public Double getTotalPrice() {
 
-        cartItems.forEach(cartItem -> totalPrice += cartItem.getSubTotal());
+        Double totalPrice = 0.0;
+        for(CartItem cartItem:cartItems){
+            totalPrice += cartItem.getSubTotal();
+        }
         return totalPrice;
     }
 

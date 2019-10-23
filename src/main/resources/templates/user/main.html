@@ -18,7 +18,7 @@
 
 <body>
 <div ></div>
-<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 25px">[[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
         <div></div>
@@ -82,8 +82,8 @@
 </div>
 <div align="center" th:if="${session.user != null}">
     <div>当前第<span th:text="${page}"></span>页</div>
-    <span><a th:if="${page} gt 0" th:href="@{/book/books(page=${page} - 1)}">上一页</a></span>
-    <span><a th:if="${page} lt ${totalPages} - 1" th:href="@{/book/books(page=${page} + 1)}">下一页</a></span>
+    <span><a th:if="${page} gt 0" th:href="@{/shopping/display(page=${page} - 1)}">上一页</a></span>
+    <span><a th:if="${page} lt ${totalPages} - 1" th:href="@{/shopping/display(page=${page} + 1)}">下一页</a></span>
 </div>
 </body>
 </html>

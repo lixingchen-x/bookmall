@@ -29,7 +29,7 @@ public class Book implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "publishDate")
+    @Column(name = "publish_date")
     private Date publishDate;
 
     @Column(name = "intro")

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class RegisterController {
 
-    public static final int minimumPasswordSize = 6;
+    private static final int MINIMUM_PASSWORD_SIZE = 6;
 
     @Autowired
     private UserServiceImpl userService;
@@ -23,12 +23,12 @@ public class RegisterController {
     @RequestMapping("/doRegister")
     public String doRegister(User user, Model model){
 
-        User u=userService.findByUsername(user.getUsername());
+        User u = userService.findByUsername(user.getUsername());
         if(u != null){
             model.addAttribute("msg", "用户名已存在");
             return "register";
         }
-        if(user.getPassword().length() < minimumPasswordSize){
+        if(user.getPassword().length() < MINIMUM_PASSWORD_SIZE){
             model.addAttribute("msg", "密码长度请大于6");
             return "register";
         }
