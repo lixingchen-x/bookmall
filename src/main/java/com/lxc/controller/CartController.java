@@ -1,6 +1,5 @@
 package com.lxc.controller;
 
-import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
 import com.lxc.service.impl.BookServiceImpl;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -38,35 +38,52 @@ public class CartController {
         return "redirect:/cart/cartItems";
     }
 
+    @RequestMapping("delete/{bookId}")
+    public String delete(@PathVariable("bookId") Integer id, HttpSession session){
+
+        session.setAttribute("cart", updateCart(id, session, "delete"));
+        return "redirect:/cart/cartItems";
+    }
+
+    @RequestMapping("reset")
+    public String reset(HttpSession session){
+
+        Cart cart = (Cart)session.getAttribute("cart");
+        cart.resetCart();
+        session.setAttribute("cart", cart);
+        session.setAttribute("totalPrice", cart.getTotalPrice());
+        return "redirect:/cart/cartItems";
+    }
+
     @RequestMapping("confirm")
     public String confirm(HttpSession session){
 
-        Cart cart = (Cart)session.getAttribute("cart");
-        Double totalPrice = cart.getTotalPrice();
-        session.setAttribute("totalPrice", "商品总价是： "+totalPrice);
+        session.setAttribute("totalPrice", ((Cart)session.getAttribute("cart")).getTotalPrice());
         return "redirect:/cart/cartItems";
     }
 
     private Cart updateCart(Integer id, HttpSession session, String operation){
 
-        Cart cart = (Cart)session.getAttribute("cart");
-        List<CartItem> cartItems = cart.getCartItems();
-        retrieveAndDo(id, cartItems, session, operation);
-        return cart;
+        retrieveAndDo(id, ((Cart)session.getAttribute("cart")).getCartItems(), session, operation);
+        return (Cart)session.getAttribute("cart");
     }
 
     private void retrieveAndDo(Integer id, List<CartItem> cartItems, HttpSession session, String operation){
 
-        for(CartItem cartItem:cartItems){
-            if(cartItem.getBook().getId() == id){
+        Iterator<CartItem> iterator = cartItems.iterator();
+        while (iterator.hasNext()){
+            CartItem item = iterator.next();
+            if(item.getBook().getId() == id){
                 if("increase".equals(operation)){
-                    cartItem.increaseQuantity();
+                    item.increaseQuantity();
                     decreaseStock(id, session);
                 }else if("decrease".equals(operation)){
-                    if(cartItem.getQuantity() > 0){
-                        cartItem.decreaseQuantity();
+                    if(item.getQuantity() > 0){
+                        item.decreaseQuantity();
                         increaseStock(id);
                     }
+                }else if("delete".equals(operation)){
+                    iterator.remove();
                 }
             }
         }
@@ -74,9 +91,8 @@ public class CartController {
 
     private void decreaseStock(Integer id, HttpSession session){
 
-        Book oldBook = bookService.findById(id);
-        if(oldBook.getStock() >= 1){
-            bookService.decreaseStock(oldBook);
+        if(bookService.findById(id).getStock() >= 1){
+            bookService.decreaseStock(bookService.findById(id));
         }else {
             session.setAttribute("msg", "库存不足");
         }
@@ -84,8 +100,6 @@ public class CartController {
 
     private void increaseStock(Integer id){
 
-        Book oldBook = bookService.findById(id);
-        bookService.increaseStock(oldBook);
+        bookService.increaseStock(bookService.findById(id));
     }
-    // ToDo 从购物车删除商品 & 清空购物车
 }

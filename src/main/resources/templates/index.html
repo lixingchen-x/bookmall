@@ -12,10 +12,10 @@
         <a href="/user/users">用户管理系统</a><br>
     </div>
     <div th:case="*">
-        <a href="/shopping/display">图书列表</a><br>
+        <a href="/book/books">图书列表</a><br>
         <a href="/cart/cartItems">购物车</a><br>
         <a href="/order/orders">订单管理</a><br>
-        <a href="/uesr/settings">个人中心</a><br>
+        <a th:href="@{/user/updateProfile/}+${session.user.id}">个人中心</a><br>
     </div>
 </div>
 <div style="color: dodgerblue;float: right;"><a href="doLogout">注销</a></div>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>图书后台管理</title>
+    <title>图书列表</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -18,12 +18,19 @@
 
 <body>
 <div ></div>
-<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">当前用户为： [[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
         <div></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <h3><a th:href="@{/book/add}" class="btn btn-primary">新增图书</a></h3>
+            <div th:switch="${session.user.username}">
+                <div th:case="admin">
+                    <h3><a th:href="@{/book/add}" class="btn btn-primary">新增图书</a></h3>
+                </div>
+                <div th:case="*">
+                    <h3><a th:href="@{/shopping/cart}" class="btn btn-primary">去我的购物车</a></h3>
+                </div>
+            </div>
             <div class="form-group">
                 <form th:action="@{/book/find}">
                     <table>
@@ -50,7 +57,7 @@
                     <table class="table table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>id</th>
+                            <th th:if="${session.user.username} eq 'admin'">id</th>
                             <th>书名</th>
                             <th>作者</th>
                             <th>isbn</th>
@@ -58,12 +65,13 @@
                             <th>价格</th>
                             <th>库存</th>
                             <th>简介</th>
+                            <th th:if="${session.user.username} eq 'admin'">状态</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="book:${bookList}">
-                            <td th:text="${book.id}"></td>
+                        <tr th:each="book:${books}">
+                            <td th:text="${book.id}" th:if="${session.user.username} eq 'admin'"></td>
                             <td th:text="${book.bookName}"></td>
                             <td th:text="${book.author}"></td>
                             <td th:text="${book.isbn}"></td>
@@ -71,9 +79,25 @@
                             <td th:text="${book.price}"></td>
                             <td th:text="${book.stock}"></td>
                             <td th:text="${book.intro}"></td>
+                            <td th:text="${book.bookStatus}" th:if="${session.user.username} eq 'admin'"></td>
                             <td>
-                                <a class="btn btn-sm btn-primary" th:href="@{/book/update/}+${book.id}">编辑</a>
-                                <a class="btn btn-sm btn-primary" th:href="@{/book/delete/}+${book.id}">删除</a>
+                                <div th:switch="${session.user.username}">
+                                    <div th:case="admin">
+                                        <div th:switch="${book.bookStatus}">
+                                            <div th:case="withdraw">
+                                                <a class="btn btn-sm btn-primary" th:href="@{/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/book/delete/}+${book.id}">删除</a>
+                                            </div>
+                                            <div th:case="available">
+                                                <a class="btn btn-sm btn-primary" th:href="@{/book/update/}+${book.id}">编辑</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/book/withdraw(bookId = ${book.id}, page = ${page})}">下架</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:case="*">
+                                        <a class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page})}">添加到购物车</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
@@ -84,9 +108,18 @@
     </div>
 </div>
 <div align="center">
-    <div>当前第<span th:text="${page}"></span>页</div>
-    <span><a th:if="${page} > 0" th:href="@{/book/books(page=${page} - 1)}">上一页</a></span>
-    <span><a th:if="${page} < ${totalPages} - 1" th:href="@{/book/books(page=${page} + 1)}">下一页</a></span>
+    <div th:switch="${session.key}">
+        <div th:case="null">
+            <div>当前第<span th:text="${page}"></span>页</div>
+            <span><a th:if="${page} > 0" th:href="@{/book/books(page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${totalPages} - 1" th:href="@{/book/books(page = ${page} + 1)}">下一页</a></span>
+        </div>
+        <div th:case="*">
+            <div>当前第<span th:text="${page}"></span>页</div>
+            <span><a th:if="${page} > 0" th:href="@{/book/find(key = ${session.key}, keyword = ${session.keyword}, page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${totalPages} - 1" th:href="@{/book/find(key = ${session.key}, keyword = ${session.keyword}, page = ${page} + 1)}">下一页</a></span>
+        </div>
+    </div>
 </div>
 </body>
 </html>

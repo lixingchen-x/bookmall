@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>用户信息编辑</title>
+    <title>个人信息修改</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -12,18 +12,18 @@
 <body>
 <div>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-        <form role="form" method="post" th:action="@{/user/update}">
+        <form role="form" method="post" th:action="@{/user/updateProfile}">
             <input type="hidden" name="_method" value="put" th:if="${user!=null}"/>
             <input type="hidden" name="id" th:if="${user!=null}" th:value="${user.id}">
             <div class="form-group">
-                <label>密码</label>
-                <input name="password" type="text" class="form-control" placeholder="密码"  th:value="${user!=null}?${user.password}">
+                <label>密码修改</label>
+                <input name="password" type="password" class="form-control" placeholder="密码" th:value="${user!=null}?${user.password}">
             </div>
             <div class="form-group">
-                <label>Email</label>
-                <input name="email" type="text" class="form-control" placeholder="电子邮箱"  th:value="${user!=null}?${user.email}">
+                <label>邮箱</label>
+                <input name="email" type="text" class="form-control" placeholder="邮箱" th:value="${user!=null}?${user.email}">
             </div>
-            <button type="submit" class="btn btn-sm btn-primary">修改</button>
+            <button type="submit" class="btn btn-sm btn-primary">提交修改</button>
         </form>
     </main>
 </div>

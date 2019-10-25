@@ -1,19 +1,23 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
+import com.lxc.service.impl.UserServiceImpl;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class LoginController {
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @RequestMapping("/login")
     public String login(){
@@ -32,8 +36,9 @@ public class LoginController {
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         try {
             subject.login(token);
-            model.addAttribute("user", user);
-            request.getSession().setAttribute("user", user);
+            User completeUser = userService.findByUsername(user.getUsername());
+            model.addAttribute("user", completeUser);
+            request.getSession().setAttribute("user", completeUser);
             request.getSession().setAttribute("cart", null); //初始化一个空购物车
             return "index";
         }catch (UnknownAccountException e){

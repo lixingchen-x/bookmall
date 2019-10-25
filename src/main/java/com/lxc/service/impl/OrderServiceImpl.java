@@ -9,22 +9,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final int PAGE_SIZE=5;
+    private final int PAGE_SIZE=10;
 
     @Autowired
     OrderRepository orderRepository;
 
     @Override
+    public Page<Order> findByUsername(String username, int pageNum) {
+
+        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
+        return orderRepository.findByUsername(username, pageable);
+    }
+
+    @Override
     public Page<Order> findAllByPage(int pageNum) {
-        Sort sort = new Sort(Sort.Direction.ASC,"id");
-        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, sort);
+
+        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
         return orderRepository.findAll(pageable);
     }
 
@@ -59,34 +65,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void pay(Integer id) {
+    public void setStatus(String status, Integer id) {
 
         Order order = orderRepository.getOne(id);
-        order.setStatus("paid");
-        orderRepository.saveAndFlush(order);
-    }
-
-    @Override
-    public void cancel(Integer id) {
-
-        Order order = orderRepository.getOne(id);
-        order.setStatus("cancelled");
-        orderRepository.saveAndFlush(order);
-    }
-
-    @Override
-    public void refund(Integer id) {
-
-        Order order = orderRepository.getOne(id);
-        order.setStatus("unpaid");
-        orderRepository.saveAndFlush(order);
-    }
-
-    @Override
-    public void recover(Integer id) {
-
-        Order order = orderRepository.getOne(id);
-        order.setStatus("unpaid");
+        order.setStatus(status);
         orderRepository.saveAndFlush(order);
     }
 }

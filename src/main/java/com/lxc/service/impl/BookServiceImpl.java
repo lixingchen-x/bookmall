@@ -3,14 +3,13 @@ package com.lxc.service.impl;
 import com.lxc.entity.Book;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -23,48 +22,49 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findAllByPage(int pageNum) {
 
-        Sort sort = new Sort(Sort.Direction.ASC,"id");
-        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
         return bookRepository.findAll(pageable);
     }
 
     @Override
     public void update(Book book) {
 
-        Book oldBook = bookRepository.getOne(book.getId());
-        oldBook.setBookName(book.getBookName());
-        oldBook.setAuthor(book.getAuthor());
-        oldBook.setPublishDate(book.getPublishDate());
-        oldBook.setIsbn(book.getIsbn());
-        oldBook.setPrice(book.getPrice());
-        oldBook.setIntro(book.getIntro());
-        oldBook.setStock(book.getStock());
-        oldBook.setImage(book.getImage()); //ToDo
-        bookRepository.saveAndFlush(oldBook);
-    }
-
-    @Override
-    public List<Book> findByBookName(String bookName) {
-
-        return bookRepository.findByBookName(bookName);
-    }
-
-    @Override
-    public List<Book> findByAuthor(String author) {
-
-        return bookRepository.findByAuthor(author);
-    }
-
-    @Override
-    public List<Book> findByIsbn(String isbn) {
-
-        return bookRepository.findByIsbn(isbn);
+        Book newBook = bookRepository.getOne(book.getId());
+        BeanUtils.copyProperties(book, newBook);
+        bookRepository.saveAndFlush(newBook);
     }
 
     @Override
     public void deleteById(Integer id) {
 
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Book> findByCondition(String condition, String keyword, int pageNum) {
+
+        Page<Book> result = null;
+        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
+        switch (condition){
+            case "name" :
+                result = bookRepository.findByBookName(keyword, pageable);
+                break;
+            case "author" :
+                result = bookRepository.findByAuthor(keyword, pageable);
+                break;
+            case "isbn" :
+                result = bookRepository.findByIsbn(keyword, pageable);
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void setBookStatus(String bookStatus, Integer id) {
+
+        Book book = bookRepository.getOne(id);
+        book.setBookStatus(bookStatus);
+        bookRepository.saveAndFlush(book);
     }
 
     @Override

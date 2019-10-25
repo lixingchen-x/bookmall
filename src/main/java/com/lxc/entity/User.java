@@ -19,16 +19,16 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "username")
+    @Column
     private String username;
 
     @Size(min = 6, message = "Password must be at least 6 characters!")
-    @Column(name = "password")
+    @Column
     private String password;
 
     @Email
     @NotEmpty(message = "Email shouldn't be empty!")
-    @Column(name = "email")
+    @Column
     private String email;
 
     public Integer getId() {

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
@@ -24,12 +23,10 @@ public class OrderController {
     private OrderItemServiceImpl orderItemService;
 
     @RequestMapping("orders")
-    public String orders(Model model, @RequestParam(defaultValue = "0") Integer page){
+    public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session){
 
-        // ToDo order要根据用户名来获取
-        Page<Order> orderPages = orderService.findAllByPage(page);
-        List<Order> orders=orderPages.getContent();
-        model.addAttribute("orders", orders);
+        Page<Order> orderPages = orderService.findByUsername(((User)session.getAttribute("user")).getUsername(), page);
+        model.addAttribute("orders", orderPages.getContent());
         model.addAttribute("totalPages", orderPages.getTotalPages());
         model.addAttribute("page", page);
         return "user/orders.html";
@@ -37,7 +34,7 @@ public class OrderController {
 
 
     @GetMapping("orderInfo")
-    public String toOrderInfo(HttpSession session){
+    public String toOrderInfo(){
 
         return "user/orderInfo.html";
     }
@@ -49,9 +46,7 @@ public class OrderController {
         order.setCreateDate(new Date());
         order.setStatus("unpaid");
         orderService.save(order);
-
-        Cart cart = (Cart)session.getAttribute("cart");
-        saveOrderItem(cart, order.getId());
+        saveOrderItem((Cart)session.getAttribute("cart"), order.getId());
         session.setAttribute("cart", null);
         return "index";
     }
@@ -59,35 +54,34 @@ public class OrderController {
     @RequestMapping("pay/{orderId}")
     public String pay(@PathVariable("orderId") Integer id){
 
-        orderService.pay(id);
+        orderService.setStatus("paid", id);
         return "redirect:/order/orders";
     }
 
     @RequestMapping("cancel/{orderId}")
     public String cancel(@PathVariable("orderId") Integer id){
 
-        orderService.cancel(id);
+        orderService.setStatus("cancelled", id);
         return "redirect:/order/orders";
     }
 
     @RequestMapping("refund/{orderId}")
     public String refund(@PathVariable("orderId") Integer id){
 
-        orderService.refund(id);
+        orderService.setStatus("unpaid", id);
         return "redirect:/order/orders";
     }
 
     @RequestMapping("recover/{orderId}")
     public String recover(@PathVariable("orderId") Integer id){
 
-        orderService.recover(id);
+        orderService.setStatus("unpaid", id);
         return "redirect:/order/orders";
     }
 
     private void saveOrderItem(Cart cart, Integer id){
 
-        List<CartItem> cartItems = cart.getCartItems();
-        cartItems.forEach(cartItem -> cartItemToOrderItem(cartItem, id));
+        cart.getCartItems().forEach(cartItem -> cartItemToOrderItem(cartItem, id));
     }
 
     private void cartItemToOrderItem(CartItem cartItem, Integer id){

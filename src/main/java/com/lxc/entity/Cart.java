@@ -1,7 +1,6 @@
 package com.lxc.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,9 +49,4 @@ public class Cart implements Serializable {
     public void resetCart(){
         cartItems.removeAll(cartItems);
     }
-
-    public void removeCartItem(CartItem item){
-        cartItems.remove(item);
-    }
-    //ToDo
 }

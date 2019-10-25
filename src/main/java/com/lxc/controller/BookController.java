@@ -3,15 +3,11 @@ package com.lxc.controller;
 import com.lxc.entity.Book;
 import com.lxc.service.impl.BookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
-/**
- * 书的表现层
- */
 @Controller
 @RequestMapping("/book")
 public class BookController {
@@ -27,10 +23,8 @@ public class BookController {
     @GetMapping("books")
     public String findAll(Model model, @RequestParam(defaultValue = "0") Integer page){
 
-        Page<Book> bookPages = bookService.findAllByPage(page);
-        List<Book> bookList=bookPages.getContent();
-        model.addAttribute("bookList", bookList);
-        model.addAttribute("totalPages", bookPages.getTotalPages());
+        model.addAttribute("books", bookService.findAllByPage(page).getContent());
+        model.addAttribute("totalPages", bookService.findAllByPage(page).getTotalPages());
         model.addAttribute("page", page);
         return "bookManagement/bookList.html";
     }
@@ -52,6 +46,7 @@ public class BookController {
     @PostMapping("add")
     public String addBook(Book book){
 
+        book.setBookStatus("available");
         bookService.save(book);
         return "redirect:/book/books";
     }
@@ -65,8 +60,7 @@ public class BookController {
     @GetMapping("update/{bookId}")
     public String toUpdateBook(@PathVariable("bookId") Integer id, Model model){
 
-        Book book = bookService.findById(id);
-        model.addAttribute("book",book);
+        model.addAttribute("book", bookService.findById(id));
         return "bookManagement/editBook.html";
     }
 
@@ -78,12 +72,43 @@ public class BookController {
     @PutMapping("update")
     public String updateBook(Book book){
 
+        book.setBookStatus("available");
         bookService.update(book);
         return "redirect:/book/books";
     }
 
     /**
-     * 删除图书
+     * 下架书籍
+     * @param id
+     * @param page
+     * @param model
+     * @return
+     */
+    @RequestMapping("withdraw")
+    public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model){
+
+        model.addAttribute("page", page);
+        bookService.setBookStatus("withdraw", id);
+        return "forward:/book/find";
+    }
+
+    /**
+     * 上架书籍
+     * @param id
+     * @param page
+     * @param model
+     * @return
+     */
+    @RequestMapping("onSale")
+    public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model){
+
+        model.addAttribute("page", page);
+        bookService.setBookStatus("available", id);
+        return "forward:/book/find";
+    }
+
+    /**
+     * 从数据库中永久删除
      * @param id
      * @return
      */
@@ -95,28 +120,28 @@ public class BookController {
     }
 
     /**
-     * 条件查询
+     * 根据条件分页查询
      * @param key
      * @param keyword
      * @param model
      * @return
      */
     @RequestMapping("find")
-    public String findBookByContition(@RequestParam(value = "key") String key, @RequestParam(value = "keyword") String keyword, Model model){
+    public String findBookByContition(@RequestParam(value = "key", required = false) String key, @RequestParam(value = "keyword", required = false) String keyword
+            , Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session){
 
-        List<Book> bookList = null;
-        if ("name".equals(key)){
-            bookList = bookService.findByBookName(keyword);
-        }else if("author".equals(key)){
-            bookList = bookService.findByAuthor(keyword);
-        }else if("isbn".equals(key)){
-            bookList = bookService.findByIsbn(keyword);
-        }else if("all".equals(key)){
-            return "redirect:/book/books";
+        if(key == null && keyword == null){
+            key = session.getAttribute("key").toString();
+            keyword = session.getAttribute("keyword").toString();
         }
-        model.addAttribute("bookList", bookList);
-        model.addAttribute("totalPages", 1);
-        model.addAttribute("page", 0);
+        if("all".equals(key)){
+            return "forward:/book/books";
+        }
+        model.addAttribute("books", bookService.findByCondition(key, keyword, page).getContent());
+        model.addAttribute("totalPages", bookService.findByCondition(key, keyword, page).getTotalPages());
+        model.addAttribute("page", page);
+        session.setAttribute("key", key);
+        session.setAttribute("keyword", keyword);
         return "bookManagement/bookList.html";
     }
 }

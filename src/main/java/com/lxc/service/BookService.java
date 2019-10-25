@@ -3,21 +3,17 @@ package com.lxc.service;
 import com.lxc.entity.Book;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface BookService {
 
     Page<Book> findAllByPage(int pageNum);
 
-    List<Book> findByBookName(String bookName);
-
-    List<Book> findByAuthor(String author);
-
-    List<Book> findByIsbn(String isbn);
+    Page<Book> findByCondition(String condition, String keyword, int pageNum);
 
     void update(Book book);
 
     void deleteById(Integer id);
+
+    void setBookStatus(String bookStatus, Integer id);
 
     Book findById(Integer id);
 

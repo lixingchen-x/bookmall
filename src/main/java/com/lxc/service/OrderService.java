@@ -2,11 +2,12 @@ package com.lxc.service;
 
 import com.lxc.entity.Order;
 import org.springframework.data.domain.Page;
-
 import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
+
+    Page<Order> findByUsername (String username, int pageNum);
 
     Page<Order> findAllByPage(int pageNum);
 
@@ -20,11 +21,7 @@ public interface OrderService {
 
     void deleteById(Integer id);
 
-    void pay(Integer id);
+    void setStatus(String status, Integer id);
 
-    void cancel(Integer id);
 
-    void refund(Integer id);
-
-    void recover(Integer id);
 }

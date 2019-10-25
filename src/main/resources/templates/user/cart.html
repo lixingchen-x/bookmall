@@ -18,7 +18,7 @@
 
 <body>
 <div ></div>
-<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 25px">[[${session.user.username}]]</span>
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 25px">当前用户为： [[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
         <div></div>
@@ -29,7 +29,7 @@
                 </div>
                 <div th:case="*">
                     <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.totalPrice}]]</span>
-                    <h3><a th:href="@{/order/orderInfo}" class="btn btn-primary">结算</a></h3>
+                    <h3><a th:href="@{/order/orderInfo}" th:if="${session.totalPrice} != '0.0'" class="btn btn-primary">结算</a></h3>
                 </div>
             </div>
             <div class="form-group">
@@ -39,6 +39,7 @@
                     <span class="navbar-brand" style="font-size: 25px">购物车空空如也</span>
                 </div>
                 <div th:case="*">
+                    <a class="btn btn-sm btn-primary" th:href="@{/cart/reset}" th:if="${session.totalPrice} != '0.0'">清空购物车</a>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm">
                             <thead>
@@ -46,6 +47,7 @@
                                 <th>书名</th>
                                 <th>数量</th>
                                 <th>计价</th>
+                                <th>修改数量</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -58,13 +60,15 @@
                                     <a class="btn btn-sm btn-primary" th:href="@{/cart/increase/}+${cartItem.book.id}">加一</a>
                                     <a class="btn btn-sm btn-primary" th:href="@{/cart/decrease/}+${cartItem.book.id}">减一</a>
                                 </td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" th:href="@{/cart/delete/}+${cartItem.book.id}">删除</a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
         </main>
         <h4><a th:href="@{/index}" class="btn btn-primary">返回首页</a></h4>&nbsp;<h4><a th:href="@{/doLogout}" class="btn btn-primary">退出登录</a></h4>
     </div>

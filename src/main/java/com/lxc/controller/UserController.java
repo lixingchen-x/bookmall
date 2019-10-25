@@ -1,14 +1,11 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.repository.UserRepository;
 import com.lxc.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 用户的表现层
@@ -28,8 +25,7 @@ public class UserController {
     @GetMapping("users")
     public String findAll(Model model){
 
-        List<User> users = userService.findAll();
-        model.addAttribute("users",users);
+        model.addAttribute("users", userService.findAll());
         return "userManagement/users.html";
     }
 
@@ -54,30 +50,18 @@ public class UserController {
         return "redirect:/user/users";
     }
 
-    /**
-     * 跳转到修改页面
-     * @param id
-     * @param model
-     * @return
-     */
-    @GetMapping("update/{userId}")
-    public String toUpdateUser(@PathVariable("userId") Integer id, Model model){
+    @GetMapping("updateProfile/{userId}")
+    public String toUpdateProfile(@PathVariable("userId") Integer id, Model model){
 
-        User user = userService.findById(id);
-        model.addAttribute("user",user);
-        return "userManagement/editUser.html";
+        model.addAttribute("user", userService.findById(id));
+        return "user/profile.html";
     }
 
-    /**
-     * 更新用户信息
-     * @param user
-     * @return
-     */
-    @PutMapping("update")
-    public String update(User user){
+    @PutMapping("updateProfile")
+    public String updateProfile(User user){
 
         userService.update(user);
-        return "redirect:/user/users";
+        return "index";
     }
 
     /**
@@ -91,12 +75,4 @@ public class UserController {
         userService.deleteById(id);
         return "redirect:/user/users";
     }
-
-    @RequestMapping("settings")
-    public String changeSettings(){
-
-        // ToDo
-        return "";
-    }
-
 }

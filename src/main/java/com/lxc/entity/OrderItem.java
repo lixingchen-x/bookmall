@@ -1,7 +1,6 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -21,7 +20,7 @@ public class OrderItem implements Serializable {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    @Column(name = "quantity")
+    @Column
     private Integer quantity;
 
     public Integer getId() {

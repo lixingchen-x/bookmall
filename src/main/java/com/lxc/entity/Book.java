@@ -21,10 +21,10 @@ public class Book implements Serializable {
     @Column(name = "book_name")
     private String bookName;
 
-    @Column(name = "author")
+    @Column
     private String author;
 
-    @Column(name = "isbn")
+    @Column
     private String isbn;
 
     @Temporal(TemporalType.DATE)
@@ -32,17 +32,20 @@ public class Book implements Serializable {
     @Column(name = "publish_date")
     private Date publishDate;
 
-    @Column(name = "intro")
+    @Column
     private String intro;
 
-    @Column(name = "image")
+    @Column
     private String image;
 
-    @Column(name = "price")
+    @Column
     private Double price;
 
-    @Column(name = "stock")
+    @Column
     private Integer stock;
+
+    @Column(name = "book_status")
+    private String bookStatus;
 
     public Integer getId() {
         return id;
@@ -114,5 +117,13 @@ public class Book implements Serializable {
 
     public void setBookName(String bookName) {
         this.bookName = bookName;
+    }
+
+    public String getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(String bookStatus) {
+        this.bookStatus = bookStatus;
     }
 }

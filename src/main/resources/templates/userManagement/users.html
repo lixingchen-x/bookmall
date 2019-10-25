@@ -15,7 +15,7 @@
 
 <body>
 <div ></div>
-<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">[[${session.user.username}]]</span>
+<span th:if="${session.user != null}" class="navbar-brand" style="font-size: 40px">当前用户为： [[${session.user.username}]]</span>
 <div class="container-fluid">
     <div class="row">
         <div></div>
@@ -34,14 +34,11 @@
                     </thead>
                     <tbody>
                     <tr th:each="user:${users}">
-                        <!-- th:text 为标签赋值-->
                         <td th:text="${user.id}"></td>
                         <td th:text="${user.username}"></td>
                         <td th:text="${user.password}"></td>
                         <td th:text="${user.email}"></td>
                         <td>
-                            <a class="btn btn-sm btn-primary" th:href="@{/user/update/}+${user.id}">修改</a>
-                            <!--<button th:attr="del_url=@{/user/userCRUD/}+${user.id}"  class="btn btn-sm btn-danger deleteBtn">删除</button>-->
                             <a class="btn btn-sm btn-primary" th:href="@{/user/delete/}+${user.id}">删除</a>
                         </td>
                     </tr>

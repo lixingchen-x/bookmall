@@ -13,6 +13,7 @@ public class CartItem implements Serializable {
     private Double subTotal;
 
     public CartItem(Book book, Integer quantity, Double subTotal) {
+
         this.book = book;
         this.quantity = quantity;
         this.subTotal = subTotal;

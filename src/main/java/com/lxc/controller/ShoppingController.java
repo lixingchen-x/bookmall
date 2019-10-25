@@ -6,10 +6,8 @@ import com.lxc.entity.CartItem;
 import com.lxc.entity.User;
 import com.lxc.service.impl.BookServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
@@ -21,18 +19,7 @@ import java.util.List;
 public class ShoppingController {
 
     @Autowired
-    BookServiceImpl bookService;
-
-    @RequestMapping("display")
-    public String display(Model model, @RequestParam(defaultValue = "0") Integer page){
-
-        Page<Book> bookPages = bookService.findAllByPage(page);
-        List<Book> bookList=bookPages.getContent();
-        model.addAttribute("bookList", bookList);
-        model.addAttribute("totalPages", bookPages.getTotalPages());
-        model.addAttribute("page", page);
-        return "/user/main.html";
-    }
+    private BookServiceImpl bookService;
 
     @RequestMapping("cart")
     public String cart(){
@@ -46,41 +33,71 @@ public class ShoppingController {
      * @param session
      * @return
      */
-    @RequestMapping("add/{bookId}")
-    public String addToCart(@PathVariable("bookId") Integer id, HttpSession session){
+    @RequestMapping("add")
+    public String addToCart(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page
+            , HttpSession session, Model model){
 
+        model.addAttribute("page", page);
         Book book = bookService.findById(id);
-        User user = (User)session.getAttribute("user");
         Cart cart = (Cart)session.getAttribute("cart");
-        // 购物车中没有书
+        // 购物车中没有任何书
         if(cart == null){
-            List<CartItem> cartItems = new ArrayList<>();
-            cartItems.add(new CartItem(book, 1, book.getPrice()));
-            decreaseStock(book, session);
-            cart = new Cart(user, cartItems);
-            session.setAttribute("cart", cart);
-            return "redirect:/shopping/display";
+            return cartHasNothing(book, session);
         }
-        List<CartItem> cartItems = cart.getCartItems();
-        for(CartItem item:cartItems){
+        for(CartItem item : cart.getCartItems()){
             // 购物车中已有此书
             if(item.getBook().getId() == book.getId()){
-                // 购物车中已有此书，增加1购买数量
-                item.increaseQuantity(); //购物车里+1
-                item.setSubTotal(item.getSubTotal()); //更新subTotal
-                decreaseStock(book, session); // 库存-1
-                updateCart(cart, session, cartItems);
-                return "redirect:/shopping/display";
+                return theBookExists(item, book, session, cart);
             }
-
         }
-        //购物车中还没有此书
-        cartItems.add(new CartItem(book, 1, book.getPrice()));
-        decreaseStock(book, session);
-        updateCart(cart, session, cartItems);
-        return "redirect:/shopping/display";
+        //购物车中只有有其他的书
+        return theBookAbsent(book, session, cart);
     }
 
+    /**
+     * 添加书籍进购物车的三种情况
+     * 第一种，购物车为空
+     */
+    private String cartHasNothing(Book book, HttpSession session){
+
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(new CartItem(book, 1, book.getPrice()));
+        decreaseStock(book, session);
+        Cart cart = new Cart((User)session.getAttribute("user"), cartItems);
+        session.setAttribute("cart", cart);
+        return "forward:/book/find";
+    }
+
+    /**
+     * 添加书籍进购物车的三种情况
+     * 第二种，购物车中已有此书
+     */
+    private String theBookExists(CartItem item, Book book, HttpSession session, Cart cart){
+
+        item.increaseQuantity(); //购物车里+1
+        item.setSubTotal(item.getSubTotal()); //更新subTotal
+        decreaseStock(book, session); // 库存-1
+        updateCart(cart, session, cart.getCartItems());
+        return "forward:/book/find";
+    }
+
+    /**
+     * 添加书籍进购物车的三种情况
+     * 第三种，购物车不为空，但还没有此书
+     */
+    private String theBookAbsent(Book book, HttpSession session, Cart cart){
+
+        cart.getCartItems().add(new CartItem(book, 1, book.getPrice()));
+        decreaseStock(book, session);
+        updateCart(cart, session, cart.getCartItems());
+        return "forward:/book/find";
+    }
+
+    /**
+     * 与数据库同步减库存
+     * @param book
+     * @param session
+     */
     private void decreaseStock(Book book, HttpSession session){
 
         if(book.getStock() >= 1){

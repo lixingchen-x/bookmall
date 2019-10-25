@@ -1,17 +1,18 @@
 package com.lxc.repository;
 
 import com.lxc.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
 
 /**
  * 书的dao
  */
 public interface BookRepository extends JpaRepository<Book, Integer>{
 
-    List<Book> findByBookName(String bookName);
+    Page<Book> findByBookName(String bookName, Pageable pageable);
 
-    List<Book> findByAuthor(String author);
+    Page<Book> findByAuthor(String author, Pageable pageable);
 
-    List<Book> findByIsbn(String isbn);
+    Page<Book> findByIsbn(String isbn, Pageable pageable);
 }
