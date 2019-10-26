@@ -16,19 +16,19 @@ public class RegisterController {
     private UserServiceImpl userService;
 
     @RequestMapping("/register")
-    public String register(){
+    public String register() {
         return "register";
     }
 
     @RequestMapping("/doRegister")
-    public String doRegister(User user, Model model){
+    public String doRegister(User user, Model model) {
 
         User u = userService.findByUsername(user.getUsername());
-        if(u != null){
+        if(u != null) {
             model.addAttribute("msg", "用户名已存在");
             return "register";
         }
-        if(user.getPassword().length() < MINIMUM_PASSWORD_SIZE){
+        if(user.getPassword().length() < MINIMUM_PASSWORD_SIZE) {
             model.addAttribute("msg", "密码长度请大于6");
             return "register";
         }

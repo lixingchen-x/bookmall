@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final int PAGE_SIZE=10;
+    private final int PAGE_SIZE = 10;
 
     @Autowired
     OrderRepository orderRepository;

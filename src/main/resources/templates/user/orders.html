@@ -37,7 +37,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="order:${orders}">
+                    <tr th:each="order:${orderPage.getContent()}">
                         <td th:text="${order.id}"></td>
                         <td th:text="${order.username}"></td>
                         <td th:text="${order.phoneNumber}"></td>
@@ -46,15 +46,15 @@
                         <td th:text="${order.status}"></td>
                         <td>
                             <div th:switch="${order.status}">
-                                <div th:case="paid">
-                                    <a class="btn btn-sm btn-primary" th:href="@{/order/refund/}+${order.id}">退款</a>
+                                <div th:case="'PAID'">
+                                    <a class="btn btn-sm btn-primary" th:href="@{/order/refund(orderId = ${order.id}, page = ${page})}">退款</a>
                                 </div>
-                                <div th:case="cancelled">
-                                    <a class="btn btn-sm btn-primary" th:href="@{/order/recover/}+${order.id}">恢复</a>
+                                <div th:case="'CANCELLED'">
+                                    <a class="btn btn-sm btn-primary" th:href="@{/order/recover(orderId = ${order.id}, page = ${page})}">恢复</a>
                                 </div>
                                 <div th:case="*">
-                                    <a class="btn btn-sm btn-primary" th:href="@{/order/pay/}+${order.id}">付款</a>
-                                    <a class="btn btn-sm btn-primary" th:href="@{/order/cancel/}+${order.id}">取消</a>
+                                    <a class="btn btn-sm btn-primary" th:href="@{/order/pay(orderId = ${order.id}, page = ${page})}">付款</a>
+                                    <a class="btn btn-sm btn-primary" th:href="@{/order/cancel(orderId = ${order.id}, page = ${page})}">取消</a>
                                 </div>
                             </div>
                         </td>
@@ -69,7 +69,7 @@
 <div align="center">
     <div>当前第<span th:text="${page}"></span>页</div>
     <span><a th:if="${page} > 0" th:href="@{/order/orders(page=${page} - 1)}">上一页</a></span>
-    <span><a th:if="${page} < ${totalPages} - 1" th:href="@{/order/orders(page=${page} + 1)}">下一页</a></span>
+    <span><a th:if="${page} < ${orderPage.getTotalPages()} - 1" th:href="@{/order/orders(page=${page} + 1)}">下一页</a></span>
 </div>
 </body>
 </html>

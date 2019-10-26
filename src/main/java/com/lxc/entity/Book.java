@@ -126,4 +126,16 @@ public class Book implements Serializable {
     public void setBookStatus(String bookStatus) {
         this.bookStatus = bookStatus;
     }
+
+    public void increaseStock() {
+
+        this.stock += 1;
+    }
+
+    public void decreaseStock() {
+
+        if(this.stock >= 1) {
+            this.stock -= 1;
+        }
+    }
 }

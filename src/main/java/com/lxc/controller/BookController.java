@@ -21,10 +21,9 @@ public class BookController {
      * @return
      */
     @GetMapping("books")
-    public String findAll(Model model, @RequestParam(defaultValue = "0") Integer page){
+    public String findAll(Model model, @RequestParam(defaultValue = "0") Integer page) {
 
-        model.addAttribute("books", bookService.findAllByPage(page).getContent());
-        model.addAttribute("totalPages", bookService.findAllByPage(page).getTotalPages());
+        model.addAttribute("bookPage", bookService.findAllByPage(page));
         model.addAttribute("page", page);
         return "bookManagement/bookList.html";
     }
@@ -34,7 +33,7 @@ public class BookController {
      * @return
      */
     @GetMapping("add")
-    public String toAddBook(){
+    public String toAddBook() {
         return "bookManagement/addBook.html";
     }
 
@@ -44,9 +43,9 @@ public class BookController {
      * @return
      */
     @PostMapping("add")
-    public String addBook(Book book){
+    public String addBook(Book book) {
 
-        book.setBookStatus("available");
+        book.setBookStatus("AVAILABLE");
         bookService.save(book);
         return "redirect:/book/books";
     }
@@ -58,7 +57,7 @@ public class BookController {
      * @return
      */
     @GetMapping("update/{bookId}")
-    public String toUpdateBook(@PathVariable("bookId") Integer id, Model model){
+    public String toUpdateBook(@PathVariable("bookId") Integer id, Model model) {
 
         model.addAttribute("book", bookService.findById(id));
         return "bookManagement/editBook.html";
@@ -70,9 +69,9 @@ public class BookController {
      * @return
      */
     @PutMapping("update")
-    public String updateBook(Book book){
+    public String updateBook(Book book) {
 
-        book.setBookStatus("available");
+        book.setBookStatus("AVAILABLE");
         bookService.update(book);
         return "redirect:/book/books";
     }
@@ -85,10 +84,10 @@ public class BookController {
      * @return
      */
     @RequestMapping("withdraw")
-    public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model){
+    public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setBookStatus("withdraw", id);
+        bookService.setBookStatus("WITHDRAW", id);
         return "forward:/book/find";
     }
 
@@ -100,10 +99,10 @@ public class BookController {
      * @return
      */
     @RequestMapping("onSale")
-    public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model){
+    public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setBookStatus("available", id);
+        bookService.setBookStatus("AVAILABLE", id);
         return "forward:/book/find";
     }
 
@@ -113,7 +112,7 @@ public class BookController {
      * @return
      */
     @RequestMapping("delete/{bookId}")
-    public String deleteBook(@PathVariable("bookId") Integer id){
+    public String deleteBook(@PathVariable("bookId") Integer id) {
 
         bookService.deleteById(id);
         return "redirect:/book/books";
@@ -128,17 +127,19 @@ public class BookController {
      */
     @RequestMapping("find")
     public String findBookByContition(@RequestParam(value = "key", required = false) String key, @RequestParam(value = "keyword", required = false) String keyword
-            , Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session){
+            , Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
 
-        if(key == null && keyword == null){
+        if(key == null && keyword == null) {
+            if(session.getAttribute("key") == null && session.getAttribute("keyword") == null) {
+                return "forward:/book/books";
+            }
             key = session.getAttribute("key").toString();
             keyword = session.getAttribute("keyword").toString();
         }
-        if("all".equals(key)){
+        if("all".equals(key)) {
             return "forward:/book/books";
         }
-        model.addAttribute("books", bookService.findByCondition(key, keyword, page).getContent());
-        model.addAttribute("totalPages", bookService.findByCondition(key, keyword, page).getTotalPages());
+        model.addAttribute("bookPage", bookService.findByCondition(key, keyword, page));
         model.addAttribute("page", page);
         session.setAttribute("key", key);
         session.setAttribute("keyword", keyword);

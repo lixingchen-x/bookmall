@@ -19,7 +19,7 @@ public interface BookService {
 
     void save(Book book);
 
-    void decreaseStock(Book book);
+    void decreaseStock(Integer id);
 
-    void increaseStock(Book book);
+    void increaseStock(Integer id);
 }

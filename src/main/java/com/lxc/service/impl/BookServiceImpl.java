@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final int PAGE_SIZE=10;
+    private final int PAGE_SIZE = 10;
 
     @Autowired
     private BookRepository bookRepository;
@@ -45,7 +45,7 @@ public class BookServiceImpl implements BookService {
 
         Page<Book> result = null;
         Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
-        switch (condition){
+        switch (condition) {
             case "name" :
                 result = bookRepository.findByBookName(keyword, pageable);
                 break;
@@ -80,18 +80,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void decreaseStock(Book book) {
+    public void decreaseStock(Integer id) {
 
-        Book oldBook = bookRepository.getOne(book.getId());
-        oldBook.setStock(book.getStock() - 1);
-        bookRepository.saveAndFlush(oldBook);
+        Book book = bookRepository.getOne(id);
+        book.decreaseStock();
+        bookRepository.saveAndFlush(book);
     }
 
     @Override
-    public void increaseStock(Book book) {
+    public void increaseStock(Integer id) {
 
-        Book oldBook = bookRepository.getOne(book.getId());
-        oldBook.setStock(book.getStock() + 1);
-        bookRepository.saveAndFlush(oldBook);
+        Book book = bookRepository.getOne(id);
+        book.increaseStock();
+        bookRepository.saveAndFlush(book);
     }
 }

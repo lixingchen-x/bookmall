@@ -24,7 +24,7 @@ public class MyRealm extends AuthorizingRealm {
 
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         User user = userRepository.findByUsername(token.getUsername());
-        if(null == user){
+        if(null == user) {
             return null;
         }
         return new SimpleAuthenticationInfo("", user.getPassword(), "");

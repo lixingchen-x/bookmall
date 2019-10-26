@@ -23,15 +23,26 @@
     <div class="row">
         <div></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <div th:switch="${session.totalPrice}">
+            <!--<div th:switch="${session.cart.getTotalPrice()}">
                 <div th:case="null" th:if="${session.cart ne null}">
                     <h3><a th:href="@{/cart/confirm}" class="btn btn-primary">下单</a></h3>
                 </div>
                 <div th:case="*">
-                    <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.totalPrice}]]</span>
-                    <h3><a th:href="@{/order/orderInfo}" th:if="${session.totalPrice} != '0.0'" class="btn btn-primary">结算</a></h3>
+                    <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.cart.getTotalPrice()}]]</span>
+                    <h3><a th:href="@{/order/orderInfo}" th:if="${session.cart.getTotalPrice()} != '0.0'" class="btn btn-primary">确认下单</a></h3>
+                </div>
+            </div>-->
+            <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.cart.getTotalPrice()}]]</span>
+
+            <div th:switch="${session.cart.getTotalPrice()}">
+                <div th:case="'0.0'" th:if="${session.cart ne null}">
+                    <h3><a th:href="@{/cart/toBuy}" class="btn btn-primary">去挑选书吧</a></h3>
+                </div>
+                <div th:case="*">
+                    <h3><a th:href="@{/order/orderInfo}" class="btn btn-primary">确认下单</a></h3>
                 </div>
             </div>
+
             <div class="form-group">
             </div>
             <div th:switch="${session.cart}">
@@ -39,7 +50,7 @@
                     <span class="navbar-brand" style="font-size: 25px">购物车空空如也</span>
                 </div>
                 <div th:case="*">
-                    <a class="btn btn-sm btn-primary" th:href="@{/cart/reset}" th:if="${session.totalPrice} != '0.0'">清空购物车</a>
+                    <a class="btn btn-sm btn-primary" th:href="@{/cart/reset}" th:if="${session.cart.getTotalPrice()} != '0.0'">清空购物车</a>
                     <div class="table-responsive">
                         <table class="table table-striped table-sm">
                             <thead>

@@ -23,7 +23,7 @@ public class UserController {
      * @return
      */
     @GetMapping("users")
-    public String findAll(Model model){
+    public String findAll(Model model) {
 
         model.addAttribute("users", userService.findAll());
         return "userManagement/users.html";
@@ -34,7 +34,7 @@ public class UserController {
      * @return
      */
     @GetMapping("add")
-    public String toAddUser(){
+    public String toAddUser() {
         return "userManagement/addUser.html";
     }
 
@@ -44,21 +44,21 @@ public class UserController {
      * @return
      */
     @PostMapping("add")
-    public String add(User user){
+    public String add(User user) {
 
         userService.save(user);
         return "redirect:/user/users";
     }
 
     @GetMapping("updateProfile/{userId}")
-    public String toUpdateProfile(@PathVariable("userId") Integer id, Model model){
+    public String toUpdateProfile(@PathVariable("userId") Integer id, Model model) {
 
         model.addAttribute("user", userService.findById(id));
         return "user/profile.html";
     }
 
     @PutMapping("updateProfile")
-    public String updateProfile(User user){
+    public String updateProfile(User user) {
 
         userService.update(user);
         return "index";
@@ -70,7 +70,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("delete/{userId}")
-    public String delete(@PathVariable("userId") Integer id){
+    public String delete(@PathVariable("userId") Integer id) {
 
         userService.deleteById(id);
         return "redirect:/user/users";

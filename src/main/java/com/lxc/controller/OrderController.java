@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/order")
@@ -23,68 +22,70 @@ public class OrderController {
     private OrderItemServiceImpl orderItemService;
 
     @RequestMapping("orders")
-    public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session){
+    public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
 
-        Page<Order> orderPages = orderService.findByUsername(((User)session.getAttribute("user")).getUsername(), page);
-        model.addAttribute("orders", orderPages.getContent());
-        model.addAttribute("totalPages", orderPages.getTotalPages());
+        Page<Order> orderPage = orderService.findByUsername(((User)session.getAttribute("user")).getUsername(), page);
+        model.addAttribute("orderPage", orderPage);
         model.addAttribute("page", page);
         return "user/orders.html";
     }
 
 
     @GetMapping("orderInfo")
-    public String toOrderInfo(){
+    public String toOrderInfo() {
 
         return "user/orderInfo.html";
     }
 
     @PostMapping("orderInfo")
-    public String completeOrderInfo(HttpSession session, Order order){
+    public String completeOrderInfo(HttpSession session, Order order) {
 
-        session.removeAttribute("totalPrice");
         order.setCreateDate(new Date());
-        order.setStatus("unpaid");
+        order.setStatus("UNPAID");
         orderService.save(order);
         saveOrderItem((Cart)session.getAttribute("cart"), order.getId());
         session.setAttribute("cart", null);
         return "index";
     }
 
-    @RequestMapping("pay/{orderId}")
-    public String pay(@PathVariable("orderId") Integer id){
+    @RequestMapping("pay")
+    public String pay(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
-        orderService.setStatus("paid", id);
-        return "redirect:/order/orders";
+        model.addAttribute("page", page);
+        orderService.setStatus("PAID", id);
+        return "forward:/order/orders";
     }
 
-    @RequestMapping("cancel/{orderId}")
-    public String cancel(@PathVariable("orderId") Integer id){
+    @RequestMapping("cancel")
+    public String cancel(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
-        orderService.setStatus("cancelled", id);
-        return "redirect:/order/orders";
+        model.addAttribute("page", page);
+        orderService.setStatus("CANCELLED", id);
+        return "forward:/order/orders";
     }
 
-    @RequestMapping("refund/{orderId}")
-    public String refund(@PathVariable("orderId") Integer id){
+    @RequestMapping("refund")
+    public String refund(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
-        orderService.setStatus("unpaid", id);
-        return "redirect:/order/orders";
+        model.addAttribute("page", page);
+        orderService.setStatus("UNPAID", id);
+        return "forward:/order/orders";
     }
 
-    @RequestMapping("recover/{orderId}")
-    public String recover(@PathVariable("orderId") Integer id){
+    @RequestMapping("recover")
+    public String recover(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
-        orderService.setStatus("unpaid", id);
-        return "redirect:/order/orders";
+        model.addAttribute("page", page);
+        orderService.setStatus("UNPAID", id);
+        return "forward:/order/orders";
     }
 
-    private void saveOrderItem(Cart cart, Integer id){
+    private void saveOrderItem(Cart cart, Integer id) {
 
-        cart.getCartItems().forEach(cartItem -> cartItemToOrderItem(cartItem, id));
+        cart.getCartItems().forEach(cartItem -> saveAsOrderItem(cartItem, id));
     }
 
-    private void cartItemToOrderItem(CartItem cartItem, Integer id){
+    private void saveAsOrderItem(CartItem cartItem, Integer id) {
 
         OrderItem orderItem = new OrderItem();
         orderItem.setOrderId(id);

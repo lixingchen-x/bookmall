@@ -35,18 +35,30 @@ public class Cart implements Serializable {
 
     public Double getTotalPrice() {
 
-        Double totalPrice = 0.0;
-        for(CartItem cartItem:cartItems){
-            totalPrice += cartItem.getSubTotal();
-        }
-        return totalPrice;
+        return cartItems.stream().mapToDouble(CartItem :: getSubTotal).sum();
     }
 
-    public void add(CartItem item){
+    public void add(CartItem item) {
         cartItems.add(item);
     }
 
-    public void resetCart(){
+    public void resetCart() {
         cartItems.removeAll(cartItems);
+    }
+
+    public CartItem getByBookId(Integer id) {
+
+        for(CartItem item : cartItems) {
+            if (item.getBook().getId().equals(id)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void removeCartItem(Integer id) {
+
+        CartItem cartItem = getByBookId(id);
+        cartItems.remove(cartItem);
     }
 }
