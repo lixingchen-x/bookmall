@@ -29,6 +29,7 @@
                         <th>用户名</th>
                         <th>密码</th>
                         <th>Email</th>
+                        <th>角色</th>
                         <th>操作</th>
                     </tr>
                     </thead>
@@ -38,7 +39,9 @@
                         <td th:text="${user.username}"></td>
                         <td th:text="${user.password}"></td>
                         <td th:text="${user.email}"></td>
+                        <td th:text="${user.role.getName()}"></td>
                         <td>
+                            <a class="btn btn-sm btn-primary" th:href="@{/user/changeRole/}+${user.id}">更改角色</a>
                             <a class="btn btn-sm btn-primary" th:href="@{/user/delete/}+${user.id}">删除</a>
                         </td>
                     </tr>

@@ -27,7 +27,19 @@ public class ShiroConfig {
         filterMap.put("/register", "anon");
         filterMap.put("/doRegister", "anon");
         filterMap.put("/logout", "logout");
+
+        //只有管理员可访问的页面
+        filterMap.put("/book/add", "authc,roles[ADMIN]");
+        filterMap.put("/book/update", "authc,roles[ADMIN]");
+        filterMap.put("/book/withdraw", "authc,roles[ADMIN]");
+        filterMap.put("/book/onSale", "authc,roles[ADMIN]");
+        filterMap.put("/book/delete", "authc,roles[ADMIN]");
+        filterMap.put("/user/add", "authc,roles[ADMIN]");
+        filterMap.put("/user/users", "authc,roles[ADMIN]");
+        filterMap.put("/user/delete", "authc,roles[ADMIN]");
+
         filterMap.put("/**", "authc");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/user/403");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         return shiroFilterFactoryBean;
     }

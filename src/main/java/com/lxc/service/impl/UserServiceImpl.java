@@ -1,5 +1,6 @@
 package com.lxc.service.impl;
 
+import com.lxc.entity.Role;
 import com.lxc.entity.User;
 import com.lxc.repository.UserRepository;
 import com.lxc.service.UserService;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
 
+        user.setRole(new Role("CUSTOMER"));
         userRepository.saveAndFlush(user);
     }
 
@@ -50,5 +52,17 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
 
         return userRepository.findAll();
+    }
+
+    @Override
+    public void changeRole(Integer id) {
+
+        User user = userRepository.getOne(id);
+        if (user.getRole().getName().equals("CUSTOMER")) {
+            user.setRole(new Role("ADMIN"));
+        }else if (user.getRole().getName().equals("ADMIN")) {
+            user.setRole(new Role("CUSTOMER"));
+        }
+        userRepository.saveAndFlush(user);
     }
 }

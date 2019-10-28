@@ -17,6 +17,11 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
+    @RequestMapping("/403")
+    public String unauthorized(){
+
+        return "403";
+    }
     /**
      * 用户后台管理页面
      * @param model
@@ -73,6 +78,13 @@ public class UserController {
     public String delete(@PathVariable("userId") Integer id) {
 
         userService.deleteById(id);
+        return "redirect:/user/users";
+    }
+
+    @RequestMapping("changeRole/{userId}")
+    public String changeRole(@PathVariable("userId") Integer id){
+
+        userService.changeRole(id); //角色反转
         return "redirect:/user/users";
     }
 }

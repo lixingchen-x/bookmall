@@ -1,11 +1,13 @@
 package com.lxc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 用户的实体类
@@ -30,6 +32,11 @@ public class User implements Serializable {
     @NotEmpty(message = "Email shouldn't be empty!")
     @Column
     private String email;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "role_name")
+    private Role role;
 
     public Integer getId() {
         return id;
@@ -63,13 +70,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

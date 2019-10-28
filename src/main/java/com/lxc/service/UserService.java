@@ -16,4 +16,6 @@ public interface UserService {
     void save(User user);
 
     List<User> findAll();
+
+    void changeRole(Integer id);
 }
