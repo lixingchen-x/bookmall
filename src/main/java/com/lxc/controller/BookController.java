@@ -45,7 +45,7 @@ public class BookController {
     @PostMapping("add")
     public String addBook(Book book) {
 
-        book.setBookStatus("AVAILABLE");
+        book.setStatus("AVAILABLE");
         bookService.save(book);
         return "redirect:/book/books";
     }
@@ -71,7 +71,7 @@ public class BookController {
     @PutMapping("update")
     public String updateBook(Book book) {
 
-        book.setBookStatus("AVAILABLE");
+        book.setStatus("AVAILABLE");
         bookService.update(book);
         return "redirect:/book/books";
     }
@@ -87,7 +87,7 @@ public class BookController {
     public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setBookStatus("WITHDRAW", id);
+        bookService.setStatus("WITHDRAW", id);
         return "forward:/book/find";
     }
 
@@ -102,7 +102,7 @@ public class BookController {
     public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setBookStatus("AVAILABLE", id);
+        bookService.setStatus("AVAILABLE", id);
         return "forward:/book/find";
     }
 
@@ -126,17 +126,18 @@ public class BookController {
      * @return
      */
     @RequestMapping("find")
-    public String findBookByContition(@RequestParam(value = "key", required = false) String key, @RequestParam(value = "keyword", required = false) String keyword
-            , Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
+    public String findBookByContition(@RequestParam(value = "key", required = false) String key,
+                                      @RequestParam(value = "keyword", required = false) String keyword, Model model,
+                                      @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
 
-        if(key == null && keyword == null) {
-            if(session.getAttribute("key") == null && session.getAttribute("keyword") == null) {
+        if (key == null && keyword == null) {
+            if (session.getAttribute("key") == null && session.getAttribute("keyword") == null) {
                 return "forward:/book/books";
             }
             key = session.getAttribute("key").toString();
             keyword = session.getAttribute("keyword").toString();
         }
-        if("all".equals(key)) {
+        if ("all".equals(key)) {
             return "forward:/book/books";
         }
         model.addAttribute("bookPage", bookService.findByCondition(key, keyword, page));

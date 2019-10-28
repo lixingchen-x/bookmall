@@ -45,7 +45,7 @@ public class Book implements Serializable {
     private Integer stock;
 
     @Column(name = "book_status")
-    private String bookStatus;
+    private String status;
 
     public Integer getId() {
         return id;
@@ -119,12 +119,12 @@ public class Book implements Serializable {
         this.bookName = bookName;
     }
 
-    public String getBookStatus() {
-        return bookStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setBookStatus(String bookStatus) {
-        this.bookStatus = bookStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void increaseStock() {
@@ -134,7 +134,7 @@ public class Book implements Serializable {
 
     public void decreaseStock() {
 
-        if(this.stock >= 1) {
+        if (this.stock >= 1) {
             this.stock -= 1;
         }
     }

@@ -35,7 +35,7 @@ public class CartController {
     public String increase(@PathVariable("bookId") Integer id, HttpSession session) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        cart.getByBookId(id).increaseQuantity();
+        cart.increaseQuantity(id);
         decreaseStock(id);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
@@ -51,7 +51,7 @@ public class CartController {
     public String decrease(@PathVariable("bookId") Integer id, HttpSession session) {
 
         Cart cart = (Cart) session.getAttribute("cart");
-        cart.getByBookId(id).decreaseQuantity();
+        cart.decreaseQuantity(id);
         increaseStock(id);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";

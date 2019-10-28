@@ -10,13 +10,11 @@ public class CartItem implements Serializable {
 
     private Book book;
     private Integer quantity;
-    private Double subTotal;
 
-    public CartItem(Book book, Integer quantity, Double subTotal) {
+    public CartItem(Book book, Integer quantity) {
 
         this.book = book;
         this.quantity = quantity;
-        this.subTotal = subTotal;
     }
 
     public Integer getQuantity() {
@@ -35,27 +33,20 @@ public class CartItem implements Serializable {
         this.book = book;
     }
 
-    public Double getSubTotal() {
-
-        return subTotal;
-    }
-
-    public void setSubTotal(Double subTotal) {
-
-        this.subTotal = subTotal;
-    }
-
-    public void increaseQuantity() {
+    void increaseQuantity() {
 
         this.quantity = this.quantity + 1;
-        this.subTotal = book.getPrice() * quantity;
     }
 
-    public void decreaseQuantity() {
+    void decreaseQuantity() {
 
-        if(this.quantity > 0) {
+        if (this.quantity > 0) {
             this.quantity = this.quantity - 1;
-            this.subTotal = book.getPrice() * quantity;
         }
+    }
+
+    public Double getSubTotal() {
+
+        return this.book.getPrice() * this.quantity;
     }
 }

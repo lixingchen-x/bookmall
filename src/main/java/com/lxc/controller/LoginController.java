@@ -45,10 +45,10 @@ public class LoginController {
             request.getSession().setAttribute("user", completeUser);
             request.getSession().setAttribute("cart", null); //初始化一个空购物车
             return "index";
-        }catch (UnknownAccountException e) {
+        } catch (UnknownAccountException e) {
             model.addAttribute("msg", "账号错误");
             return "login";
-        }catch (IncorrectCredentialsException e) {
+        } catch (IncorrectCredentialsException e) {
             model.addAttribute("msg", "密码错误");
             return "login";
         }
@@ -60,7 +60,7 @@ public class LoginController {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.logout();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }finally {
             return "login";

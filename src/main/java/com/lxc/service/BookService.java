@@ -13,7 +13,7 @@ public interface BookService {
 
     void deleteById(Integer id);
 
-    void setBookStatus(String bookStatus, Integer id);
+    void setStatus(String status, Integer id);
 
     Book findById(Integer id);
 

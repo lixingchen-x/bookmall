@@ -48,17 +48,31 @@ public class Cart implements Serializable {
 
     public CartItem getByBookId(Integer id) {
 
-        for(CartItem item : cartItems) {
-            if (item.getBook().getId().equals(id)) {
-                return item;
-            }
-        }
-        return null;
+        return cartItems.stream().filter(cartItem -> cartItem.getBook().getId().equals(id))
+                .findFirst().orElse(null);
     }
 
     public void removeCartItem(Integer id) {
 
         CartItem cartItem = getByBookId(id);
         cartItems.remove(cartItem);
+    }
+
+    public void decreaseQuantity(Integer id) {
+
+        getByBookId(id).decreaseQuantity();
+    }
+
+    public void increaseQuantity(Integer id) {
+
+        getByBookId(id).increaseQuantity();
+    }
+
+    public boolean contains(Integer id) {
+
+        if (getByBookId(id) == null) {
+            return false;
+        }
+        return true;
     }
 }

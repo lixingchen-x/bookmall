@@ -60,10 +60,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void setBookStatus(String bookStatus, Integer id) {
+    public void setStatus(String status, Integer id) {
 
         Book book = bookRepository.getOne(id);
-        book.setBookStatus(bookStatus);
+        book.setStatus(status);
         bookRepository.saveAndFlush(book);
     }
 

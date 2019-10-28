@@ -34,17 +34,17 @@ public class ShoppingController {
      * @return
      */
     @RequestMapping("add")
-    public String addToCart(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page
-            , HttpSession session, Model model) {
+    public String addToCart(@RequestParam(value = "bookId") Integer id,
+                            @RequestParam(defaultValue = "0") Integer page, HttpSession session, Model model) {
 
         model.addAttribute("page", page);
         Cart cart = (Cart)session.getAttribute("cart");
         // 购物车中没有任何书
-        if(cart == null) {
+        if (cart == null) {
             return addToEmptyCart(bookService.findById(id), session);
         }
         //购物车中已有此书
-        if(cart.getByBookId(id) != null) {
+        if (cart.contains(id)) {
             return addOneToThisBook(id, session, cart);
         }
         //购物车中有其他的书,暂无此书
@@ -58,7 +58,7 @@ public class ShoppingController {
     private String addToEmptyCart(Book book, HttpSession session) {
 
         List<CartItem> cartItems = new ArrayList<>();
-        cartItems.add(new CartItem(book, 1, book.getPrice()));
+        cartItems.add(new CartItem(book, 1));
         decreaseStock(book);
         Cart cart = new Cart((User)session.getAttribute("user"), cartItems);
         session.setAttribute("cart", cart);
@@ -71,8 +71,7 @@ public class ShoppingController {
      */
     private String addOneToThisBook(Integer id, HttpSession session, Cart cart) {
 
-        cart.getByBookId(id).increaseQuantity(); //购物车里+1
-        cart.getByBookId(id).setSubTotal(cart.getByBookId(id).getSubTotal()); //更新subTotal
+        cart.increaseQuantity(id); //购物车里+1
         decreaseStock(bookService.findById(id)); // 库存-1
         session.setAttribute("cart", cart);
         return "forward:/book/find";
@@ -84,7 +83,7 @@ public class ShoppingController {
      */
     private String addFirstOneToCart(Book book, HttpSession session, Cart cart) {
 
-        cart.getCartItems().add(new CartItem(book, 1, book.getPrice()));
+        cart.getCartItems().add(new CartItem(book, 1));
         decreaseStock(book);
         session.setAttribute("cart", cart);
         return "forward:/book/find";

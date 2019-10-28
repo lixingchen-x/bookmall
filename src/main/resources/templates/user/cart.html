@@ -23,26 +23,15 @@
     <div class="row">
         <div></div>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <!--<div th:switch="${session.cart.getTotalPrice()}">
-                <div th:case="null" th:if="${session.cart ne null}">
-                    <h3><a th:href="@{/cart/confirm}" class="btn btn-primary">下单</a></h3>
-                </div>
-                <div th:case="*">
-                    <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.cart.getTotalPrice()}]]</span>
-                    <h3><a th:href="@{/order/orderInfo}" th:if="${session.cart.getTotalPrice()} != '0.0'" class="btn btn-primary">确认下单</a></h3>
-                </div>
-            </div>-->
-            <span class="navbar-brand" style="font-size: 25px">总价为：[[${session.cart.getTotalPrice()}]]</span>
-
-            <div th:switch="${session.cart.getTotalPrice()}">
-                <div th:case="'0.0'" th:if="${session.cart ne null}">
+            <span th:if="${session.cart} ne null" class="navbar-brand" style="font-size: 25px">总价为：[[${session.cart.getTotalPrice()}]]</span>
+            <div th:switch="${session.cart.getTotalPrice()}" th:if="${session.cart} ne null">
+                <div th:case="'0.0'">
                     <h3><a th:href="@{/cart/toBuy}" class="btn btn-primary">去挑选书吧</a></h3>
                 </div>
                 <div th:case="*">
                     <h3><a th:href="@{/order/orderInfo}" class="btn btn-primary">确认下单</a></h3>
                 </div>
             </div>
-
             <div class="form-group">
             </div>
             <div th:switch="${session.cart}">
@@ -66,7 +55,7 @@
                             <tr th:each="cartItem:${session.cart.cartItems}">
                                 <td th:text="${cartItem.book.bookName}"></td>
                                 <td th:text="${cartItem.quantity}"></td>
-                                <td th:text="${cartItem.subTotal}"></td>
+                                <td th:text="${cartItem.getSubTotal()}"></td>
                                 <td>
                                     <a class="btn btn-sm btn-primary" th:href="@{/cart/increase/}+${cartItem.book.id}">加一</a>
                                     <a class="btn btn-sm btn-primary" th:href="@{/cart/decrease/}+${cartItem.book.id}">减一</a>

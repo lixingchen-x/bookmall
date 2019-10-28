@@ -79,11 +79,11 @@
                             <td th:text="${book.price}"></td>
                             <td th:text="${book.stock}"></td>
                             <td th:text="${book.intro}"></td>
-                            <td th:text="${book.bookStatus}"></td>
+                            <td th:text="${book.status}"></td>
                             <td>
                                 <div th:switch="${session.user.username}">
                                     <div th:case="admin">
-                                        <div th:switch="${book.bookStatus}">
+                                        <div th:switch="${book.status}">
                                             <div th:case="'WITHDRAW'">
                                                 <a class="btn btn-sm btn-primary" th:href="@{/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
                                                 <a class="btn btn-sm btn-primary" th:href="@{/book/delete/}+${book.id}">删除</a>
@@ -94,7 +94,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div th:case="*" th:if="${book.bookStatus} eq 'AVAILABLE'">
+                                    <div th:case="*" th:if="${book.status} eq 'AVAILABLE'">
                                         <a class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page})}">添加到购物车</a>
                                     </div>
                                 </div>
