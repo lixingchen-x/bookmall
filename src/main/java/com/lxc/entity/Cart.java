@@ -11,6 +11,8 @@ public class Cart implements Serializable {
     private User user;
     private List<CartItem> cartItems;
 
+    public Cart() {}
+
     public Cart(User user, List<CartItem> cartItems) {
 
         this.user = user;

@@ -36,15 +36,16 @@
                     <table>
                         <tr>
                             <td>
-                                <select  class="form-control" name="key">
-                                    <option value="all">查询所有</option>
-                                    <option value="name">根据书名查询</option>
-                                    <option value="author">根据作者查询</option>
-                                    <option value="isbn">根据isbn查询</option>
+                                <select  class="form-control" name="key" id="key" th:value="${session.key}">
+                                    <option value="">请选择查询条件</option>
+                                    <option th:selected="${session.key}=='all'" value="all">查询所有</option>
+                                    <option th:selected="${session.key}=='name'" value="name">根据书名查询</option>
+                                    <option th:selected="${session.key}=='author'" value="author">根据作者查询</option>
+                                    <option th:selected="${session.key}=='isbn'" value="isbn">根据isbn查询</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="keyword"/>
+                                <input type="text" name="keyword" th:value="*{session.keyword}"/>
                             </td>
                             <td>
                                 <input type="submit" value="查询图书"/>

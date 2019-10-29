@@ -29,7 +29,6 @@ public class User implements Serializable {
     private String password;
 
     @Email
-    @NotEmpty(message = "Email shouldn't be empty!")
     @Column
     private String email;
 
@@ -37,6 +36,13 @@ public class User implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "role_name")
     private Role role;
+
+    public User() {}
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public Integer getId() {
         return id;

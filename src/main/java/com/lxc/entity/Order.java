@@ -35,6 +35,13 @@ public class Order implements Serializable {
     @Column
     private String status;
 
+    public Order() {}
+
+    public Order(String username, String phoneNumber) {
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Integer getId() {
         return id;
     }

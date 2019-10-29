@@ -47,6 +47,23 @@ public class Book implements Serializable {
     @Column(name = "book_status")
     private String status;
 
+    public Book() {}
+
+    public Book(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public Book(String bookName, Double price) {
+        this.bookName = bookName;
+        this.price = price;
+    }
+
+    public Book(String bookName, String author, String isbn) {
+        this.bookName = bookName;
+        this.author = author;
+        this.isbn = isbn;
+    }
+
     public Integer getId() {
         return id;
     }
