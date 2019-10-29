@@ -37,6 +37,7 @@ public class ShiroConfig {
         filterMap.put("/user/add", "authc,roles[ADMIN]");
         filterMap.put("/user/users", "authc,roles[ADMIN]");
         filterMap.put("/user/delete", "authc,roles[ADMIN]");
+        filterMap.put("/user/changeRole", "authc,roles[ADMIN]");
 
         filterMap.put("/**", "authc");
         shiroFilterFactoryBean.setUnauthorizedUrl("/user/403");

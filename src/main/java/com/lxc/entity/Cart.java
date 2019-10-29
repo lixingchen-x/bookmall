@@ -60,19 +60,20 @@ public class Cart implements Serializable {
 
     public void decreaseQuantity(Integer id) {
 
-        getByBookId(id).decreaseQuantity();
+        if (getByBookId(id) != null) {
+            getByBookId(id).decreaseQuantity();
+        }
     }
 
     public void increaseQuantity(Integer id) {
 
-        getByBookId(id).increaseQuantity();
+        if (getByBookId(id) != null) {
+            getByBookId(id).increaseQuantity();
+        }
     }
 
     public boolean contains(Integer id) {
 
-        if (getByBookId(id) == null) {
-            return false;
-        }
-        return true;
+        return getByBookId(id) != null;
     }
 }

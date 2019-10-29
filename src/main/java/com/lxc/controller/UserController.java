@@ -18,7 +18,7 @@ public class UserController {
     private UserServiceImpl userService;
 
     @RequestMapping("/403")
-    public String unauthorized(){
+    public String unauthorized() {
 
         return "403";
     }
@@ -81,10 +81,27 @@ public class UserController {
         return "redirect:/user/users";
     }
 
-    @RequestMapping("changeRole/{userId}")
-    public String changeRole(@PathVariable("userId") Integer id){
+    /**
+     * 升为管理员
+     * @param id
+     * @return
+     */
+    @RequestMapping("setAdmin/{userId}")
+    public String setAdmin(@PathVariable("userId") Integer id) {
 
-        userService.changeRole(id); //角色反转
+        userService.setAdmin(id);
+        return "redirect:/user/users";
+    }
+
+    /**
+     * 降为普通用户
+     * @param id
+     * @return
+     */
+    @RequestMapping("setCustomer/{userId}")
+    public String setCustomer(@PathVariable("userId") Integer id) {
+
+        userService.setCustomer(id);
         return "redirect:/user/users";
     }
 }

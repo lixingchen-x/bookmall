@@ -34,8 +34,8 @@
             </div>
             <div class="form-group">
             </div>
-            <div th:switch="${session.cart}">
-                <div th:case="null">
+            <div th:switch="${session.cart.cartItems.size()}">
+                <div th:case="0">
                     <span class="navbar-brand" style="font-size: 25px">购物车空空如也</span>
                 </div>
                 <div th:case="*">

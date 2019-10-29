@@ -41,7 +41,14 @@
                         <td th:text="${user.email}"></td>
                         <td th:text="${user.role.getName()}"></td>
                         <td>
-                            <a class="btn btn-sm btn-primary" th:href="@{/user/changeRole/}+${user.id}">更改角色</a>
+                            <div th:switch="${user.role.getName()}">
+                                <div th:case="'ADMIN'">
+                                    <a class="btn btn-sm btn-primary" th:href="@{/user/setCustomer/}+${user.id}">降为用户</a>
+                                </div>
+                                <div th:case="'CUSTOMER'">
+                                    <a class="btn btn-sm btn-primary" th:href="@{/user/setAdmin/}+${user.id}">升为管理</a>
+                                </div>
+                            </div>
                             <a class="btn btn-sm btn-primary" th:href="@{/user/delete/}+${user.id}">删除</a>
                         </td>
                     </tr>

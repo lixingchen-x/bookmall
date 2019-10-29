@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Controller
@@ -44,7 +45,7 @@ public class OrderController {
         order.setStatus("UNPAID");
         orderService.save(order);
         saveOrderItem((Cart)session.getAttribute("cart"), order.getId());
-        session.setAttribute("cart", null);
+        session.setAttribute("cart", new Cart((User) session.getAttribute("user"), new ArrayList<>()));
         return "index";
     }
 

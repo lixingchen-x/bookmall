@@ -1,5 +1,6 @@
 package com.lxc.controller;
 
+import com.lxc.entity.Cart;
 import com.lxc.entity.User;
 import com.lxc.service.impl.UserServiceImpl;
 import org.apache.shiro.SecurityUtils;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 @Controller
 public class LoginController {
@@ -43,7 +45,7 @@ public class LoginController {
             User completeUser = userService.findByUsername(user.getUsername());
             model.addAttribute("user", completeUser);
             request.getSession().setAttribute("user", completeUser);
-            request.getSession().setAttribute("cart", null); //初始化一个空购物车
+            request.getSession().setAttribute("cart", new Cart(completeUser, new ArrayList<>())); //初始化一个空购物车
             return "index";
         } catch (UnknownAccountException e) {
             model.addAttribute("msg", "账号错误");
