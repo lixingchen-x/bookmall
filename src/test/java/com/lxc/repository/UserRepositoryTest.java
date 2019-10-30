@@ -4,20 +4,27 @@ import com.lxc.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UserRepositoryTest extends BaseRepositoryTest {
-
-    User user = new User("abc", "123456");
+public class UserRepositoryTest extends Base {
 
     @Test
     public void findByUsername_happyPath() {
 
-        insertTestUser(user);
+        User user = insertTestUser("abc", null);
         User result = userRepository.findByUsername("abc");
         Assert.assertSame(user, result);
     }
 
-    private void insertTestUser(User user) {
+    @Test
+    public void findByUsername_shouldBeNull_ifUserDoesNotExist() {
 
+        insertTestUser("abc", null);
+        Assert.assertNull(userRepository.findByUsername("def"));
+    }
+
+    private User insertTestUser(String username, String password) {
+
+        User user = new User(username, password);
         userRepository.saveAndFlush(user);
+        return user;
     }
 }

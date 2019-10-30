@@ -9,8 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -28,40 +26,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAllByPage(int pageNum) {
-
-        Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
-        return orderRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Order> findByCreateDate(Date createDate) {
-
-        return orderRepository.findByCreateDate(createDate);
-    }
-
-    @Override
-    public List<Order> findByUsername(String username) {
-
-        return orderRepository.findByUsername(username);
-    }
-
-    @Override
-    public List<Order> findByPhoneNumber(String phoneNumber) {
-
-        return orderRepository.findByPhoneNumber(phoneNumber);
-    }
-
-    @Override
     public void save(Order order) {
 
         orderRepository.saveAndFlush(order);
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-
-        orderRepository.deleteById(id);
     }
 
     @Override

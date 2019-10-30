@@ -42,6 +42,10 @@ public class Order implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    public Order(String username) {
+        this.username = username;
+    }
+
     public Integer getId() {
         return id;
     }

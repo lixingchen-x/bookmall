@@ -1,7 +1,6 @@
 package com.lxc.entity;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class CartItemTest {
     public void getQuantity_happyPath() {
 
         cartItem.setQuantity(1);
-        assertTrue(cartItem.getQuantity() == 1);
+        assertEquals(1, (int) cartItem.getQuantity());
     }
 
     @Test
@@ -30,6 +29,6 @@ public class CartItemTest {
         Book book = new Book("a", 100.0);
         cartItem.setBook(book);
         cartItem.setQuantity(2);
-        assertTrue(cartItem.getSubTotal() == 200.0);
+        assertEquals(200.0, cartItem.getSubTotal(), 0.0);
     }
 }

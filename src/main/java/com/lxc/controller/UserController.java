@@ -89,7 +89,7 @@ public class UserController {
     @RequestMapping("setAdmin/{userId}")
     public String setAdmin(@PathVariable("userId") Integer id) {
 
-        userService.setAdmin(id);
+        userService.setRole(id, "ADMIN");
         return "redirect:/user/users";
     }
 
@@ -101,7 +101,7 @@ public class UserController {
     @RequestMapping("setCustomer/{userId}")
     public String setCustomer(@PathVariable("userId") Integer id) {
 
-        userService.setCustomer(id);
+        userService.setRole(id, "CUSTOMER");
         return "redirect:/user/users";
     }
 }

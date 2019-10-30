@@ -7,7 +7,6 @@ import java.util.Date;
 import com.lxc.testUtils.StringToDate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class BookTest {
 
@@ -60,7 +59,7 @@ public class BookTest {
     public void getStock_happyPath() {
 
         book.setStock(100);
-        assertTrue(book.getStock() == 100);
+        assertEquals(100, (int) book.getStock());
     }
 
     @Test
@@ -68,5 +67,32 @@ public class BookTest {
 
         book.setStatus("PAID");
         assertEquals("PAID", book.getStatus());
+    }
+
+    @Test
+    public void increaseStock_happyPath() {
+
+        Book book = new Book();
+        book.setStock(1);
+        book.increaseStock();
+        assertEquals(2, (int)book.getStock());
+    }
+
+    @Test
+    public void decreaseStock_happyPath() {
+
+        Book book = new Book();
+        book.setStock(1);
+        book.decreaseStock();
+        assertEquals(0, (int)book.getStock());
+    }
+
+    @Test
+    public void decreaseStock_shouldBeZero_ifStockIsZero() {
+
+        Book book = new Book();
+        book.setStock(0);
+        book.decreaseStock();
+        assertEquals(0, (int)book.getStock());
     }
 }

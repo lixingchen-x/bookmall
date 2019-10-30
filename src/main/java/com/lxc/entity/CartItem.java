@@ -14,6 +14,10 @@ public class CartItem implements Serializable {
     public CartItem() {
     }
 
+    public CartItem(Book book) {
+        this.book = book;
+    }
+
     public CartItem(Book book, Integer quantity) {
 
         this.book = book;

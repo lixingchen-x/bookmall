@@ -64,6 +64,13 @@ public class Book implements Serializable {
         this.isbn = isbn;
     }
 
+    public Book(String bookName, String author, String isbn, Integer stock) {
+        this.bookName = bookName;
+        this.author = author;
+        this.isbn = isbn;
+        this.stock = stock;
+    }
+
     public Integer getId() {
         return id;
     }

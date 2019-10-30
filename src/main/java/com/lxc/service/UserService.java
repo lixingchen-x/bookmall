@@ -17,7 +17,5 @@ public interface UserService {
 
     List<User> findAll();
 
-    void setAdmin(Integer id);
-
-    void setCustomer(Integer id);
+    void setRole(Integer id, String roleName);
 }

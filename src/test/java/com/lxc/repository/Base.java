@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Rollback
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public abstract class BaseRepositoryTest {
+public abstract class Base {
 
     @Autowired
     protected BookRepository bookRepository;

@@ -1,6 +1,7 @@
 package com.lxc.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,14 +10,12 @@ import java.util.List;
 public class Cart implements Serializable {
 
     private User user;
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
 
     public Cart() {}
 
-    public Cart(User user, List<CartItem> cartItems) {
-
+    public Cart(User user) {
         this.user = user;
-        this.cartItems = cartItems;
     }
 
     public User getUser() {
@@ -40,11 +39,8 @@ public class Cart implements Serializable {
         return cartItems.stream().mapToDouble(CartItem :: getSubTotal).sum();
     }
 
-    public void add(CartItem item) {
-        cartItems.add(item);
-    }
-
     public void resetCart() {
+
         cartItems.removeAll(cartItems);
     }
 
@@ -57,20 +53,24 @@ public class Cart implements Serializable {
     public void removeCartItem(Integer id) {
 
         CartItem cartItem = getByBookId(id);
-        cartItems.remove(cartItem);
+        if(cartItem != null) {
+            cartItems.remove(cartItem);
+        }
     }
 
     public void decreaseQuantity(Integer id) {
 
-        if (getByBookId(id) != null) {
-            getByBookId(id).decreaseQuantity();
+        CartItem cartItem = getByBookId(id);
+        if (cartItem != null) {
+            cartItem.decreaseQuantity();
         }
     }
 
     public void increaseQuantity(Integer id) {
 
-        if (getByBookId(id) != null) {
-            getByBookId(id).increaseQuantity();
+        CartItem cartItem = getByBookId(id);
+        if (cartItem != null) {
+            cartItem.increaseQuantity();
         }
     }
 

@@ -39,30 +39,12 @@ public class ShoppingController {
 
         model.addAttribute("page", page);
         Cart cart = (Cart)session.getAttribute("cart");
-        // 购物车中没有任何书
-        if (cart == null) {
-            return addToEmptyCart(bookService.findById(id), session);
-        }
         //购物车中已有此书
         if (cart.contains(id)) {
             return addOneToThisBook(id, session, cart);
         }
         //购物车中有其他的书,暂无此书
         return addFirstOneToCart(bookService.findById(id), session, cart);
-    }
-
-    /**
-     * 添加书籍进购物车的三种情况
-     * 第一种，购物车为空
-     */
-    private String addToEmptyCart(Book book, HttpSession session) {
-
-        List<CartItem> cartItems = new ArrayList<>();
-        cartItems.add(new CartItem(book, 1));
-        decreaseStock(book);
-        Cart cart = new Cart((User)session.getAttribute("user"), cartItems);
-        session.setAttribute("cart", cart);
-        return "forward:/book/find";
     }
 
     /**

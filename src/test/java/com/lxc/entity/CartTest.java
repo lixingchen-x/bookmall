@@ -9,50 +9,118 @@ import static org.junit.Assert.*;
 
 public class CartTest {
 
-    private static List<CartItem> cartItems;
-    private static Cart cart = new Cart();
-
-    static  {
-        cartItems = new ArrayList<>();
-        CartItem cartItem1 = new CartItem(new Book("a", 100.0), 1);
-        CartItem cartItem2 = new CartItem(new Book("b", 100.0), 1);
-        cartItems.add(cartItem1);
-        cartItems.add(cartItem2);
-        cart.setCartItems(cartItems);
-    }
-
-    @Test
-    public void getUser_happyPath() {
-
-        User user = new User("abc", "123456");
-        cart.setUser(user);
-        assertSame(user, cart.getUser());
-    }
-
-    @Test
-    public void getCartItems_happyPath() {
-
-        assertSame(cartItems, cart.getCartItems());
-    }
+    private Cart cart;
 
     @Test
     public void getTotalPrice_happyPath() {
 
-        assertEquals(200.0, cart.getTotalPrice(), 0.0);
+        cart = new Cart();
+        cart.setCartItems(List.of(new CartItem(new Book(null, 100.0), 1)));
+        assertEquals(100.0, cart.getTotalPrice(), 0.0);
     }
 
     @Test
-    public void add_happyPath() {
+    public void getTotalPrice_shouldBeZero_ifCartItemsIsEmpty() {
 
-        CartItem cartItem = new CartItem(new Book("c", 100.0), 1);
-        cart.add(cartItem);
-        assertTrue(cart.getCartItems().contains(cartItem));
+        cart = new Cart();
+        assertEquals(0.0, cart.getTotalPrice(), 0.0);
+    }
+
+    @Test
+    public void getTotalPrice_shouldBeCorrect_ifCartItemsSizeIsBiggerThanOne() {
+
+        cart = new Cart();
+        cart.setCartItems(List.of(new CartItem(new Book(null, 100.0), 1),
+                new CartItem(new Book(null, 100.0), 1)));
+        assertEquals(100.0 + 100.0, cart.getTotalPrice(), 0.0);
     }
 
     @Test
     public void resetCart_happyPath() {
 
+        cart = new Cart();
+        cart.setCartItems(List.of(new CartItem()));
+        cart.setCartItems(new ArrayList<>(cart.getCartItems())); //由Arrays的内部类ArrayList转为java.util.ArrayList
         cart.resetCart();
-        assertTrue(cart.getCartItems().size() == 0);
+        assertEquals(0, cart.getCartItems().size());
     }
+
+    @Test
+    public void getByBookId_happyPath() {
+
+        cart = createCartWithBookID(1);
+        assertEquals(1, (int)cart.getByBookId(1).getBook().getId());
+    }
+
+    @Test
+    public void getByBookId_shouldBeNull_ifBookIdDoesNotExist() {
+
+        cart = createCartWithBookID(1);
+        assertNull(cart.getByBookId(2));
+    }
+
+    @Test
+    public void getByBookId_shouldBeNull_ifCartItemsIsEmpty() {
+
+        cart = new Cart();
+        assertNull(cart.getByBookId(1));
+    }
+
+    @Test
+    public void removeCartItem_happyPath() {
+
+        cart = createCartWithBookID(1);
+        cart.setCartItems(new ArrayList<>(cart.getCartItems()));
+        cart.removeCartItem(1);
+        assertNull(cart.getByBookId(1));
+    }
+
+    @Test
+    public void decreaseQuantity_happyPath() {
+
+        cart = createCartWithBookIDAndQuantityOne(1, 1);
+        cart.decreaseQuantity(1);
+        assertEquals(0, (int)cart.getByBookId(1).getQuantity());
+    }
+
+    @Test
+    public void increaseQuantity_happyPath() {
+
+        cart = createCartWithBookIDAndQuantityOne(1, 1);
+        cart.increaseQuantity(1);
+        assertEquals(2, (int)cart.getByBookId(1).getQuantity());
+    }
+
+    @Test
+    public void contains_happyPath() {
+
+        cart = createCartWithBookID(1);
+        assertTrue(cart.contains(1));
+    }
+
+    @Test
+    public void contains_shouldBeFalse_ifBookIdDoesNotExist() {
+
+        cart = createCartWithBookID(1);
+        assertFalse(cart.contains(2));
+    }
+
+    private Cart createCartWithBookID(Integer id) {
+
+        cart = new Cart();
+        Book book = new Book();
+        book.setId(id);
+        cart.setCartItems(List.of(new CartItem(book)));
+        return cart;
+    }
+
+    private Cart createCartWithBookIDAndQuantityOne(Integer id, Integer quantity) {
+
+        cart = new Cart();
+        Book book = new Book();
+        book.setId(id);
+        cart.setCartItems(List.of(new CartItem(book, quantity)));
+        return cart;
+    }
+
 }

@@ -55,21 +55,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setAdmin(Integer id) {
-
-        changeRole(id, "ADMIN");
-    }
-
-    @Override
-    public void setCustomer(Integer id) {
-
-        changeRole(id, "CUSTOMER");
-    }
-
-    private void changeRole(Integer id, String role) {
+    public void setRole(Integer id, String roleName) {
 
         User user = userRepository.getOne(id);
-        user.setRole(new Role(role));
+        user.setRole(new Role(roleName));
         userRepository.saveAndFlush(user);
     }
 }
