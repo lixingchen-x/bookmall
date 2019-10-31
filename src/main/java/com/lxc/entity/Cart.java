@@ -78,4 +78,14 @@ public class Cart implements Serializable {
 
         return getByBookId(id) != null;
     }
+
+    public void addCartItem(CartItem cartItem) {
+
+        CartItem item = this.getByBookId(cartItem.getBook().getId());
+        if(item != null) {
+            item.setQuantity(item.getQuantity() + cartItem.getQuantity());
+            return;
+        }
+        cartItems.add(cartItem);
+    }
 }

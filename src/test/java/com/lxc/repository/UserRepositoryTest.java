@@ -4,12 +4,12 @@ import com.lxc.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UserRepositoryTest extends Base {
+public class UserRepositoryTest extends BaseRepositoryTes {
 
     @Test
     public void findByUsername_happyPath() {
 
-        User user = insertTestUser("abc", null);
+        User user = insertTestUser("abc");
         User result = userRepository.findByUsername("abc");
         Assert.assertSame(user, result);
     }
@@ -17,13 +17,14 @@ public class UserRepositoryTest extends Base {
     @Test
     public void findByUsername_shouldBeNull_ifUserDoesNotExist() {
 
-        insertTestUser("abc", null);
+        insertTestUser("abc");
         Assert.assertNull(userRepository.findByUsername("def"));
     }
 
-    private User insertTestUser(String username, String password) {
+    private User insertTestUser(String username) {
 
-        User user = new User(username, password);
+        User user = new User();
+        user.setUsername(username);
         userRepository.saveAndFlush(user);
         return user;
     }

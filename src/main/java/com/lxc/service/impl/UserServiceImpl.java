@@ -55,10 +55,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setRole(Integer id, String roleName) {
+    public void setAdmin(Integer id) {
 
         User user = userRepository.getOne(id);
-        user.setRole(new Role(roleName));
+        user.setRole(Role.admin);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void setCustomer(Integer id) {
+
+        User user = userRepository.getOne(id);
+        user.setRole(Role.customer);
         userRepository.saveAndFlush(user);
     }
 }

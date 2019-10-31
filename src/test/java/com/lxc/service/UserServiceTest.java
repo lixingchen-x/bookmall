@@ -8,8 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -43,14 +48,14 @@ public class UserServiceTest {
         User expected = new User();
         when(userRepository.getOne(1)).thenReturn(expected);
         User actual = userService.findById(1);
-        assertSame(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     @Test
-    public void findById_shouldBeNull_ifUserIdDoseNotExist() {
+    public void findById_shouldBeNull_ifUserIdDoesNotExist() {
 
         when(userRepository.getOne(1)).thenReturn(null);
-        assertNull(userService.findById(1));
+        assertThat(userService.findById(1), is(nullValue()));
     }
 
     @Test
@@ -64,30 +69,42 @@ public class UserServiceTest {
     @Test
     public void findByUsername_happyPath() {
 
-        userService.findByUsername("abc");
-        verify(userRepository).findByUsername("abc");
+        User user = new User();
+        user.setUsername("abc");
+        when(userRepository.findByUsername("abc")).thenReturn(user);
+        assertThat(userService.findByUsername("abc"), is(user));
     }
 
     @Test
-    public void findByUsername_shouldBeNull_ifUsernameDoseNotExist() {
+    public void findByUsername_shouldBeNull_ifUsernameDoesNotExist() {
 
         when(userRepository.findByUsername("abc")).thenReturn(null);
-        assertNull(userService.findByUsername("abc"));
+        assertThat(userService.findByUsername("abc"), is(nullValue()));
     }
 
     @Test
     public void findAll_happyPath() {
 
-        userService.findAll();
-        verify(userRepository).findAll();
+        List<User> users = new ArrayList<>();
+        when(userRepository.findAll()).thenReturn(users);
+        assertThat(userService.findAll(), is(users));
     }
 
     @Test
-    public void setRole_happyPath() {
+    public void setAdmin_happyPath() {
 
         User user = new User();
         when(userRepository.getOne(1)).thenReturn(user);
-        userService.setRole(1, "anyRole");
-        assertEquals("anyRole", userRepository.getOne(1).getRole().getName());
+        userService.setAdmin(1);
+        assertThat(userRepository.getOne(1).getRole().getName(), equalTo("ADMIN"));
+    }
+
+    @Test
+    public void setCustomer_happyPath() {
+
+        User user = new User();
+        when(userRepository.getOne(1)).thenReturn(user);
+        userService.setCustomer(1);
+        assertThat(userRepository.getOne(1).getRole().getName(), equalTo("CUSTOMER"));
     }
 }

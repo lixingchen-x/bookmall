@@ -10,6 +10,10 @@ import java.io.Serializable;
 @Table(name = "role")
 public class Role implements Serializable {
 
+    public static Role admin = new Role("ADMIN");
+
+    public static Role customer = new Role("CUSTOMER");
+
     @Id
     @Column(name = "role_name")
     private String name;

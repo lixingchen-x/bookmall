@@ -8,11 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,15 +35,16 @@ public class OrderServiceTest {
     @Test
     public void findByUsername_happyPath() {
 
-        orderService.findByUsername("abc", PAGE_NUM);
-        verify(orderRepository).findByUsername("abc", pageable);
+        Page mockedPage = mock(Page.class);
+        when(orderRepository.findByUsername("abc", pageable)).thenReturn(mockedPage);
+        assertThat(orderService.findByUsername("abc", PAGE_NUM), is(mockedPage));
     }
 
     @Test
-    public void findByUsername_shouldBeNull_ifUsernameDoseNotExist() {
+    public void findByUsername_shouldBeNull_ifUsernameDoesNotExist() {
 
         when(orderRepository.findByUsername("abc", pageable)).thenReturn(null);
-        assertNull(orderService.findByUsername("abc", PAGE_NUM));
+        assertThat(orderService.findByUsername("abc", PAGE_NUM), is(nullValue()));
     }
 
     @Test
@@ -58,6 +61,6 @@ public class OrderServiceTest {
         Order order = new Order();
         when(orderRepository.getOne(1)).thenReturn(order);
         orderService.setStatus("anyStatus", 1);
-        assertEquals("anyStatus", orderRepository.getOne(1).getStatus());
+        assertThat(orderRepository.getOne(1).getStatus(), equalTo("anyStatus"));
     }
 }

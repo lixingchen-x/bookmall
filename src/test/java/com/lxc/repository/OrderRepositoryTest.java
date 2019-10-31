@@ -1,29 +1,29 @@
 package com.lxc.repository;
 
 import com.lxc.entity.Order;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
-public class OrderRepositoryTest extends Base {
+public class OrderRepositoryTest extends BaseRepositoryTes {
 
     @Test
     public void findByUsernamePageable_happyPath() {
 
         Order order = insertTestOrder("abc");
         Page<Order> result = orderRepository.findByUsername("abc", pageable);
-        Assert.assertThat(result.getContent(), contains(order));
-        Assert.assertEquals(1, result.getContent().size());
+        assertThat(result.getContent(), hasItem(order));
+        assertThat(result.getContent().size(), is(1));
     }
 
     @Test
-    public void findByUsernamePageable_shouldBeZeroResult_ifOrderDoseNotExist() {
+    public void findByUsernamePageable_shouldBeEmpty_ifOrderDoesNotExist() {
 
         insertTestOrder("abc");
         Page<Order> result = orderRepository.findByUsername("def", pageable);
-        Assert.assertEquals(0, result.getContent().size());
+        assertThat(result.getContent().size(), is(0));
     }
 
     private Order insertTestOrder(String username) {

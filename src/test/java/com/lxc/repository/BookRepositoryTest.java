@@ -1,67 +1,83 @@
 package com.lxc.repository;
 
 import com.lxc.entity.Book;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 
-public class BookRepositoryTest extends Base {
-
-    private Book book;
+public class BookRepositoryTest extends BaseRepositoryTes {
 
     @Test
     public void findByBookName_happyPath() {
 
-        insertTestBook("abc", null, null);
+        Book book = insertBookWithName("abc");
         Page<Book> page = bookRepository.findByBookName("abc", pageable);
-        Assert.assertThat(page.getContent(), contains(book));
+        assertThat(page.getContent(), hasItem(book));
     }
 
     @Test
-    public void findByBookName_shouldBeZeroResult_ifBookDoesNotExist() {
+    public void findByBookName_shouldBeEmpty_ifBookDoesNotExist() {
 
-        insertTestBook("abc", null, null);
+        insertBookWithName("abc");
         Page<Book> page = bookRepository.findByBookName("def", pageable);
-        Assert.assertEquals(0, page.getContent().size());
+        assertThat(page.getContent().size(), is(0));
     }
 
     @Test
     public void findByAuthor_happyPath() {
 
-        insertTestBook(null, "abc", null);
+        Book book = insertBookWithAuthor("abc");
         Page<Book> page = bookRepository.findByAuthor("abc", pageable);
-        Assert.assertThat(page.getContent(), contains(book));
+        assertThat(page.getContent(), hasItem(book));
     }
 
     @Test
-    public void findByAuthor_shouldBeZeroResult_ifBookDoesNotExist() {
+    public void findByAuthor_shouldBeEmpty_ifBookDoesNotExist() {
 
-        insertTestBook(null, "abc", null);
+        insertBookWithAuthor("abc");
         Page<Book> page = bookRepository.findByAuthor("def", pageable);
-        Assert.assertEquals(0, page.getContent().size());
+        assertThat(page.getContent().size(), is(0));
     }
 
     @Test
     public void findByIsbn_happyPath() {
 
-        insertTestBook(null, null, "123");
+        Book book = insertBookWithIsbn("123");
         Page<Book> page = bookRepository.findByIsbn("123", pageable);
-        Assert.assertThat(page.getContent(), contains(book));
+        assertThat(page.getContent(), hasItem(book));
     }
 
     @Test
-    public void findByIsbn_shouldBeZeroResult_ifBookDoesNotExist() {
+    public void findByIsbn_shouldBeEmpty_ifBookDoesNotExist() {
 
-        insertTestBook(null, null, "123");
+        insertBookWithIsbn("123");
         Page<Book> page = bookRepository.findByIsbn("321", pageable);
-        Assert.assertEquals(0, page.getContent().size());
+        assertThat(page.getContent().size(), is(0));
     }
 
-    private void insertTestBook(String bookName, String author, String isbn) {
+    private Book insertBookWithName(String bookName) {
 
-        book = new Book(bookName, author, isbn);
+        Book book = new Book();
+        book.setBookName(bookName);
         bookRepository.saveAndFlush(book);
+        return book;
+    }
+
+    private Book insertBookWithAuthor(String author) {
+
+        Book book = new Book();
+        book.setAuthor(author);
+        bookRepository.saveAndFlush(book);
+        return book;
+    }
+
+    private Book insertBookWithIsbn(String isbn) {
+
+        Book book = new Book();
+        book.setIsbn(isbn);
+        bookRepository.saveAndFlush(book);
+        return book;
     }
 }
