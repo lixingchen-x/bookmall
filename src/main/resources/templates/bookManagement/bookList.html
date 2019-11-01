@@ -95,8 +95,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div th:case="*" th:if="${book.status} eq 'AVAILABLE'">
-                                        <a class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page})}">添加到购物车</a>
+                                    <div th:case="*">
+                                        <a th:if="${book.status} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page})}">添加到购物车</a>
+                                        <span th:if="${book.status} eq 'WITHDRAW'">已下架</span>
                                     </div>
                                 </div>
                             </td>

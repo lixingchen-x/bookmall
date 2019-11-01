@@ -49,8 +49,8 @@ public class BookServiceTest {
 
     @Test
     public void update_happyPath() {
-        Book oldBook = new Book();
-        Book newBook = new Book();
+        Book oldBook = Book.builder().build();
+        Book newBook = Book.builder().build();
         when(bookRepository.getOne(oldBook.getId())).thenReturn(newBook);
         bookService.update(oldBook);
         verify(bookRepository).saveAndFlush(newBook);
@@ -111,7 +111,7 @@ public class BookServiceTest {
     @Test
     public void setStatus_happyPath() {
 
-        Book actual = new Book();
+        Book actual = Book.builder().build();
         when(bookRepository.getOne(1)).thenReturn(actual);
         bookService.setStatus("AVAILABLE", 1);
         verify(bookRepository).saveAndFlush(actual);
@@ -121,7 +121,7 @@ public class BookServiceTest {
     @Test
     public void findById_happyPath() {
 
-        Book expected = new Book();
+        Book expected = Book.builder().build();
         when(bookRepository.getOne(1)).thenReturn(expected);
         Book actual = bookService.findById(1);
         assertThat(actual, is(expected));
@@ -137,7 +137,7 @@ public class BookServiceTest {
     @Test
     public void save_happyPath() {
 
-        Book book = new Book();
+        Book book = Book.builder().build();
         bookService.save(book);
         verify(bookRepository).saveAndFlush(book);
     }
@@ -174,9 +174,7 @@ public class BookServiceTest {
 
     private Book createBook(Integer bookId, Integer stock) {
 
-        Book book = new Book();
-        book.setId(bookId);
-        book.setStock(stock);
+        Book book = Book.builder().id(bookId).stock(stock).build();
         return book;
     }
 }

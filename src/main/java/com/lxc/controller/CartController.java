@@ -36,7 +36,7 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         cart.increaseQuantity(id);
-        decreaseStock(id);
+        bookService.decreaseStock(id);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
     }
@@ -52,7 +52,7 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         cart.decreaseQuantity(id);
-        increaseStock(id);
+        bookService.increaseStock(id);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
     }
@@ -97,23 +97,5 @@ public class CartController {
         session.setAttribute("key", null);
         session.setAttribute("keyword", null);
         return "redirect:/book/books";
-    }
-
-    /**
-     * 在数据库减库存
-     * @param id
-     */
-    private void decreaseStock(Integer id) {
-
-        bookService.decreaseStock(id);
-    }
-
-    /**
-     * 在数据库加库存
-     * @param id
-     */
-    private void increaseStock(Integer id) {
-
-        bookService.increaseStock(id);
     }
 }

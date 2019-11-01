@@ -59,24 +59,21 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
     private Book insertBookWithName(String bookName) {
 
-        Book book = new Book();
-        book.setBookName(bookName);
+        Book book = Book.builder().bookName(bookName).build();
         bookRepository.saveAndFlush(book);
         return book;
     }
 
     private Book insertBookWithAuthor(String author) {
 
-        Book book = new Book();
-        book.setAuthor(author);
+        Book book = Book.builder().author(author).build();
         bookRepository.saveAndFlush(book);
         return book;
     }
 
     private Book insertBookWithIsbn(String isbn) {
 
-        Book book = new Book();
-        book.setIsbn(isbn);
+        Book book = Book.builder().isbn(isbn).build();
         bookRepository.saveAndFlush(book);
         return book;
     }

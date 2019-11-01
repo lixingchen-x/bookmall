@@ -14,17 +14,15 @@ public class BookTest {
     @Test
     public void getPublishDate_happyPath() throws ParseException {
 
-        Book book = new Book();
         Date date = StringToDate.stringToDate("2019-10-29");
-        book.setPublishDate(date);
+        Book book = Book.builder().publishDate(date).build();
         assertThat(book.getPublishDate(), is(date));
     }
 
     @Test
     public void increaseStock_happyPath() {
 
-        Book book = new Book();
-        book.setStock(1);
+        Book book = Book.builder().stock(1).build();
         book.increaseStock();
         assertThat(book.getStock(), is(2));
     }
@@ -32,8 +30,7 @@ public class BookTest {
     @Test
     public void decreaseStock_happyPath() {
 
-        Book book = new Book();
-        book.setStock(1);
+        Book book = Book.builder().stock(1).build();
         book.decreaseStock();
         assertThat(book.getStock(), is(0));
     }
@@ -41,8 +38,7 @@ public class BookTest {
     @Test
     public void decreaseStock_shouldBeZero_ifStockIsZero() {
 
-        Book book = new Book();
-        book.setStock(0);
+        Book book = Book.builder().stock(0).build();
         book.decreaseStock();
         assertThat(book.getStock(), is(0));
     }

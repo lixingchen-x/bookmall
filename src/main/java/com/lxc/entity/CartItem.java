@@ -1,11 +1,14 @@
 package com.lxc.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
  * 购物车里物品的实体类
  * 对书的数量、用户id等属性进行封装
  */
+@Data
 public class CartItem implements Serializable {
 
     private Book book;
@@ -22,22 +25,6 @@ public class CartItem implements Serializable {
 
         this.book = book;
         this.quantity = quantity;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
     }
 
     void increaseQuantity() {

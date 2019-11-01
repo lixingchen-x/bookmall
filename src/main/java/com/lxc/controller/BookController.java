@@ -138,6 +138,8 @@ public class BookController {
             keyword = session.getAttribute("keyword").toString();
         }
         if ("all".equals(key)) {
+            session.setAttribute("key", null);
+            session.setAttribute("keyword", null);
             return "forward:/book/books";
         }
         model.addAttribute("bookPage", bookService.findByCondition(key, keyword, page));

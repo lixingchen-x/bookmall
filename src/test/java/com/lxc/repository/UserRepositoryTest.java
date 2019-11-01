@@ -23,8 +23,7 @@ public class UserRepositoryTest extends BaseRepositoryTes {
 
     private User insertTestUser(String username) {
 
-        User user = new User();
-        user.setUsername(username);
+        User user = User.builder().username(username).build();
         userRepository.saveAndFlush(user);
         return user;
     }

@@ -175,16 +175,13 @@ public class CartTest {
 
     private Book createBook(Integer id) {
 
-        Book book = new Book();
-        book.setId(id);
+        Book book = Book.builder().id(id).build();
         return book;
     }
 
     private Book createBook(Integer id, Double price) {
 
-        Book book = new Book();
-        book.setId(id);
-        book.setPrice(price);
+        Book book = Book.builder().id(id).price(price).build();
         return book;
     }
 }

@@ -1,5 +1,7 @@
 package com.lxc.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,6 +10,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "role")
+@Data
 public class Role implements Serializable {
 
     public static Role admin = new Role("ADMIN");
@@ -18,17 +21,10 @@ public class Role implements Serializable {
     @Column(name = "role_name")
     private String name;
 
-    public Role() {}
+    public Role() {
+    }
 
     public Role(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

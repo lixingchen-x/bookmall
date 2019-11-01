@@ -1,11 +1,14 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "order_item")
+@Data
 public class OrderItem implements Serializable {
 
     @Id
@@ -15,50 +18,11 @@ public class OrderItem implements Serializable {
     @Column(name = "order_id")
     private Integer orderId;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @Column(name = "book_id")
+    private Integer bookId;
 
     @Column
     private Integer quantity;
 
     public OrderItem() {}
-
-    public OrderItem(Book book, Integer quantity) {
-        this.book = book;
-        this.quantity = quantity;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
 }

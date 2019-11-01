@@ -28,8 +28,8 @@ public class UserServiceTest {
     @Test
     public void update_happyPath() {
 
-        User newUser = new User();
-        User oldUser = new User();
+        User newUser = User.builder().build();
+        User oldUser = User.builder().build();
         when(userRepository.getOne(newUser.getId())).thenReturn(oldUser);
         userService.update(newUser);
         verify(userRepository).saveAndFlush(oldUser);
@@ -45,7 +45,7 @@ public class UserServiceTest {
     @Test
     public void findById_happyPath() {
 
-        User expected = new User();
+        User expected = User.builder().build();
         when(userRepository.getOne(1)).thenReturn(expected);
         User actual = userService.findById(1);
         assertThat(actual, is(expected));
@@ -61,7 +61,7 @@ public class UserServiceTest {
     @Test
     public void save_happyPath() {
 
-        User user = new User();
+        User user = User.builder().build();
         userService.save(user);
         verify(userRepository).saveAndFlush(user);
     }
@@ -69,8 +69,7 @@ public class UserServiceTest {
     @Test
     public void findByUsername_happyPath() {
 
-        User user = new User();
-        user.setUsername("abc");
+        User user = User.builder().username("abc").build();
         when(userRepository.findByUsername("abc")).thenReturn(user);
         assertThat(userService.findByUsername("abc"), is(user));
     }
@@ -93,7 +92,7 @@ public class UserServiceTest {
     @Test
     public void setAdmin_happyPath() {
 
-        User user = new User();
+        User user = User.builder().build();
         when(userRepository.getOne(1)).thenReturn(user);
         userService.setAdmin(1);
         assertThat(userRepository.getOne(1).getRole().getName(), equalTo("ADMIN"));
@@ -102,7 +101,7 @@ public class UserServiceTest {
     @Test
     public void setCustomer_happyPath() {
 
-        User user = new User();
+        User user = User.builder().build();
         when(userRepository.getOne(1)).thenReturn(user);
         userService.setCustomer(1);
         assertThat(userRepository.getOne(1).getRole().getName(), equalTo("CUSTOMER"));

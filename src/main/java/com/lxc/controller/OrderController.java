@@ -89,7 +89,7 @@ public class OrderController {
 
         OrderItem orderItem = new OrderItem();
         orderItem.setOrderId(id);
-        orderItem.setBook(cartItem.getBook());
+        orderItem.setBookId(cartItem.getBook().getId());
         orderItem.setQuantity(cartItem.getQuantity());
         orderItemService.save(orderItem);
     }
