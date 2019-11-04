@@ -1,7 +1,6 @@
 package com.lxc.repository;
 
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,19 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Rollback
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public abstract class BaseRepositoryTes {
-
-    @Autowired
-    protected BookRepository bookRepository;
-
-    @Autowired
-    protected OrderItemRepository orderItemRepository;
-
-    @Autowired
-    protected OrderRepository orderRepository;
-
-    @Autowired
-    protected UserRepository userRepository;
+public abstract class BaseRepositoryTest {
 
     private final int PAGE_SIZE = 10;
 

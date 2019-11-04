@@ -3,8 +3,12 @@ package com.lxc.repository;
 import com.lxc.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class UserRepositoryTest extends BaseRepositoryTes {
+public class UserRepositoryTest extends BaseRepositoryTest {
+
+    @Autowired
+    protected UserRepository userRepository;
 
     @Test
     public void findByUsername_happyPath() {

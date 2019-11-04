@@ -11,6 +11,7 @@ import static org.junit.Assert.assertFalse;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 public class CartTest {
 
@@ -18,7 +19,7 @@ public class CartTest {
     public void getTotalPrice_happyPath() {
 
         Cart cart = new Cart();
-        cart.addCartItem(new CartItem(createBook(1,100.0), 1));
+        cart.addCartItem(createCartItem(1, 100.0, 1));
         assertThat(cart.getTotalPrice(), is(100.0));
     }
 
@@ -33,18 +34,17 @@ public class CartTest {
     public void getTotalPrice_shouldBeCorrect_ifCartItemsSizeIsBiggerThanOne() {
 
         Cart cart = new Cart();
-        cart.addCartItem(new CartItem(createBook(1,100.0), 1));
-        cart.addCartItem(new CartItem(createBook(2,100.0), 1));
+        cart.addCartItem(createCartItem(1, 100.0, 1));
+        cart.addCartItem(createCartItem(2, 100.0, 1));
         assertThat(cart.getTotalPrice(), is(100.0 + 100.0));
     }
 
     @Test
     public void resetCart_happyPath() {
 
-        Cart cart = new Cart();
-        cart.addCartItem(new CartItem(createBook(1)));
+        Cart cart = createCart(1);
         cart.resetCart();
-        assertThat(cart.getCartItems().size(), is(0));
+        assertThat(cart.getCartItems()).isEmpty();
     }
 
     @Test
@@ -77,10 +77,10 @@ public class CartTest {
     }
 
     @Test
-    public void removeCartItem_shouldDoNothing_ifCartItemsNull() {
+    public void removeCartItem_shouldDoNothing_ifCartItemDoesNotExist() {
 
         Cart cart = new Cart();
-        CartItem cartItem = new CartItem(createBook(1));
+        CartItem cartItem = createCartItem(1);
         List mockedList = mock(ArrayList.class);
         cart.setCartItems(mockedList);
         cart.removeCartItem(1);
@@ -98,11 +98,9 @@ public class CartTest {
     @Test
     public void decreaseQuantity_shouldDoNothing_ifIdDoesNotExist() {
 
-        Cart cart = new Cart();
-        CartItem cartItem = mock(CartItem.class);
-        cartItem.setBook(createBook(1));
-        cart.decreaseQuantity(1);
-        verify(cartItem, never()).decreaseQuantity();
+        Cart cart = createCart(1, 1);
+        cart.decreaseQuantity(2);
+        assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
 
     @Test
@@ -116,11 +114,9 @@ public class CartTest {
     @Test
     public void increaseQuantity_shouldDoNothing_ifIdDoesNotExist() {
 
-        Cart cart = new Cart();
-        CartItem cartItem = mock(CartItem.class);
-        cartItem.setBook(createBook(1));
-        cart.increaseQuantity(1);
-        verify(cartItem, never()).increaseQuantity();
+        Cart cart = createCart(1, 1);
+        cart.increaseQuantity(2);
+        assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
 
     @Test
@@ -141,9 +137,8 @@ public class CartTest {
     public void addCartItem_CartItemsSizeDoNotChange_ifBookExists() {
 
         Cart cart = createCart(1, 1);
-        Book book = createBook(1);
-        cart.addCartItem(new CartItem(book, 1));
-        assertThat(cart.getCartItems().size(), is(1));
+        cart.addCartItem(createCartItem(1, 1));
+        assertThat(cart.getCartItems()).hasSize(1);
         assertThat(cart.getByBookId(1).getQuantity(), is(2));
     }
 
@@ -151,37 +146,40 @@ public class CartTest {
     public void addCartItem_CartItemsSizeChange_ifBookDoesNotExist() {
 
         Cart cart = createCart(1, 1);
-        Book book = createBook(2);
-        cart.addCartItem(new CartItem(book, 1));
-        assertThat(cart.getCartItems().size(), is(2));
+        cart.addCartItem(createCartItem(2, 1));
+        assertThat(cart.getCartItems()).hasSize(2);
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
 
     private Cart createCart(Integer id) {
 
         Cart cart = new Cart();
-        Book book = createBook(id);
-        cart.addCartItem(new CartItem(book));
+        cart.addCartItem(createCartItem(id));
         return cart;
     }
 
     private Cart createCart(Integer id, Integer quantity) {
 
         Cart cart = new Cart();
-        Book book = createBook(id);
-        cart.addCartItem(new CartItem(book, quantity));
+        cart.addCartItem(createCartItem(id, quantity));
         return cart;
     }
 
-    private Book createBook(Integer id) {
-
-        Book book = Book.builder().id(id).build();
-        return book;
-    }
-
-    private Book createBook(Integer id, Double price) {
+    private CartItem createCartItem(Integer id, Double price, Integer quantity) {
 
         Book book = Book.builder().id(id).price(price).build();
-        return book;
+        return CartItem.builder().book(book).quantity(quantity).build();
+    }
+
+    private CartItem createCartItem(Integer id, Integer quantity) {
+
+        Book book = Book.builder().id(id).build();
+        return CartItem.builder().book(book).quantity(quantity).build();
+    }
+
+    private CartItem createCartItem(Integer id) {
+
+        Book book = Book.builder().id(id).build();
+        return CartItem.builder().book(book).build();
     }
 }

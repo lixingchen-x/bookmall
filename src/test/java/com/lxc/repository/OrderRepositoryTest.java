@@ -2,20 +2,22 @@ package com.lxc.repository;
 
 import com.lxc.entity.Order;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.*;
 
-public class OrderRepositoryTest extends BaseRepositoryTes {
+public class OrderRepositoryTest extends BaseRepositoryTest {
+
+    @Autowired
+    protected OrderRepository orderRepository;
 
     @Test
     public void findByUsernamePageable_happyPath() {
 
         Order order = insertTestOrder("abc");
         Page<Order> result = orderRepository.findByUsername("abc", pageable);
-        assertThat(result.getContent(), hasItem(order));
-        assertThat(result.getContent().size(), is(1));
+        assertThat(result.getContent()).hasSize(1).contains(order);
     }
 
     @Test
@@ -23,7 +25,7 @@ public class OrderRepositoryTest extends BaseRepositoryTes {
 
         insertTestOrder("abc");
         Page<Order> result = orderRepository.findByUsername("def", pageable);
-        assertThat(result.getContent().size(), is(0));
+        assertThat(result.getContent()).isEmpty();
     }
 
     private Order insertTestOrder(String username) {

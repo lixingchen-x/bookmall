@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.Date;
-import com.lxc.testUtils.StringToDate;
+import com.lxc.testUtils.DateUtils;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -14,7 +14,7 @@ public class BookTest {
     @Test
     public void getPublishDate_happyPath() throws ParseException {
 
-        Date date = StringToDate.stringToDate("2019-10-29");
+        Date date = DateUtils.DateConvertor("2019-10-29");
         Book book = Book.builder().publishDate(date).build();
         assertThat(book.getPublishDate(), is(date));
     }

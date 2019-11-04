@@ -1,6 +1,9 @@
 package com.lxc.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -9,23 +12,13 @@ import java.io.Serializable;
  * 对书的数量、用户id等属性进行封装
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartItem implements Serializable {
 
     private Book book;
     private Integer quantity;
-
-    public CartItem() {
-    }
-
-    public CartItem(Book book) {
-        this.book = book;
-    }
-
-    public CartItem(Book book, Integer quantity) {
-
-        this.book = book;
-        this.quantity = quantity;
-    }
 
     void increaseQuantity() {
 

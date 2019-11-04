@@ -40,7 +40,7 @@ public class Cart implements Serializable {
     public void removeCartItem(Integer id) {
 
         CartItem cartItem = getByBookId(id);
-        if(cartItem != null) {
+        if (cartItem != null) {
             cartItems.remove(cartItem);
         }
     }
@@ -69,7 +69,7 @@ public class Cart implements Serializable {
     public void addCartItem(CartItem cartItem) {
 
         CartItem item = this.getByBookId(cartItem.getBook().getId());
-        if(item != null) {
+        if (item != null) {
             item.setQuantity(item.getQuantity() + cartItem.getQuantity());
             return;
         }

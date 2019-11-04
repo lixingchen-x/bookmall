@@ -39,15 +39,15 @@ public class ShoppingController {
 
         model.addAttribute("page", page);
         Cart cart = (Cart)session.getAttribute("cart");
-        cart.addCartItem(createCartItem(id));
+        cart.addCartItem(createCartItem(id, 1));
         bookService.decreaseStock(id);
         session.setAttribute("cart", cart);
         return "forward:/book/find";
     }
 
-    private CartItem createCartItem(Integer id) {
+    private CartItem createCartItem(Integer id, Integer quantity) {
 
         Book book = bookService.findById(id);
-        return new CartItem(book, 1);
+        return CartItem.builder().book(book).quantity(quantity).build();
     }
 }

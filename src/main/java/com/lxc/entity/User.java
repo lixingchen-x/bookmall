@@ -43,4 +43,14 @@ public class User implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "role_name")
     private Role role;
+
+    public void setAdmin() {
+
+        this.role = new Role(Role.ADMIN_ROLE_CODE);
+    }
+
+    public void setCustomer() {
+
+        this.role = new Role(Role.CUSTOMER_ROLE_CODE);
+    }
 }

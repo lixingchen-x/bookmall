@@ -28,8 +28,8 @@ public class UserServiceTest {
     @Test
     public void update_happyPath() {
 
-        User newUser = User.builder().build();
-        User oldUser = User.builder().build();
+        User newUser = new User();
+        User oldUser = new User();
         when(userRepository.getOne(newUser.getId())).thenReturn(oldUser);
         userService.update(newUser);
         verify(userRepository).saveAndFlush(oldUser);
@@ -45,7 +45,7 @@ public class UserServiceTest {
     @Test
     public void findById_happyPath() {
 
-        User expected = User.builder().build();
+        User expected = new User();
         when(userRepository.getOne(1)).thenReturn(expected);
         User actual = userService.findById(1);
         assertThat(actual, is(expected));
@@ -61,7 +61,7 @@ public class UserServiceTest {
     @Test
     public void save_happyPath() {
 
-        User user = User.builder().build();
+        User user = new User();
         userService.save(user);
         verify(userRepository).saveAndFlush(user);
     }
@@ -92,7 +92,7 @@ public class UserServiceTest {
     @Test
     public void setAdmin_happyPath() {
 
-        User user = User.builder().build();
+        User user = new User();
         when(userRepository.getOne(1)).thenReturn(user);
         userService.setAdmin(1);
         assertThat(userRepository.getOne(1).getRole().getName(), equalTo("ADMIN"));
@@ -101,7 +101,7 @@ public class UserServiceTest {
     @Test
     public void setCustomer_happyPath() {
 
-        User user = User.builder().build();
+        User user = new User();
         when(userRepository.getOne(1)).thenReturn(user);
         userService.setCustomer(1);
         assertThat(userRepository.getOne(1).getRole().getName(), equalTo("CUSTOMER"));

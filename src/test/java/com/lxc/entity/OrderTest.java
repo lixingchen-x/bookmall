@@ -1,6 +1,6 @@
 package com.lxc.entity;
 
-import com.lxc.testUtils.StringToDate;
+import com.lxc.testUtils.DateUtils;
 import org.junit.Test;
 import java.text.ParseException;
 import java.util.Date;
@@ -14,7 +14,7 @@ public class OrderTest {
     public void getCreateDate_happyPath() throws ParseException {
 
         Order order = new Order();
-        Date date = StringToDate.stringToDate("2019-10-29");
+        Date date = DateUtils.DateConvertor("2019-10-29");
         order.setCreateDate(date);
         assertThat(order.getCreateDate(), is(date));
     }

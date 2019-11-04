@@ -2,19 +2,22 @@ package com.lxc.repository;
 
 import com.lxc.entity.Book;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
 
+import static org.assertj.core.api.Assertions.*;
 
-public class BookRepositoryTest extends BaseRepositoryTes {
+public class BookRepositoryTest extends BaseRepositoryTest {
+
+    @Autowired
+    protected BookRepository bookRepository;
 
     @Test
     public void findByBookName_happyPath() {
 
         Book book = insertBookWithName("abc");
         Page<Book> page = bookRepository.findByBookName("abc", pageable);
-        assertThat(page.getContent(), hasItem(book));
+        assertThat(page.getContent()).contains(book);
     }
 
     @Test
@@ -22,7 +25,7 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
         insertBookWithName("abc");
         Page<Book> page = bookRepository.findByBookName("def", pageable);
-        assertThat(page.getContent().size(), is(0));
+        assertThat(page.getContent()).isEmpty();
     }
 
     @Test
@@ -30,7 +33,7 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
         Book book = insertBookWithAuthor("abc");
         Page<Book> page = bookRepository.findByAuthor("abc", pageable);
-        assertThat(page.getContent(), hasItem(book));
+        assertThat(page.getContent()).contains(book);
     }
 
     @Test
@@ -38,7 +41,7 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
         insertBookWithAuthor("abc");
         Page<Book> page = bookRepository.findByAuthor("def", pageable);
-        assertThat(page.getContent().size(), is(0));
+        assertThat(page.getContent()).isEmpty();
     }
 
     @Test
@@ -46,7 +49,7 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
         Book book = insertBookWithIsbn("123");
         Page<Book> page = bookRepository.findByIsbn("123", pageable);
-        assertThat(page.getContent(), hasItem(book));
+        assertThat(page.getContent()).contains(book);
     }
 
     @Test
@@ -54,7 +57,7 @@ public class BookRepositoryTest extends BaseRepositoryTes {
 
         insertBookWithIsbn("123");
         Page<Book> page = bookRepository.findByIsbn("321", pageable);
-        assertThat(page.getContent().size(), is(0));
+        assertThat(page.getContent()).isEmpty();
     }
 
     private Book insertBookWithName(String bookName) {

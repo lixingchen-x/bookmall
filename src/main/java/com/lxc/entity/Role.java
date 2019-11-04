@@ -13,9 +13,8 @@ import java.io.Serializable;
 @Data
 public class Role implements Serializable {
 
-    public static Role admin = new Role("ADMIN");
-
-    public static Role customer = new Role("CUSTOMER");
+    public static String ADMIN_ROLE_CODE = "ADMIN";
+    public static String CUSTOMER_ROLE_CODE = "CUSTOMER";
 
     @Id
     @Column(name = "role_name")
