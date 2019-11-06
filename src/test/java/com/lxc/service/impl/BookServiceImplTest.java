@@ -1,4 +1,4 @@
-package com.lxc.service;
+package com.lxc.service.impl;
 
 import com.lxc.entity.Book;
 import com.lxc.repository.BookRepository;
@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BookServiceTest {
+public class BookServiceImplTest {
 
     private final int PAGE_SIZE = 10;
 

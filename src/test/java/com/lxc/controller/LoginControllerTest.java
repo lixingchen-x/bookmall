@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.service.impl.UserServiceImpl;
+import com.lxc.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class LoginControllerTest {
     private LoginController loginController;
 
     @Mock
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Before
     public void setUp() {
@@ -51,14 +51,15 @@ public class LoginControllerTest {
     @Test
     public void toIndex_happyPath() throws Exception {
 
-        MockHttpSession mockHttpSession = mock(MockHttpSession.class);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/index").session(mockHttpSession))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/index"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("index"))
                 .andReturn();
-        assertThat(mockHttpSession.getAttribute("key")).isNull();
-        assertThat(mockHttpSession.getAttribute("keyword")).isNull();
     }
 
-    //ToDo
+    @Test
+    public void doLogin_happyPath() {
+
+
+    }
 }

@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Book;
-import com.lxc.service.impl.BookServiceImpl;
+import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public class BookController {
 
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     /**
      * 图书展示页面

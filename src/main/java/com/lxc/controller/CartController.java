@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.service.impl.BookServiceImpl;
+import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public class CartController {
 
     @Autowired
-    BookServiceImpl bookService;
+    private BookService bookService;
 
     /**
      * 购物车中书籍展示

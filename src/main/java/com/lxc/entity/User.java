@@ -2,10 +2,7 @@ package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -18,15 +15,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class User implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class User extends Base implements Serializable {
 
     @Column
     private String username;
@@ -43,6 +35,15 @@ public class User implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "role_name")
     private Role role;
+
+    @Builder
+    public User(Integer id, String username, String password, String email, Role role) {
+        super(id);
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 
     public void setAdmin() {
 

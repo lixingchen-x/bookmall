@@ -1,9 +1,6 @@
 package com.lxc.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -11,7 +8,8 @@ import java.io.Serializable;
  * 购物车里物品的实体类
  * 对书的数量、用户id等属性进行封装
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,5 +33,14 @@ public class CartItem implements Serializable {
     public Double getSubTotal() {
 
         return this.book.getPrice() * this.quantity;
+    }
+
+    public OrderItem transferToOrderItem(Integer id) {
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrderId(id);
+        orderItem.setBookId(this.book.getId());
+        orderItem.setQuantity(this.quantity);
+        return orderItem;
     }
 }

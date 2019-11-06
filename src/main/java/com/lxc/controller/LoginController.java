@@ -2,7 +2,7 @@ package com.lxc.controller;
 
 import com.lxc.entity.Cart;
 import com.lxc.entity.User;
-import com.lxc.service.impl.UserServiceImpl;
+import com.lxc.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @RequestMapping("/login")
     public String login() {

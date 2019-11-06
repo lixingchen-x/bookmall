@@ -16,10 +16,36 @@ import static org.assertj.core.api.Assertions.*;
 public class CartTest {
 
     @Test
+    public void constructor_happyPath() {
+
+        User user = new User();
+        Cart cart = new Cart(user);
+        assertThat(cart.getUser()).isEqualTo(user);
+    }
+
+    @Test
+    public void getUser_happyPath() {
+
+        User user = new User();
+        Cart cart = new Cart();
+        cart.setUser(user);
+        assertThat(cart.getUser()).isEqualTo(user);
+    }
+
+    @Test
+    public void getCartItems_happyPath() {
+
+        Cart cart = new Cart();
+        List mockedCartItems = mock(List.class);
+        cart.setCartItems(mockedCartItems);
+        assertThat(cart.getCartItems()).isEqualTo(mockedCartItems);
+    }
+
+    @Test
     public void getTotalPrice_happyPath() {
 
         Cart cart = new Cart();
-        cart.addCartItem(createCartItem(1, 100.0, 1));
+        cart.updateCart(createCartItem(1, 100.0, 1));
         assertThat(cart.getTotalPrice(), is(100.0));
     }
 
@@ -34,9 +60,9 @@ public class CartTest {
     public void getTotalPrice_shouldBeCorrect_ifCartItemsSizeIsBiggerThanOne() {
 
         Cart cart = new Cart();
-        cart.addCartItem(createCartItem(1, 100.0, 1));
-        cart.addCartItem(createCartItem(2, 100.0, 1));
-        assertThat(cart.getTotalPrice(), is(100.0 + 100.0));
+        cart.updateCart(createCartItem(1, 100.0, 1));
+        cart.updateCart(createCartItem(2, 100.0, 1));
+        assertThat(cart.getTotalPrice(), is(200.0));
     }
 
     @Test
@@ -134,19 +160,19 @@ public class CartTest {
     }
 
     @Test
-    public void addCartItem_CartItemsSizeDoNotChange_ifBookExists() {
+    public void updateCart_CartItemsSizeDoNotChange_ifBookExists() {
 
         Cart cart = createCart(1, 1);
-        cart.addCartItem(createCartItem(1, 1));
+        cart.updateCart(createCartItem(1, 1));
         assertThat(cart.getCartItems()).hasSize(1);
         assertThat(cart.getByBookId(1).getQuantity(), is(2));
     }
 
     @Test
-    public void addCartItem_CartItemsSizeChange_ifBookDoesNotExist() {
+    public void updateCart_CartItemsSizeChange_ifBookDoesNotExist() {
 
         Cart cart = createCart(1, 1);
-        cart.addCartItem(createCartItem(2, 1));
+        cart.updateCart(createCartItem(2, 1));
         assertThat(cart.getCartItems()).hasSize(2);
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
@@ -154,14 +180,14 @@ public class CartTest {
     private Cart createCart(Integer id) {
 
         Cart cart = new Cart();
-        cart.addCartItem(createCartItem(id));
+        cart.updateCart(createCartItem(id));
         return cart;
     }
 
     private Cart createCart(Integer id, Integer quantity) {
 
         Cart cart = new Cart();
-        cart.addCartItem(createCartItem(id, quantity));
+        cart.updateCart(createCartItem(id, quantity));
         return cart;
     }
 

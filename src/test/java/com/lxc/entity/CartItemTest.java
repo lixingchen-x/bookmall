@@ -1,18 +1,33 @@
 package com.lxc.entity;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 
 public class CartItemTest {
 
     @Test
+    public void getBook_happyPath() {
+
+        Book book = new Book();
+        CartItem cartItem = new CartItem();
+        cartItem.setBook(book);
+        assertThat(cartItem.getBook()).isEqualTo(book);
+    }
+
+    @Test
+    public void getQuantity_happyPath() {
+
+        CartItem cartItem = CartItem.builder().quantity(1).build();
+        assertThat(cartItem.getQuantity()).isEqualTo(1);
+    }
+
+    @Test
     public void getSubTotal_happyPath() {
 
         Book book = Book.builder().price(100.0).build();
         CartItem cartItem = CartItem.builder().book(book).quantity(2).build();
-        assertThat(cartItem.getSubTotal(), is(200.0));
+        assertThat(cartItem.getSubTotal()).isEqualTo(200.0);
     }
 
     @Test
@@ -20,7 +35,7 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(1).build();
         cartItem.increaseQuantity();
-        assertThat(cartItem.getQuantity(), is(2));
+        assertThat(cartItem.getQuantity()).isEqualTo(2);
     }
 
     @Test
@@ -28,7 +43,7 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(1).build();
         cartItem.decreaseQuantity();
-        assertThat(cartItem.getQuantity(), is(0));
+        assertThat(cartItem.getQuantity()).isEqualTo(0);
     }
 
     @Test
@@ -36,6 +51,28 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(0).build();
         cartItem.decreaseQuantity();
-        assertThat(cartItem.getQuantity(), is(0));
+        assertThat(cartItem.getQuantity()).isEqualTo(0);
+    }
+
+    @Test
+    public void toString_happyPath() {
+
+        assertThat(CartItem.builder().toString()).isEqualTo("CartItem.CartItemBuilder(book=null, quantity=null)");
+    }
+
+    @Test
+    public void saveAsOrderItem_happyPath() {
+
+
+    }
+
+    @Test
+    public void transferToOrderItem_happyPath() {
+
+        Book book = Book.builder().id(1).build();
+        CartItem cartItem = CartItem.builder().book(book).quantity(1).build();
+        assertThat(cartItem.transferToOrderItem(1).getBookId()).isEqualTo(1);
+        assertThat(cartItem.transferToOrderItem(1).getQuantity()).isEqualTo(1);
+        assertThat(cartItem.transferToOrderItem(1).getOrderId()).isEqualTo(1);
     }
 }

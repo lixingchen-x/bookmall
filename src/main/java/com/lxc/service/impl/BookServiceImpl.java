@@ -43,20 +43,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findByCondition(String condition, String keyword, int pageNum) {
 
-        Page<Book> result = null;
         Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
-        switch (condition) {
-            case "name" :
-                result = bookRepository.findByBookName(keyword, pageable);
-                break;
-            case "author" :
-                result = bookRepository.findByAuthor(keyword, pageable);
-                break;
-            case "isbn" :
-                result = bookRepository.findByIsbn(keyword, pageable);
-                break;
+        if ("name".equals(condition)) {
+            return bookRepository.findByBookName(keyword, pageable);
+        }else if ("author".equals(condition)) {
+            return bookRepository.findByAuthor(keyword, pageable);
         }
-        return result;
+        return bookRepository.findByIsbn(keyword, pageable);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.lxc.controller;
 
 import com.lxc.entity.*;
-import com.lxc.service.impl.OrderItemServiceImpl;
-import com.lxc.service.impl.OrderServiceImpl;
+import com.lxc.service.OrderItemService;
+import com.lxc.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -16,10 +16,10 @@ import java.util.Date;
 public class OrderController {
 
     @Autowired
-    private OrderServiceImpl orderService;
+    private OrderService orderService;
 
     @Autowired
-    private OrderItemServiceImpl orderItemService;
+    private OrderItemService orderItemService;
 
     @RequestMapping("orders")
     public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
@@ -80,17 +80,8 @@ public class OrderController {
         return "forward:/order/orders";
     }
 
-    private void saveOrderItem(Cart cart, Integer id) {
+    public void saveOrderItem(Cart cart, Integer id) {
 
-        cart.getCartItems().forEach(cartItem -> saveAsOrderItem(cartItem, id));
-    }
-
-    private void saveAsOrderItem(CartItem cartItem, Integer id) {
-
-        OrderItem orderItem = new OrderItem();
-        orderItem.setOrderId(id);
-        orderItem.setBookId(cartItem.getBook().getId());
-        orderItem.setQuantity(cartItem.getQuantity());
-        orderItemService.save(orderItem);
+        cart.getCartItems().forEach(cartItem -> orderItemService.save(cartItem.transferToOrderItem(id)));
     }
 }

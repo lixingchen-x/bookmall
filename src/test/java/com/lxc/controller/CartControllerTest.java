@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.service.impl.BookServiceImpl;
+import com.lxc.service.BookService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ public class CartControllerTest {
     private CartController cartController;
 
     @Mock
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @Before
     public void setUp() {

@@ -1,7 +1,7 @@
 package com.lxc.shiro;
 
 import com.lxc.entity.User;
-import com.lxc.service.impl.UserServiceImpl;
+import com.lxc.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MyRealm extends AuthorizingRealm {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {

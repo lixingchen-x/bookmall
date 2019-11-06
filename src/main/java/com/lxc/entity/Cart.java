@@ -1,6 +1,7 @@
 package com.lxc.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +10,8 @@ import java.util.List;
 /**
  * 购物车的实体类
  */
-@Data
+@Getter
+@Setter
 public class Cart implements Serializable {
 
     private User user;
@@ -66,13 +68,14 @@ public class Cart implements Serializable {
         return getByBookId(id) != null;
     }
 
-    public void addCartItem(CartItem cartItem) {
+    public Cart updateCart(CartItem cartItem) {
 
         CartItem item = this.getByBookId(cartItem.getBook().getId());
         if (item != null) {
             item.setQuantity(item.getQuantity() + cartItem.getQuantity());
-            return;
+            return this;
         }
         cartItems.add(cartItem);
+        return this;
     }
 }

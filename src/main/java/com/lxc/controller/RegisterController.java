@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.service.impl.UserServiceImpl;
+import com.lxc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ public class RegisterController {
     private static final int MINIMUM_PASSWORD_SIZE = 6;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @RequestMapping("/register")
     public String register() {
@@ -29,7 +29,7 @@ public class RegisterController {
             return "register";
         }
         if (user.getPassword().length() < MINIMUM_PASSWORD_SIZE) {
-            model.addAttribute("msg", "密码长度请大于6");
+            model.addAttribute("msg", "密码长度请大于等于6");
             return "register";
         }
         userService.save(user);

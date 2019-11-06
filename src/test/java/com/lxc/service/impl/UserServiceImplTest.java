@@ -1,4 +1,4 @@
-package com.lxc.service;
+package com.lxc.service.impl;
 
 import com.lxc.entity.User;
 import com.lxc.repository.UserRepository;
@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceTest {
+public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;

@@ -1,19 +1,16 @@
 package com.lxc.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "order_item")
-@Data
-public class OrderItem implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@Getter
+@Setter
+public class OrderItem extends Base implements Serializable {
 
     @Column(name = "order_id")
     private Integer orderId;

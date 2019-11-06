@@ -1,4 +1,4 @@
-package com.lxc.service;
+package com.lxc.service.impl;
 
 import com.lxc.entity.Order;
 import com.lxc.repository.OrderRepository;
@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OrderServiceTest {
+public class OrderServiceImplTest {
 
     private final int PAGE_SIZE = 10;
 

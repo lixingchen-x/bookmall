@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.service.impl.UserServiceImpl;
+import com.lxc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @RequestMapping("/403")
     public String unauthorized() {

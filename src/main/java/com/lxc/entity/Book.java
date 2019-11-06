@@ -1,10 +1,7 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,15 +13,10 @@ import java.util.Date;
 @Entity
 @Table(name = "book")
 @JsonIgnoreProperties(value={"hibernateLazyInitializer"})
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class Book implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Book extends Base implements Serializable {
 
     @Column(name = "book_name")
     private String bookName;
@@ -44,9 +36,6 @@ public class Book implements Serializable {
     private String intro;
 
     @Column
-    private String image;
-
-    @Column
     private Double price;
 
     @Column
@@ -54,6 +43,19 @@ public class Book implements Serializable {
 
     @Column(name = "book_status")
     private String status;
+
+    @Builder
+    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, String status) {
+        super(id);
+        this.bookName = bookName;
+        this.author = author;
+        this.isbn = isbn;
+        this.publishDate = publishDate;
+        this.intro = intro;
+        this.price = price;
+        this.stock = stock;
+        this.status = status;
+    }
 
     public void increaseStock() {
 

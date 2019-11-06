@@ -1,8 +1,7 @@
 package com.lxc.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lxc.entity.Book;
-import com.lxc.service.impl.BookServiceImpl;
+import com.lxc.service.BookService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,7 +29,7 @@ public class BookControllerTest {
     private BookController bookController;
 
     @Mock
-    private BookServiceImpl bookService;
+    private BookService bookService;
 
     @Before
     public void setUp() {
@@ -64,13 +62,10 @@ public class BookControllerTest {
     @Test
     public void addBook_happyPath() throws Exception {
 
-        Book book = Book.builder().status("AVAILABLE").build();
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add")
-                .contentType(MediaType.APPLICATION_JSON_UTF8).content(getContent(book)))
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
                 .andReturn();
-        verify(bookService).save(book);
     }
 
     @Test
@@ -85,13 +80,10 @@ public class BookControllerTest {
     @Test
     public void updateBook_happyPath() throws Exception {
 
-        Book book = Book.builder().status("AVAILABLE").build();
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/book/update")
-                .contentType(MediaType.APPLICATION_JSON_UTF8).content(getContent(book)))
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/book/update"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
                 .andReturn();
-        verify(bookService).update(book);
     }
 
     @Test
@@ -171,10 +163,5 @@ public class BookControllerTest {
                 .andReturn();
         assertThat(result.getModelAndView().getModel()).containsKey("bookPage");
         verify(bookService).findByCondition("isbn", "a", 0);
-    }
-
-    private String getContent(Book book) {
-
-        return JSONObject.toJSONString(book);
     }
 }

@@ -1,6 +1,8 @@
 package com.lxc.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
@@ -10,12 +12,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "`order`")
-@Data
-public class Order implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@Getter
+@Setter
+public class Order extends Base implements Serializable {
 
     @OneToMany(targetEntity = OrderItem.class,cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
