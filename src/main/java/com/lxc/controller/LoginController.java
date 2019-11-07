@@ -10,7 +10,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,22 +34,22 @@ public class LoginController {
     }
 
     @RequestMapping("/doLogin")
-    public String doLogin(HttpServletRequest request, User user, Model model) {
+    public String doLogin(HttpServletRequest request, User user) {
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         try {
             subject.login(token);
             User completeUser = userService.findByUsername(user.getUsername());
-            model.addAttribute("user", completeUser);
+            request.setAttribute("user", completeUser);
             request.getSession().setAttribute("user", completeUser);
             request.getSession().setAttribute("cart", new Cart(completeUser)); //初始化一个空购物车
             return "index";
         } catch (UnknownAccountException e) {
-            model.addAttribute("msg", "账号错误");
+            request.setAttribute("msg", "账号错误");
             return "login";
         } catch (IncorrectCredentialsException e) {
-            model.addAttribute("msg", "密码错误");
+            request.setAttribute("msg", "密码错误");
             return "login";
         }
     }
@@ -59,12 +58,7 @@ public class LoginController {
     public String doLogout() {
 
         Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.logout();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            return "login";
-        }
+        subject.logout();
+        return "login";
     }
 }

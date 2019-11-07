@@ -1,6 +1,14 @@
 package com.lxc.controller;
 
+import com.lxc.entity.User;
 import com.lxc.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +23,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,6 +35,15 @@ public class LoginControllerTest {
 
     @InjectMocks
     private LoginController loginController;
+
+    @Mock
+    private SecurityManager securityManager;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private MockHttpSession session;
 
     @Mock
     private UserService userService;
@@ -60,6 +79,47 @@ public class LoginControllerTest {
     @Test
     public void doLogin_happyPath() {
 
+        User valid = User.builder().username("a").password("123456").build();
+        User unchecked = User.builder().username("a").password("123456").build();
+        Subject subject = createMockedSubject();
+        when(securityManager.createSubject(any())).thenReturn(subject);
+        when(userService.findByUsername("a")).thenReturn(valid);
+        when(request.getSession()).thenReturn(session);
+        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("index");
+    }
 
+    @Test
+    public void doLogin_shouldFail_ifUsernameDoesNotExist() {
+
+        User unchecked = User.builder().username("a").password("123456").build();
+        Subject subject = createMockedSubject();
+        when(securityManager.createSubject(any())).thenReturn(subject);
+        doThrow(new UnknownAccountException()).when(subject).login(any(UsernamePasswordToken.class));
+        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
+    }
+
+    @Test
+    public void doLogin_shouldFail_ifPasswordIsWrong() {
+
+        User unchecked = User.builder().username("a").password("123456").build();
+        Subject subject = createMockedSubject();
+        when(securityManager.createSubject(any())).thenReturn(subject);
+        doThrow(new IncorrectCredentialsException()).when(subject).login(any(UsernamePasswordToken.class));
+        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
+    }
+
+    @Test
+    public void doLogout_happyPath() {
+
+        Subject subject = createMockedSubject();
+        when(securityManager.createSubject(any())).thenReturn(subject);
+        assertThat(loginController.doLogout()).isEqualTo("login");
+    }
+
+    private Subject createMockedSubject() {
+
+        ThreadContext.remove();
+        SecurityUtils.setSecurityManager(securityManager);
+        return mock(Subject.class);
     }
 }
