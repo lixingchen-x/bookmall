@@ -61,12 +61,6 @@ public class CartItemTest {
     }
 
     @Test
-    public void saveAsOrderItem_happyPath() {
-
-
-    }
-
-    @Test
     public void transferToOrderItem_happyPath() {
 
         Book book = Book.builder().id(1).build();

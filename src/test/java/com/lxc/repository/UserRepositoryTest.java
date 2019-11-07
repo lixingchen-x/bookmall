@@ -19,7 +19,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findByUsername_shouldBeNull_ifUserDoesNotExist() {
+    public void findByUsername_shouldReturnNull_ifUserDoesNotExist() {
 
         insertTestUser("abc");
         Assert.assertNull(userRepository.findByUsername("def"));

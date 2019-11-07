@@ -6,10 +6,10 @@ import com.lxc.entity.CartItem;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import javax.servlet.http.HttpSession;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/shopping")
@@ -26,22 +26,28 @@ public class ShoppingController {
 
     /**
      * 添加图书到购物车，并同步更新购物车
-     * @param id
-     * @param page
-     * @param session
-     * @param model
-     * @return
      */
     @RequestMapping("add")
     public String addToCart(@RequestParam(value = "bookId") Integer id,
-                            @RequestParam(defaultValue = "0") Integer page, HttpSession session, Model model) {
+                            @RequestParam(defaultValue = "0") Integer page,
+                            @RequestParam(value = "condition", required = false) String condition,
+                            @RequestParam(value = "keyword", required = false) String keyword, HttpServletRequest request) {
 
-        model.addAttribute("page", page);
-        Cart cart = (Cart)session.getAttribute("cart");
-        Cart newCart = cart.updateCart(createCartItem(id, 1));
+        request.setAttribute("page", page);
+        request.setAttribute("condition", condition);
+        request.setAttribute("keyword", keyword);
+        Cart cart = (Cart)request.getSession().getAttribute("cart");
         bookService.decreaseStock(id);
-        session.setAttribute("cart", newCart);
-        return "forward:/book/find";
+        request.getSession().setAttribute("cart", cart.updateCart(createCartItem(id, 1)));
+        if ("name".equals(condition)) {
+            return "forward:/book/findByName";
+        }else if ("author".equals(condition)) {
+            return "forward:/book/findByAuthor";
+        }else if ("isbn".equals(condition)) {
+            return "forward:/book/findByIsbn";
+        }else {
+            return "forward:/book/books";
+        }
     }
 
     public CartItem createCartItem(Integer id, Integer quantity) {

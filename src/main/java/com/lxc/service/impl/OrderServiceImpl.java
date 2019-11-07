@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -34,8 +36,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void setStatus(String status, Integer id) {
 
-        Order order = orderRepository.getOne(id);
-        order.setStatus(status);
-        orderRepository.saveAndFlush(order);
+        try {
+            Order order = orderRepository.getOne(id);
+            order.setStatus(status);
+            orderRepository.saveAndFlush(order);
+        }catch (EntityNotFoundException e) {
+            System.out.println("Order does not exist!");
+        }
     }
 }

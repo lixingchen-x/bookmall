@@ -14,6 +14,13 @@
     <!-- Custom styles for this template -->
     <link th:href="@{resource/css/dashboard.css}" rel="stylesheet">
     <link rel="icon" href="../../favicon.ico">
+
+    <script type="text/javascript">
+        function changeAction(){
+            var selectValue=document.getElementById('key').value;
+            document.forms[0].action=selectValue;
+        }
+    </script>
 </head>
 
 <body>
@@ -32,20 +39,20 @@
                 </div>
             </div>
             <div class="form-group">
-                <form th:action="@{/book/find}">
+                <form action="/book/books" th:action="@{/book/books}">
                     <table>
                         <tr>
                             <td>
-                                <select  class="form-control" name="key" id="key" th:value="${session.key}">
+                                <select  class="form-control" name="key" id="key" th:value="${condition}" onchange="changeAction()">
                                     <option value="">请选择查询条件</option>
-                                    <option th:selected="${session.key}=='all'" value="all">查询所有</option>
-                                    <option th:selected="${session.key}=='name'" value="name">根据书名查询</option>
-                                    <option th:selected="${session.key}=='author'" value="author">根据作者查询</option>
-                                    <option th:selected="${session.key}=='isbn'" value="isbn">根据isbn查询</option>
+                                    <option th:selected="${condition}=='all'" value="/book/books">查询所有</option>
+                                    <option th:selected="${condition}=='name'" value="/book/findByName">根据书名查询</option>
+                                    <option th:selected="${condition}=='author'" value="/book/findByAuthor">根据作者查询</option>
+                                    <option th:selected="${condition}=='isbn'" value="/book/findByIsbn">根据isbn查询</option>
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="keyword" th:value="*{session.keyword}"/>
+                                <input type="text" name="keyword" th:value="*{keyword}"/>
                             </td>
                             <td>
                                 <input type="submit" value="查询图书"/>
@@ -96,7 +103,7 @@
                                         </div>
                                     </div>
                                     <div th:case="*">
-                                        <a th:if="${book.status} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page})}">添加到购物车</a>
+                                        <a th:if="${book.status} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page}, condition = ${condition}, keyword = ${keyword})}">添加到购物车</a>
                                         <span th:if="${book.status} eq 'WITHDRAW'">已下架</span>
                                     </div>
                                 </div>
@@ -110,16 +117,31 @@
     </div>
 </div>
 <div align="center">
-    <div th:switch="${session.key}">
-        <div th:case="null">
+    <div th:switch="${condition}">
+        <div th:case="'all'">
             <div>当前第<span th:text="${page}"></span>页</div>
             <span><a th:if="${page} > 0" th:href="@{/book/books(page = ${page} - 1)}">上一页</a></span>
             <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/books(page = ${page} + 1)}">下一页</a></span>
         </div>
+        <div th:case="'name'">
+            <div>当前第<span th:text="${page}"></span>页</div>
+            <span><a th:if="${page} > 0" th:href="@{/book/findByName(keyword = ${keyword}, page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/findByName(keyword = ${keyword}, page = ${page} + 1)}">下一页</a></span>
+        </div>
+        <div th:case="'author'">
+            <div>当前第<span th:text="${page}"></span>页</div>
+            <span><a th:if="${page} > 0" th:href="@{/book/findByAuthor(keyword = ${keyword}, page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/findByAuthor(keyword = ${keyword}, page = ${page} + 1)}">下一页</a></span>
+        </div>
+        <div th:case="'isbn'">
+            <div>当前第<span th:text="${page}"></span>页</div>
+            <span><a th:if="${page} > 0" th:href="@{/book/findByIsbn(keyword = ${keyword}, page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/findByIsbn(keyword = ${keyword}, page = ${page} + 1)}">下一页</a></span>
+        </div>
         <div th:case="*">
             <div>当前第<span th:text="${page}"></span>页</div>
-            <span><a th:if="${page} > 0" th:href="@{/book/find(key = ${session.key}, keyword = ${session.keyword}, page = ${page} - 1)}">上一页</a></span>
-            <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/find(key = ${session.key}, keyword = ${session.keyword}, page = ${page} + 1)}">下一页</a></span>
+            <span><a th:if="${page} > 0" th:href="@{/book/books(page = ${page} - 1)}">上一页</a></span>
+            <span><a th:if="${page} < ${bookPage.getTotalPages()} - 1" th:href="@{/book/books(page = ${page} + 1)}">下一页</a></span>
         </div>
     </div>
 </div>

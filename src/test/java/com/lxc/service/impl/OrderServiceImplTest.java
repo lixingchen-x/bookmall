@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import javax.persistence.EntityNotFoundException;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +43,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    public void findByUsername_shouldBeNull_ifUsernameDoesNotExist() {
+    public void findByUsername_shouldReturnNull_ifUsernameDoesNotExist() {
 
         when(orderRepository.findByUsername("abc", pageable)).thenReturn(null);
         assertThat(orderService.findByUsername("abc", PAGE_NUM), is(nullValue()));
@@ -62,5 +64,13 @@ public class OrderServiceImplTest {
         when(orderRepository.getOne(1)).thenReturn(order);
         orderService.setStatus("anyStatus", 1);
         assertThat(orderRepository.getOne(1).getStatus(), equalTo("anyStatus"));
+    }
+
+    @Test
+    public void setStatus_shouldDoNothing_ifOrderDoesNotExist() {
+
+        when(orderRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        orderService.setStatus("ANY", 1);
+        verify(orderRepository, never()).saveAndFlush(any());
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import javax.persistence.EntityNotFoundException;
+
 import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -41,7 +43,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findAllByPage_shouldBeNull_ifNoBooks() {
+    public void findAllByPage_shouldReturnNull_ifNoBooks() {
 
         when(bookRepository.findAll(pageable)).thenReturn(null);
         assertThat(bookService.findAllByPage(PAGE_NUM), is(nullValue()));
@@ -49,11 +51,21 @@ public class BookServiceImplTest {
 
     @Test
     public void update_happyPath() {
-        Book oldBook = new Book();
-        Book newBook = new Book();
-        when(bookRepository.getOne(oldBook.getId())).thenReturn(newBook);
-        bookService.update(oldBook);
-        verify(bookRepository).saveAndFlush(newBook);
+
+        Book newBook = Book.builder().id(1).build();
+        Book temp = mock(Book.class);
+        when(bookRepository.getOne(1)).thenReturn(temp);
+        bookService.update(newBook);
+        verify(bookRepository).saveAndFlush(temp);
+    }
+
+    @Test
+    public void update_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        Book newBook = Book.builder().id(1).build();
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        bookService.update(newBook);
+        verify(bookRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -61,6 +73,14 @@ public class BookServiceImplTest {
 
         bookService.deleteById(1);
         verify(bookRepository).deleteById(1);
+    }
+
+    @Test
+    public void deleteById_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        bookService.deleteById(1);
+        verify(bookRepository, never()).deleteById(1);
     }
 
     @Test
@@ -72,7 +92,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findByName_shouldBeNull_ifBookNameDoesNotExist() {
+    public void findByName_shouldReturnNull_ifBookNameDoesNotExist() {
 
         when(bookRepository.findByBookName("abc", pageable)).thenReturn(null);
         assertThat(bookService.findByCondition("name", "abc", PAGE_NUM), is(nullValue()));
@@ -87,7 +107,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findByAuthor_shouldBeNull_ifAuthorDoesNotExist() {
+    public void findByAuthor_shouldReturnNull_ifAuthorDoesNotExist() {
 
         when(bookRepository.findByAuthor("abc", pageable)).thenReturn(null);
         assertThat(bookService.findByCondition("author", "abc", PAGE_NUM), is(nullValue()));
@@ -102,7 +122,7 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findByIsbn_shouldBeNull_ifIsbnDoesNotExist() {
+    public void findByIsbn_shouldReturnNull_ifIsbnDoesNotExist() {
 
         when(bookRepository.findByIsbn("123", pageable)).thenReturn(null);
         assertThat(bookService.findByCondition("isbn", "123", PAGE_NUM), is(nullValue()));
@@ -119,6 +139,14 @@ public class BookServiceImplTest {
     }
 
     @Test
+    public void setStatus_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        bookService.setStatus("ANY", 1);
+        verify(bookRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
     public void findById_happyPath() {
 
         Book expected = new Book();
@@ -128,9 +156,9 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void findById_shouldBeNull_ifBookIdDoesNotExist() {
+    public void findById_shouldReturnNull_ifBookIdDoesNotExist() {
 
-        when(bookRepository.getOne(1)).thenReturn(null);
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
         assertThat(bookService.findById(1), is(nullValue()));
     }
 
@@ -163,6 +191,14 @@ public class BookServiceImplTest {
     }
 
     @Test
+    public void decreaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        bookService.decreaseStock(1);
+        verify(bookRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
     public void increaseStock_happyPath() {
 
         Book book = createBook(1, 1);
@@ -170,6 +206,14 @@ public class BookServiceImplTest {
         bookService.increaseStock(book.getId());
         verify(bookRepository).saveAndFlush(book);
         assertThat(book.getStock(), is(2));
+    }
+
+    @Test
+    public void increaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        bookService.increaseStock(1);
+        verify(bookRepository, never()).saveAndFlush(any());
     }
 
     private Book createBook(Integer bookId, Integer stock) {

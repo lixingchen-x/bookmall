@@ -30,6 +30,7 @@ public class LoginController {
 
         session.setAttribute("key", null);
         session.setAttribute("keyword", null);
+        //ToDo
         return "index";
     }
 

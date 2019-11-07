@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -27,17 +29,26 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void update(Book book) {
+    public void update(Book newBook) {
 
-        Book newBook = bookRepository.getOne(book.getId());
-        BeanUtils.copyProperties(book, newBook);
-        bookRepository.saveAndFlush(newBook);
+        try {
+            Book temp = bookRepository.getOne(newBook.getId());
+            BeanUtils.copyProperties(newBook, temp);
+            bookRepository.saveAndFlush(temp);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        bookRepository.deleteById(id);
+        try {
+            bookRepository.getOne(id);
+            bookRepository.deleteById(id);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+        }
     }
 
     @Override
@@ -55,15 +66,24 @@ public class BookServiceImpl implements BookService {
     @Override
     public void setStatus(String status, Integer id) {
 
-        Book book = bookRepository.getOne(id);
-        book.setStatus(status);
-        bookRepository.saveAndFlush(book);
+        try {
+            Book book = bookRepository.getOne(id);
+            book.setStatus(status);
+            bookRepository.saveAndFlush(book);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+        }
     }
 
     @Override
     public Book findById(Integer id) {
 
-        return bookRepository.getOne(id);
+        try {
+            return bookRepository.getOne(id);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+            return null;
+        }
     }
 
     @Override
@@ -75,16 +95,24 @@ public class BookServiceImpl implements BookService {
     @Override
     public void decreaseStock(Integer id) {
 
-        Book book = bookRepository.getOne(id);
-        book.decreaseStock();
-        bookRepository.saveAndFlush(book);
+        try {
+            Book book = bookRepository.getOne(id);
+            book.decreaseStock();
+            bookRepository.saveAndFlush(book);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+        }
     }
 
     @Override
     public void increaseStock(Integer id) {
 
-        Book book = bookRepository.getOne(id);
-        book.increaseStock();
-        bookRepository.saveAndFlush(book);
+        try {
+            Book book = bookRepository.getOne(id);
+            book.increaseStock();
+            bookRepository.saveAndFlush(book);
+        }catch (EntityNotFoundException e) {
+            System.out.println("BookID does not exist!");
+        }
     }
 }

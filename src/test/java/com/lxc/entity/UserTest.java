@@ -25,14 +25,16 @@ public class UserTest {
     @Test
     public void getPassword_happyPath() {
 
-        User user = User.builder().password("abcdefg").build();
+        User user = new User();
+        user.setPassword("abcdefg");
         assertEquals("abcdefg", user.getPassword());
     }
 
     @Test
     public void getEmail_happyPath() {
 
-        User user = User.builder().email("abc@123.com").build();
+        User user = new User();
+        user.setEmail("abc@123.com");
         assertEquals("abc@123.com", user.getEmail());
     }
 
@@ -47,8 +49,12 @@ public class UserTest {
     @Test
     public void builder_happyPath() {
 
-        User user = User.builder().id(1).role(new Role(Role.ADMIN_ROLE_CODE)).build();
+        User user = User.builder().id(1).username("a").password("123456")
+                .email("123@123").role(new Role(Role.ADMIN_ROLE_CODE)).build();
         assertThat(user.getId()).isEqualTo(1);
+        assertThat(user.getUsername()).isEqualTo("a");
+        assertThat(user.getPassword()).isEqualTo("123456");
+        assertThat(user.getEmail()).isEqualTo("123@123");
         assertThat(user.getRole().getName()).isEqualTo("ADMIN");
     }
 
@@ -56,5 +62,21 @@ public class UserTest {
     public void toString_happyPath() {
 
         assertThat(User.builder().toString()).isEqualTo("User.UserBuilder(id=null, username=null, password=null, email=null, role=null)");
+    }
+
+    @Test
+    public void setAdmin_happyPath() {
+
+        User user = User.builder().build();
+        user.setAdmin();
+        assertThat(user.getRole().getName()).isEqualTo("ADMIN");
+    }
+
+    @Test
+    public void setCustomer_happyPath() {
+
+        User user = User.builder().build();
+        user.setCustomer();
+        assertThat(user.getRole().getName()).isEqualTo("CUSTOMER");
     }
 }

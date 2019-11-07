@@ -44,19 +44,72 @@ public class ShoppingControllerTest {
     }
 
     @Test
-    public void addToCart_happyPath() throws Exception {
+    public void addToCart_whenFindByALL_happyPath() throws Exception {
 
-        Cart mockedCart = mock(Cart.class);
-        CartItem mockedCartItem = mock(CartItem.class);
-        when(mockedCart.updateCart(mockedCartItem)).thenReturn(mockedCart);
+        Cart mockedCart = testWithMockedCart();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
+                .param("bookId", String.valueOf(1))
+                .param("page", String.valueOf(0))
+                .param("condition", "all")
+                .sessionAttr("cart", mockedCart))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("forward:/book/books"))
+                .andReturn();
+    }
+
+    @Test
+    public void addToCart_whenFindByName_happyPath() throws Exception {
+
+        Cart mockedCart = testWithMockedCart();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
+                .param("bookId", String.valueOf(1))
+                .param("page", String.valueOf(0))
+                .param("condition", "name")
+                .sessionAttr("cart", mockedCart))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("forward:/book/findByName"))
+                .andReturn();
+    }
+
+    @Test
+    public void addToCart_whenFindByAuthor_happyPath() throws Exception {
+
+        Cart mockedCart = testWithMockedCart();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
+                .param("bookId", String.valueOf(1))
+                .param("page", String.valueOf(0))
+                .param("condition", "author")
+                .sessionAttr("cart", mockedCart))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("forward:/book/findByAuthor"))
+                .andReturn();
+    }
+
+    @Test
+    public void addToCart_whenFindByIsbn_happyPath() throws Exception {
+
+        Cart mockedCart = testWithMockedCart();
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
+                .param("bookId", String.valueOf(1))
+                .param("page", String.valueOf(0))
+                .param("condition", "isbn")
+                .sessionAttr("cart", mockedCart))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("forward:/book/findByIsbn"))
+                .andReturn();
+    }
+
+    @Test
+    public void addToCart_whenFindByALLWithNoParameter_happyPath() throws Exception {
+
+        Cart mockedCart = testWithMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
                 .sessionAttr("cart", mockedCart))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/book/find"))
+                .andExpect(MockMvcResultMatchers.view().name("forward:/book/books"))
                 .andReturn();
-        verify(bookService).decreaseStock(1);
     }
 
     @Test
@@ -64,5 +117,13 @@ public class ShoppingControllerTest {
 
         shoppingController.createCartItem(1, 1);
         verify(bookService).findById(1);
+    }
+
+    private Cart testWithMockedCart() {
+
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = mock(CartItem.class);
+        when(mockedCart.updateCart(mockedCartItem)).thenReturn(mockedCart);
+        return mockedCart;
     }
 }

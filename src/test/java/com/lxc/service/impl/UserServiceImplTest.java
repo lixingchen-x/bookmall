@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,20 @@ public class UserServiceImplTest {
     @Test
     public void update_happyPath() {
 
-        User newUser = new User();
-        User oldUser = new User();
-        when(userRepository.getOne(newUser.getId())).thenReturn(oldUser);
+        User newUser = User.builder().id(1).build();
+        User oldUser = mock(User.class);
+        when(userRepository.getOne(1)).thenReturn(oldUser);
         userService.update(newUser);
         verify(userRepository).saveAndFlush(oldUser);
+    }
+
+    @Test
+    public void update_shouldDoNothing_ifUserDoesNotExist() {
+
+        User user = User.builder().id(1).build();
+        when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        userService.update(user);
+        verify(userRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -40,6 +50,14 @@ public class UserServiceImplTest {
 
         userService.deleteById(1);
         verify(userRepository).deleteById(1);
+    }
+
+    @Test
+    public void deleteById_shouldDoNothing_ifUserDoesNotExist() {
+
+        when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        userService.deleteById(1);
+        verify(userRepository, never()).deleteById(1);
     }
 
     @Test
@@ -52,9 +70,9 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findById_shouldBeNull_ifUserIdDoesNotExist() {
+    public void findById_shouldReturnNull_ifUserDoesNotExist() {
 
-        when(userRepository.getOne(1)).thenReturn(null);
+        when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
         assertThat(userService.findById(1), is(nullValue()));
     }
 
@@ -75,7 +93,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findByUsername_shouldBeNull_ifUsernameDoesNotExist() {
+    public void findByUsername_shouldReturnNull_ifUsernameDoesNotExist() {
 
         when(userRepository.findByUsername("abc")).thenReturn(null);
         assertThat(userService.findByUsername("abc"), is(nullValue()));
@@ -99,11 +117,27 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void setAdmin_shouldDoNothing_ifUserDoesNotExist() {
+
+        when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        userService.setAdmin(1);
+        verify(userRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
     public void setCustomer_happyPath() {
 
         User user = new User();
         when(userRepository.getOne(1)).thenReturn(user);
         userService.setCustomer(1);
         assertThat(userRepository.getOne(1).getRole().getName(), equalTo("CUSTOMER"));
+    }
+
+    @Test
+    public void setCustomer_shouldDoNothing_ifUserDoesNotExist() {
+
+        when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        userService.setCustomer(1);
+        verify(userRepository, never()).saveAndFlush(any());
     }
 }

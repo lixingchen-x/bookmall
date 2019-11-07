@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpSession;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/book")
@@ -25,6 +26,7 @@ public class BookController {
 
         model.addAttribute("bookPage", bookService.findAllByPage(page));
         model.addAttribute("page", page);
+        model.addAttribute("condition", "all");
         return "bookManagement/bookList.html";
     }
 
@@ -88,7 +90,7 @@ public class BookController {
 
         model.addAttribute("page", page);
         bookService.setStatus("WITHDRAW", id);
-        return "forward:/book/find";
+        return "redirect:/book/books";
     }
 
     /**
@@ -103,7 +105,7 @@ public class BookController {
 
         model.addAttribute("page", page);
         bookService.setStatus("AVAILABLE", id);
-        return "forward:/book/find";
+        return "redirect:/book/books";
     }
 
     /**
@@ -118,34 +120,36 @@ public class BookController {
         return "redirect:/book/books";
     }
 
-    /**
-     * 根据条件分页查询
-     * @param key
-     * @param keyword
-     * @param model
-     * @return
-     */
-    @RequestMapping("find")
-    public String findBookByContition(@RequestParam(value = "key", required = false) String key,
-                                      @RequestParam(value = "keyword", required = false) String keyword, Model model,
-                                      @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
+    @RequestMapping("findByName")
+    public String findBookByName(@RequestParam(value = "keyword", required = false) String keyword,
+                                 @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
 
-        if (key == null && keyword == null) {
-            if (session.getAttribute("key") == null && session.getAttribute("keyword") == null) {
-                return "forward:/book/books";
-            }
-            key = session.getAttribute("key").toString();
-            keyword = session.getAttribute("keyword").toString();
-        }
-        if ("all".equals(key)) {
-            session.setAttribute("key", null);
-            session.setAttribute("keyword", null);
-            return "forward:/book/books";
-        }
-        model.addAttribute("bookPage", bookService.findByCondition(key, keyword, page));
-        model.addAttribute("page", page);
-        session.setAttribute("key", key);
-        session.setAttribute("keyword", keyword);
+        request.setAttribute("bookPage", bookService.findByCondition("name", keyword, page));
+        request.setAttribute("page", page);
+        request.setAttribute("condition", "name");
+        request.setAttribute("keyword", keyword);
+        return "bookManagement/bookList.html";
+    }
+
+    @RequestMapping("findByAuthor")
+    public String findBookByAuthor(@RequestParam(value = "keyword", required = false) String keyword,
+                                 @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
+
+        request.setAttribute("bookPage", bookService.findByCondition("author", keyword, page));
+        request.setAttribute("page", page);
+        request.setAttribute("condition", "author");
+        request.setAttribute("keyword", keyword);
+        return "bookManagement/bookList.html";
+    }
+
+    @RequestMapping("findByIsbn")
+    public String findBookByIsbn(@RequestParam(value = "keyword", required = false) String keyword,
+                                 @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
+
+        request.setAttribute("bookPage", bookService.findByCondition("isbn", keyword, page));
+        request.setAttribute("page", page);
+        request.setAttribute("condition", "isbn");
+        request.setAttribute("keyword", keyword);
         return "bookManagement/bookList.html";
     }
 }

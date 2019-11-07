@@ -96,6 +96,7 @@ public class CartController {
 
         session.setAttribute("key", null);
         session.setAttribute("keyword", null);
+        //ToDo
         return "redirect:/book/books";
     }
 }

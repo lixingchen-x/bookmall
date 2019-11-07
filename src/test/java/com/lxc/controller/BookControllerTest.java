@@ -11,14 +11,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BookControllerTest {
@@ -47,6 +45,7 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.forwardedUrl("bookManagement/bookList.html"))
                 .andExpect(MockMvcResultMatchers.model().attribute("bookPage", mockedPage))
+                .andExpect(MockMvcResultMatchers.model().attribute("condition", "all"))
                 .andReturn();
     }
 
@@ -91,10 +90,9 @@ public class BookControllerTest {
 
         Book book = Book.builder().id(1).build();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/book/withdraw")
-                .param("bookId", book.getId().toString())
-                .param("page", String.valueOf(0)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/book/find"))
+                .param("bookId", book.getId().toString()).param("page", String.valueOf(0)))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
         verify(bookService).setStatus("WITHDRAW", book.getId());
     }
@@ -104,10 +102,9 @@ public class BookControllerTest {
 
         Book book = Book.builder().id(1).build();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/book/onSale")
-                .param("bookId", book.getId().toString())
-                .param("page", String.valueOf(0)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/book/find"))
+                .param("bookId", book.getId().toString()).param("page", String.valueOf(0)))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
         verify(bookService).setStatus("AVAILABLE", book.getId());
     }
@@ -123,45 +120,38 @@ public class BookControllerTest {
     }
 
     @Test
-    public void findBookByCondition_whenParamsNullAndSessionIsNull() throws Exception {
+    public void findBookByName_happyPath() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/find"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/book/books"))
-                .andReturn();
-    }
-
-    @Test
-    public void findBookByCondition_whenParamsNullAndSessionHasParams() throws Exception {
-
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/find")
-                .sessionAttr("key", "isbn")
-                .sessionAttr("keyword", "a"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByName")
+                .param("page", String.valueOf(0)).param("keyword", "a"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
+                .andExpect(MockMvcResultMatchers.request().attribute("condition", "name"))
                 .andReturn();
+        verify(bookService).findByCondition("name", "a", 0);
     }
 
     @Test
-    public void findBookByCondition_whenParamsNotNullAndConditionIsAll() throws Exception {
+    public void findBookByAuthor_happyPath() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/find")
-                .param("key", "all"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/book/books"))
-                .andReturn();
-    }
-
-    @Test
-    public void findBookByCondition_whenParamsNotNullAndOtherThreeConditions() throws Exception {
-
-        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get("/book/find")
-                .param("key", "isbn")
-                .param("keyword", "a"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByAuthor")
+                .param("page", String.valueOf(0)).param("keyword", "a"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
+                .andExpect(MockMvcResultMatchers.request().attribute("condition", "author"))
                 .andReturn();
-        assertThat(result.getModelAndView().getModel()).containsKey("bookPage");
+        verify(bookService).findByCondition("author", "a", 0);
+    }
+
+    @Test
+    public void findBookByIsbn_happyPath() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByIsbn")
+                .param("page", String.valueOf(0)).param("keyword", "a"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
+                .andExpect(MockMvcResultMatchers.request().attribute("condition", "isbn"))
+                .andReturn();
         verify(bookService).findByCondition("isbn", "a", 0);
     }
 }

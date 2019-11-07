@@ -81,14 +81,14 @@ public class CartTest {
     }
 
     @Test
-    public void getByBookId_shouldBeNull_ifBookIdDoesNotExist() {
+    public void getByBookId_shouldReturnNull_ifBookIdDoesNotExist() {
 
         Cart cart = createCart(1);
         assertNull(cart.getByBookId(2));
     }
 
     @Test
-    public void getByBookId_shouldBeNull_ifCartItemsIsEmpty() {
+    public void getByBookId_shouldReturnNull_ifCartItemsIsEmpty() {
 
         Cart cart = new Cart();
         assertNull(cart.getByBookId(1));
@@ -127,6 +127,14 @@ public class CartTest {
         Cart cart = createCart(1, 1);
         cart.decreaseQuantity(2);
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
+    }
+
+    @Test
+    public void decreaseQuantity_shouldKeepZero_ifQuantityIsZero() {
+
+        Cart cart = createCart(1, 0);
+        cart.decreaseQuantity(1);
+        assertThat(cart.getByBookId(1).getQuantity(), is(0));
     }
 
     @Test
