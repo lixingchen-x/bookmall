@@ -1,6 +1,8 @@
 package com.lxc.controller;
 
+import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
 import com.lxc.service.BookService;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,19 +68,19 @@ public class CartControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
                 .andReturn();
         verify(mockedCart).decreaseQuantity(1);
-        verify(bookService).increaseStock(1);
+        verify(bookService).increaseStock(1, 1);
     }
 
     @Test
     public void deleteCartItem_happyPath() throws Exception {
 
-        Cart mockedCart = mock(Cart.class);
+        Cart cart = createCart(1, 1);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/cart/delete/{bookId}", 1)
-                .sessionAttr("cart", mockedCart))
+                .sessionAttr("cart", cart))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
                 .andReturn();
-        verify(mockedCart).removeCartItem(1);
+        verify(bookService).increaseStock(1, 1);
     }
 
     @Test
@@ -100,5 +102,21 @@ public class CartControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
+    }
+
+    @Test
+    public void rollBackStockForCartReset_happyPath() {
+
+        Cart cart = createCart(1, 1);
+        cartController.rollBackStockForCartReset(cart);
+        verify(bookService).increaseStock(1, 1);
+    }
+
+    private Cart createCart(Integer id, Integer quantity) {
+
+        Book book = Book.builder().id(id).build();
+        Cart cart = new Cart();
+        cart.updateCart(CartItem.builder().book(book).quantity(quantity).build());
+        return cart;
     }
 }

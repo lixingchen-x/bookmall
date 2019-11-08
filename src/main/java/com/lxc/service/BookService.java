@@ -21,5 +21,5 @@ public interface BookService {
 
     void decreaseStock(Integer id);
 
-    void increaseStock(Integer id);
+    void increaseStock(Integer id, Integer increment);
 }

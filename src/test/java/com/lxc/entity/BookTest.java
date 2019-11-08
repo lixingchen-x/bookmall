@@ -79,7 +79,7 @@ public class BookTest {
     public void increaseStock_happyPath() {
 
         Book book = Book.builder().stock(1).build();
-        book.increaseStock();
+        book.increaseStock(1);
         assertThat(book.getStock()).isEqualTo(2);
     }
 

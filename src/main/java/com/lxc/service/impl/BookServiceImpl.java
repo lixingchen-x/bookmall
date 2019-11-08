@@ -105,11 +105,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void increaseStock(Integer id) {
+    public void increaseStock(Integer id, Integer increment) {
 
         try {
             Book book = bookRepository.getOne(id);
-            book.increaseStock();
+            book.increaseStock(increment);
             bookRepository.saveAndFlush(book);
         }catch (EntityNotFoundException e) {
             System.out.println("BookID does not exist!");

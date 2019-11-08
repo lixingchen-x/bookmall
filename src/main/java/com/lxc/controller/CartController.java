@@ -1,6 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,7 +53,7 @@ public class CartController {
 
         Cart cart = (Cart) session.getAttribute("cart");
         cart.decreaseQuantity(id);
-        bookService.increaseStock(id);
+        bookService.increaseStock(id, 1);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
     }
@@ -67,6 +68,7 @@ public class CartController {
     public String delete(@PathVariable("bookId") Integer id, HttpSession session) {
 
         Cart cart = (Cart) session.getAttribute("cart");
+        bookService.increaseStock(id, cart.getByBookId(id).getQuantity());
         cart.removeCartItem(id);
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
@@ -81,6 +83,7 @@ public class CartController {
     public String reset(HttpSession session) {
 
         Cart cart = (Cart)session.getAttribute("cart");
+        rollBackStockForCartReset(cart);
         cart.resetCart();
         session.setAttribute("cart", cart);
         return "redirect:/cart/cartItems";
@@ -94,5 +97,11 @@ public class CartController {
     public String confirm() {
 
         return "redirect:/book/books";
+    }
+
+    public void rollBackStockForCartReset(Cart cart) {
+
+        cart.getCartItems().forEach(cartItem ->
+                bookService.increaseStock(cartItem.getBook().getId(), cartItem.getQuantity()));
     }
 }
