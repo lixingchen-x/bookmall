@@ -88,15 +88,11 @@ public class CartController {
 
     /**
      * 去挑选图书
-     * @param session
      * @return
      */
     @RequestMapping("toBuy")
-    public String confirm(HttpSession session) {
+    public String confirm() {
 
-        session.setAttribute("key", null);
-        session.setAttribute("keyword", null);
-        //ToDo
         return "redirect:/book/books";
     }
 }
