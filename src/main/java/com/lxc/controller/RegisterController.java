@@ -32,7 +32,7 @@ public class RegisterController {
             model.addAttribute("msg", "密码长度请大于等于6");
             return "register";
         }
-        userService.save(user);
+        userService.saveAsCustomer(user);
         model.addAttribute("msg", "注册成功，请登录");
         return "login";
     }

@@ -11,6 +11,7 @@ public class RoleTest {
 
         Role role = new Role();
         role.setName(Role.ADMIN_ROLE_CODE);
+
         assertThat(role.getName()).isEqualTo("ADMIN");
     }
 }

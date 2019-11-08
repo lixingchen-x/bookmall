@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Book extends Base implements Serializable {
+public class Book extends BaseEntity implements Serializable {
 
     @Column(name = "book_name")
     private String bookName;
@@ -57,9 +57,9 @@ public class Book extends Base implements Serializable {
         this.status = status;
     }
 
-    public void increaseStock() {
+    public void increaseStock(Integer increment) {
 
-        this.stock += 1;
+        this.stock += increment;
     }
 
     public void decreaseStock() {

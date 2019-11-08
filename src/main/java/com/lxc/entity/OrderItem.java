@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Table(name = "order_item")
 @Getter
 @Setter
-public class OrderItem extends Base implements Serializable {
+public class OrderItem extends BaseEntity implements Serializable {
 
     @Column(name = "order_id")
     private Integer orderId;

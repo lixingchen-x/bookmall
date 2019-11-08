@@ -17,7 +17,7 @@ import java.util.Objects;
 @MappedSuperclass
 @AllArgsConstructor
 @NoArgsConstructor
-public class Base {
+public class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class Base {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Base)) return false;
-        Base base = (Base) o;
-        return getId().equals(base.getId());
+        if (!(o instanceof BaseEntity)) return false;
+        BaseEntity baseEntity = (BaseEntity) o;
+        return getId().equals(baseEntity.getId());
     }
 
     @Override

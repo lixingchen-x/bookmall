@@ -15,6 +15,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setBookName("abc");
+
         assertThat(book.getBookName()).isEqualTo("abc");
     }
 
@@ -23,6 +24,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setAuthor("abc");
+
         assertThat(book.getAuthor()).isEqualTo("abc");
     }
 
@@ -31,6 +33,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setIsbn("123");
+
         assertThat(book.getIsbn()).isEqualTo("123");
     }
 
@@ -39,6 +42,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setIntro("abc");
+
         assertThat(book.getIntro()).isEqualTo("abc");
     }
 
@@ -47,6 +51,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setPrice(0.0);
+
         assertThat(book.getPrice()).isEqualTo(0.0);
     }
 
@@ -55,6 +60,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setStock(100);
+
         assertThat(book.getStock()).isEqualTo(100);
     }
 
@@ -63,6 +69,7 @@ public class BookTest {
 
         Book book = new Book();
         book.setStatus("PAID");
+
         assertThat(book.getStatus()).isEqualTo("PAID");
     }
 
@@ -72,6 +79,7 @@ public class BookTest {
         Date date = DateUtils.parse("2019-10-29");
         Book book = new Book();
         book.setPublishDate(date);
+
         assertThat(book.getPublishDate()).isEqualTo(date);
     }
 
@@ -79,7 +87,8 @@ public class BookTest {
     public void increaseStock_happyPath() {
 
         Book book = Book.builder().stock(1).build();
-        book.increaseStock();
+        book.increaseStock(1);
+
         assertThat(book.getStock()).isEqualTo(2);
     }
 
@@ -88,6 +97,7 @@ public class BookTest {
 
         Book book = Book.builder().stock(1).build();
         book.decreaseStock();
+
         assertThat(book.getStock()).isEqualTo(0);
     }
 
@@ -96,6 +106,7 @@ public class BookTest {
 
         Book book = Book.builder().stock(0).build();
         book.decreaseStock();
+
         assertThat(book.getStock()).isEqualTo(0);
     }
 
@@ -111,6 +122,7 @@ public class BookTest {
 
         Book book = Book.builder().id(1).bookName("a").isbn("123").stock(1).price(100.0).author("a")
                 .intro("a").publishDate(DateUtils.parse("2019-10-29")).status("PAID").build();
+
         assertThat(book.getId()).isEqualTo(1);
         assertThat(book.getBookName()).isEqualTo("a");
         assertThat(book.getIsbn()).isEqualTo("123");

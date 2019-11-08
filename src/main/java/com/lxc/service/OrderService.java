@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 
 public interface OrderService {
 
-    Page<Order> findByUsername (String username, int pageNum);
+    Page<Order> findByUserId (Integer userId, int pageNum);
 
     void save(Order order);
 

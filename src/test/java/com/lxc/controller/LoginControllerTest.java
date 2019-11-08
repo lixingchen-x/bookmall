@@ -85,6 +85,7 @@ public class LoginControllerTest {
         when(securityManager.createSubject(any())).thenReturn(subject);
         when(userService.findByUsername("a")).thenReturn(valid);
         when(request.getSession()).thenReturn(session);
+
         assertThat(loginController.doLogin(request, unchecked)).isEqualTo("index");
     }
 
@@ -95,6 +96,7 @@ public class LoginControllerTest {
         Subject subject = createMockedSubject();
         when(securityManager.createSubject(any())).thenReturn(subject);
         doThrow(new UnknownAccountException()).when(subject).login(any(UsernamePasswordToken.class));
+
         assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
     }
 
@@ -105,6 +107,7 @@ public class LoginControllerTest {
         Subject subject = createMockedSubject();
         when(securityManager.createSubject(any())).thenReturn(subject);
         doThrow(new IncorrectCredentialsException()).when(subject).login(any(UsernamePasswordToken.class));
+
         assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
     }
 
@@ -113,6 +116,7 @@ public class LoginControllerTest {
 
         Subject subject = createMockedSubject();
         when(securityManager.createSubject(any())).thenReturn(subject);
+
         assertThat(loginController.doLogout()).isEqualTo("login");
     }
 

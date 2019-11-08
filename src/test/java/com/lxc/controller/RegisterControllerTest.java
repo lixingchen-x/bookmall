@@ -35,6 +35,7 @@ public class RegisterControllerTest {
         Model mockedModel = mock(Model.class);
         User mockedUser = mock(User.class);
         when(userService.findByUsername("a")).thenReturn(mockedUser);
+
         assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("register");
     }
 
@@ -44,6 +45,7 @@ public class RegisterControllerTest {
         User user = User.builder().username("a").password("123").build();
         Model mockedModel = mock(Model.class);
         when(userService.findByUsername("a")).thenReturn(null);
+
         assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("register");
     }
 
@@ -53,7 +55,9 @@ public class RegisterControllerTest {
         User user = User.builder().username("a").password("123456").build();
         Model mockedModel = mock(Model.class);
         when(userService.findByUsername("a")).thenReturn(null);
+
         assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("login");
-        verify(userService).save(user);
+
+        verify(userService).saveAsCustomer(user);
     }
 }

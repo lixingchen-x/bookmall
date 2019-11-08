@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 <body>
+<div th:text="${addBook}" style="color: red"></div>
 <div>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
         <form role="form" method="post" th:action="@{/book/add}">

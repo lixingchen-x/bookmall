@@ -3,6 +3,7 @@ package com.lxc.service.impl;
 import com.lxc.entity.User;
 import com.lxc.repository.UserRepository;
 import com.lxc.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
             oldUser.setEmail(user.getEmail());
             userRepository.saveAndFlush(oldUser);
         }catch (EntityNotFoundException e) {
-            System.out.println("User does not exist!");
+            log.error("UserId = " + user.getId() + " does not exist!");
         }
     }
 
@@ -35,7 +37,7 @@ public class UserServiceImpl implements UserService {
             userRepository.getOne(id);
             userRepository.deleteById(id);
         }catch (EntityNotFoundException e) {
-            System.out.println("User does not exist!");
+            log.error("UserId = " + id + " does not exist!");
         }
     }
 
@@ -45,16 +47,25 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.getOne(id);
         }catch (EntityNotFoundException e) {
-            System.out.println("User does not exist!");
             return null;
         }
     }
 
     @Override
-    public void save(User user) {
+    public void saveAsCustomer(User user) {
 
-        user.setCustomer();
+        user.changeRoleToCustomer();
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public String addUser(User user) {
+
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            saveAsCustomer(user);
+            return "success";
+        }
+        return "fail";
     }
 
     @Override
@@ -70,26 +81,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setAdmin(Integer id) {
+    public void changeRoleToAdmin(Integer id) {
 
         try {
             User user = userRepository.getOne(id);
-            user.setAdmin();
+            user.changeRoleToAdmin();
             userRepository.saveAndFlush(user);
         }catch (EntityNotFoundException e) {
-            System.out.println("User does not exist!");
+            log.error("UserId = " + id + " does not exist!");
         }
     }
 
     @Override
-    public void setCustomer(Integer id) {
+    public void changeRoleToCustomer(Integer id) {
 
         try {
             User user = userRepository.getOne(id);
-            user.setCustomer();
-            userRepository.saveAndFlush(user);
+            saveAsCustomer(user);
         }catch (EntityNotFoundException e) {
-            System.out.println("User does not exist!");
+            log.error("UserId = " + id + " does not exist!");
         }
     }
 }

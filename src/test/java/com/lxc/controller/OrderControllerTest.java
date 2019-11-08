@@ -50,8 +50,8 @@ public class OrderControllerTest {
     public void getOrders_happyPath() throws Exception {
 
         Page mockedPage = mock(Page.class);
-        User user = User.builder().username("a").build();
-        when(orderService.findByUsername("a", 0)).thenReturn(mockedPage);
+        User user = User.builder().id(1).build();
+        when(orderService.findByUserId(1, 0)).thenReturn(mockedPage);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/order/orders")
                 .param("page", String.valueOf(0))
                 .sessionAttr("user", user))
@@ -59,7 +59,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("user/orders.html"))
                 .andExpect(MockMvcResultMatchers.model().attribute("orderPage", mockedPage))
                 .andReturn();
-        verify(orderService).findByUsername("a", 0);
+        verify(orderService).findByUserId(1, 0);
     }
 
     @Test
@@ -75,10 +75,14 @@ public class OrderControllerTest {
     public void completeOrderInfo_happyPath() {
 
         MockHttpSession mockedSession = mock(MockHttpSession.class);
-        Order mockedOrder = mock(Order.class);
-        when(mockedSession.getAttribute("cart")).thenReturn(mock(Cart.class));
-        assertThat(orderController.completeOrderInfo(mockedSession, mockedOrder)).isEqualTo("index");
-        verify(orderService).save(mockedOrder);
+        Cart cart = mockSessionAttributes(mockedSession);
+        OrderItem mockedOrderItem = getMockedOrderItem(cart);
+        Order order = createOrder(1);
+
+        assertThat(orderController.completeOrderInfo(mockedSession, order)).isEqualTo("index");
+
+        verify(orderService).save(order);
+        verify(orderItemService).save(mockedOrderItem);
     }
 
     @Test
@@ -125,15 +129,28 @@ public class OrderControllerTest {
         verify(orderService).setStatus("UNPAID", 1);
     }
 
-    @Test
-    public void saveOrderItem_happyPath() {
+    private Order createOrder(Integer id) {
 
-        Cart cart = new Cart();
+        Order order = new Order();
+        order.setId(id);
+        return order;
+    }
+
+    private OrderItem getMockedOrderItem(Cart cart) {
+
         CartItem cartItem = mock(CartItem.class);
         cart.getCartItems().add(cartItem);
         OrderItem orderItem = mock(OrderItem.class);
         when(cartItem.transferToOrderItem(1)).thenReturn(orderItem);
-        orderController.saveOrderItem(cart, 1);
-        verify(orderItemService).save(orderItem);
+        return orderItem;
+    }
+
+    private Cart mockSessionAttributes(MockHttpSession session) {
+
+        Cart cart = new Cart();
+        User user = User.builder().id(1).build();
+        when(session.getAttribute("cart")).thenReturn(cart);
+        when(session.getAttribute("user")).thenReturn(user);
+        return cart;
     }
 }

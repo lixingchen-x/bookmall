@@ -3,6 +3,7 @@ package com.lxc.service.impl;
 import com.lxc.entity.Book;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private final int PAGE_SIZE = 10;
@@ -36,7 +38,7 @@ public class BookServiceImpl implements BookService {
             BeanUtils.copyProperties(newBook, temp);
             bookRepository.saveAndFlush(temp);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
+            log.error("BookId = " + newBook.getId() + " does not exist!");
         }
     }
 
@@ -47,20 +49,28 @@ public class BookServiceImpl implements BookService {
             bookRepository.getOne(id);
             bookRepository.deleteById(id);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
+            log.error("BookId = " + id + " does not exist!");
         }
     }
 
     @Override
-    public Page<Book> findByCondition(String condition, String keyword, int pageNum) {
+    public Page<Book> findPageableByCondition(String condition, String keyword, int pageNum) {
 
         Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
         if ("name".equals(condition)) {
             return bookRepository.findByBookName(keyword, pageable);
-        }else if ("author".equals(condition)) {
-            return bookRepository.findByAuthor(keyword, pageable);
         }
-        return bookRepository.findByIsbn(keyword, pageable);
+        return bookRepository.findByAuthor(keyword, pageable);
+    }
+
+    @Override
+    public Book findByIsbn(String isbn) {
+
+        try {
+            return bookRepository.findByIsbn(isbn);
+        }catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
     @Override
@@ -71,7 +81,7 @@ public class BookServiceImpl implements BookService {
             book.setStatus(status);
             bookRepository.saveAndFlush(book);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
+            log.error("BookId = " + id + " does not exist!");
         }
     }
 
@@ -81,15 +91,19 @@ public class BookServiceImpl implements BookService {
         try {
             return bookRepository.getOne(id);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
             return null;
         }
     }
 
     @Override
-    public void save(Book book) {
+    public String addBook(Book book) {
 
-        bookRepository.saveAndFlush(book);
+        if (bookRepository.findByIsbn(book.getIsbn()) == null) {
+            book.setStatus("AVAILABLE");
+            bookRepository.saveAndFlush(book);
+            return "success";
+        }
+        return "fail";
     }
 
     @Override
@@ -100,19 +114,19 @@ public class BookServiceImpl implements BookService {
             book.decreaseStock();
             bookRepository.saveAndFlush(book);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
+            log.error("BookId = " + id + " does not exist!");
         }
     }
 
     @Override
-    public void increaseStock(Integer id) {
+    public void increaseStock(Integer id, Integer increment) {
 
         try {
             Book book = bookRepository.getOne(id);
-            book.increaseStock();
+            book.increaseStock(increment);
             bookRepository.saveAndFlush(book);
         }catch (EntityNotFoundException e) {
-            System.out.println("BookID does not exist!");
+            log.error("BookId = " + id + " does not exist!");
         }
     }
 }

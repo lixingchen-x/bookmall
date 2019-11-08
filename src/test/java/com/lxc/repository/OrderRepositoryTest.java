@@ -7,30 +7,35 @@ import org.springframework.data.domain.Page;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class OrderRepositoryTest extends BaseRepositoryTest {
+public class OrderRepositoryTest extends BaseEntityRepositoryTest {
 
     @Autowired
     protected OrderRepository orderRepository;
 
     @Test
-    public void findByUsernamePageable_happyPath() {
+    public void findByUserIdPageable_happyPath() {
 
-        Order order = insertTestOrder("abc");
-        Page<Order> result = orderRepository.findByUsername("abc", pageable);
+        Order order = insertTestOrder(1);
+
+        Page<Order> result = orderRepository.findByUserId(1, pageable);
+
         assertThat(result.getContent()).hasSize(1).contains(order);
     }
 
     @Test
-    public void findByUsernamePageable_shouldBeEmpty_ifOrderDoesNotExist() {
+    public void findByUserIdPageable_shouldBeEmpty_ifOrderDoesNotExist() {
 
-        insertTestOrder("abc");
-        Page<Order> result = orderRepository.findByUsername("def", pageable);
+        insertTestOrder(1);
+
+        Page<Order> result = orderRepository.findByUserId(2, pageable);
+
         assertThat(result.getContent()).isEmpty();
     }
 
-    private Order insertTestOrder(String username) {
+    private Order insertTestOrder(Integer userId) {
 
-        Order order = new Order(username);
+        Order order = new Order();
+        order.setUserId(userId);
         orderRepository.saveAndFlush(order);
         return order;
     }

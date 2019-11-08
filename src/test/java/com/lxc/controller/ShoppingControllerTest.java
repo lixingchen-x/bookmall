@@ -46,7 +46,7 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByALL_happyPath() throws Exception {
 
-        Cart mockedCart = testWithMockedCart();
+        Cart mockedCart = getMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -55,12 +55,13 @@ public class ShoppingControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/book/books"))
                 .andReturn();
+        verify(bookService).findById(1);
     }
 
     @Test
     public void addToCart_whenFindByName_happyPath() throws Exception {
 
-        Cart mockedCart = testWithMockedCart();
+        Cart mockedCart = getMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -74,7 +75,7 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByAuthor_happyPath() throws Exception {
 
-        Cart mockedCart = testWithMockedCart();
+        Cart mockedCart = getMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -88,7 +89,7 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByIsbn_happyPath() throws Exception {
 
-        Cart mockedCart = testWithMockedCart();
+        Cart mockedCart = getMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -102,7 +103,7 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByALLWithNoParameter_happyPath() throws Exception {
 
-        Cart mockedCart = testWithMockedCart();
+        Cart mockedCart = getMockedCart();
         this.mockMvc.perform(MockMvcRequestBuilders.get("/shopping/add")
                 .param("bookId", String.valueOf(1))
                 .param("page", String.valueOf(0))
@@ -112,14 +113,7 @@ public class ShoppingControllerTest {
                 .andReturn();
     }
 
-    @Test
-    public void createCartItem_happyPath() {
-
-        shoppingController.createCartItem(1, 1);
-        verify(bookService).findById(1);
-    }
-
-    private Cart testWithMockedCart() {
+    private Cart getMockedCart() {
 
         Cart mockedCart = mock(Cart.class);
         CartItem mockedCartItem = mock(CartItem.class);

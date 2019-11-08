@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class UserRepositoryTest extends BaseRepositoryTest {
+public class UserRepositoryTest extends BaseEntityRepositoryTest {
 
     @Autowired
     protected UserRepository userRepository;
@@ -14,7 +14,9 @@ public class UserRepositoryTest extends BaseRepositoryTest {
     public void findByUsername_happyPath() {
 
         User user = insertTestUser("abc");
+
         User result = userRepository.findByUsername("abc");
+
         Assert.assertSame(user, result);
     }
 
@@ -22,6 +24,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
     public void findByUsername_shouldReturnNull_ifUserDoesNotExist() {
 
         insertTestUser("abc");
+
         Assert.assertNull(userRepository.findByUsername("def"));
     }
 

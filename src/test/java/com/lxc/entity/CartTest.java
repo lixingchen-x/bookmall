@@ -20,6 +20,7 @@ public class CartTest {
 
         User user = new User();
         Cart cart = new Cart(user);
+
         assertThat(cart.getUser()).isEqualTo(user);
     }
 
@@ -29,6 +30,7 @@ public class CartTest {
         User user = new User();
         Cart cart = new Cart();
         cart.setUser(user);
+
         assertThat(cart.getUser()).isEqualTo(user);
     }
 
@@ -38,6 +40,7 @@ public class CartTest {
         Cart cart = new Cart();
         List mockedCartItems = mock(List.class);
         cart.setCartItems(mockedCartItems);
+
         assertThat(cart.getCartItems()).isEqualTo(mockedCartItems);
     }
 
@@ -46,6 +49,7 @@ public class CartTest {
 
         Cart cart = new Cart();
         cart.updateCart(createCartItem(1, 100.0, 1));
+
         assertThat(cart.getTotalPrice(), is(100.0));
     }
 
@@ -53,6 +57,7 @@ public class CartTest {
     public void getTotalPrice_shouldBeZero_ifCartItemsIsEmpty() {
 
         Cart cart = new Cart();
+
         assertThat(cart.getTotalPrice(), is(0.0));
     }
 
@@ -62,6 +67,7 @@ public class CartTest {
         Cart cart = new Cart();
         cart.updateCart(createCartItem(1, 100.0, 1));
         cart.updateCart(createCartItem(2, 100.0, 1));
+
         assertThat(cart.getTotalPrice(), is(200.0));
     }
 
@@ -69,7 +75,9 @@ public class CartTest {
     public void resetCart_happyPath() {
 
         Cart cart = createCart(1);
+
         cart.resetCart();
+
         assertThat(cart.getCartItems()).isEmpty();
     }
 
@@ -77,6 +85,7 @@ public class CartTest {
     public void getByBookId_happyPath() {
 
         Cart cart = createCart(1);
+
         assertThat(cart.getByBookId(1).getBook().getId(), is(1));
     }
 
@@ -84,6 +93,7 @@ public class CartTest {
     public void getByBookId_shouldReturnNull_ifBookIdDoesNotExist() {
 
         Cart cart = createCart(1);
+
         assertNull(cart.getByBookId(2));
     }
 
@@ -91,6 +101,7 @@ public class CartTest {
     public void getByBookId_shouldReturnNull_ifCartItemsIsEmpty() {
 
         Cart cart = new Cart();
+
         assertNull(cart.getByBookId(1));
     }
 
@@ -98,7 +109,9 @@ public class CartTest {
     public void removeCartItem_happyPath() {
 
         Cart cart = createCart(1);
+
         cart.removeCartItem(1);
+
         assertNull(cart.getByBookId(1));
     }
 
@@ -109,7 +122,9 @@ public class CartTest {
         CartItem cartItem = createCartItem(1);
         List mockedList = mock(ArrayList.class);
         cart.setCartItems(mockedList);
+
         cart.removeCartItem(1);
+
         verify(mockedList, never()).remove(cartItem);
     }
 
@@ -117,7 +132,9 @@ public class CartTest {
     public void decreaseQuantity_happyPath() {
 
         Cart cart = createCart(1, 1);
+
         cart.decreaseQuantity(1);
+
         assertThat(cart.getByBookId(1).getQuantity(), is(0));
     }
 
@@ -125,7 +142,9 @@ public class CartTest {
     public void decreaseQuantity_shouldDoNothing_ifIdDoesNotExist() {
 
         Cart cart = createCart(1, 1);
+
         cart.decreaseQuantity(2);
+
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
 
@@ -133,7 +152,9 @@ public class CartTest {
     public void decreaseQuantity_shouldKeepZero_ifQuantityIsZero() {
 
         Cart cart = createCart(1, 0);
+
         cart.decreaseQuantity(1);
+
         assertThat(cart.getByBookId(1).getQuantity(), is(0));
     }
 
@@ -141,7 +162,9 @@ public class CartTest {
     public void increaseQuantity_happyPath() {
 
         Cart cart = createCart(1, 1);
+
         cart.increaseQuantity(1);
+
         assertThat(cart.getByBookId(1).getQuantity(), is(2));
     }
 
@@ -149,7 +172,9 @@ public class CartTest {
     public void increaseQuantity_shouldDoNothing_ifIdDoesNotExist() {
 
         Cart cart = createCart(1, 1);
+
         cart.increaseQuantity(2);
+
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }
 
@@ -157,6 +182,7 @@ public class CartTest {
     public void contains_happyPath() {
 
         Cart cart = createCart(1);
+
         assertTrue(cart.contains(1));
     }
 
@@ -164,6 +190,7 @@ public class CartTest {
     public void contains_shouldBeFalse_ifBookIdDoesNotExist() {
 
         Cart cart = createCart(1);
+
         assertFalse(cart.contains(2));
     }
 
@@ -171,7 +198,9 @@ public class CartTest {
     public void updateCart_CartItemsSizeDoNotChange_ifBookExists() {
 
         Cart cart = createCart(1, 1);
+
         cart.updateCart(createCartItem(1, 1));
+
         assertThat(cart.getCartItems()).hasSize(1);
         assertThat(cart.getByBookId(1).getQuantity(), is(2));
     }
@@ -180,7 +209,9 @@ public class CartTest {
     public void updateCart_CartItemsSizeChange_ifBookDoesNotExist() {
 
         Cart cart = createCart(1, 1);
+
         cart.updateCart(createCartItem(2, 1));
+
         assertThat(cart.getCartItems()).hasSize(2);
         assertThat(cart.getByBookId(1).getQuantity(), is(1));
     }

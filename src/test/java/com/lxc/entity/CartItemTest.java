@@ -12,6 +12,7 @@ public class CartItemTest {
         Book book = new Book();
         CartItem cartItem = new CartItem();
         cartItem.setBook(book);
+
         assertThat(cartItem.getBook()).isEqualTo(book);
     }
 
@@ -19,6 +20,7 @@ public class CartItemTest {
     public void getQuantity_happyPath() {
 
         CartItem cartItem = CartItem.builder().quantity(1).build();
+
         assertThat(cartItem.getQuantity()).isEqualTo(1);
     }
 
@@ -27,6 +29,7 @@ public class CartItemTest {
 
         Book book = Book.builder().price(100.0).build();
         CartItem cartItem = CartItem.builder().book(book).quantity(2).build();
+
         assertThat(cartItem.getSubTotal()).isEqualTo(200.0);
     }
 
@@ -35,6 +38,7 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(1).build();
         cartItem.increaseQuantity();
+
         assertThat(cartItem.getQuantity()).isEqualTo(2);
     }
 
@@ -43,6 +47,7 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(1).build();
         cartItem.decreaseQuantity();
+
         assertThat(cartItem.getQuantity()).isEqualTo(0);
     }
 
@@ -51,6 +56,7 @@ public class CartItemTest {
 
         CartItem cartItem = CartItem.builder().quantity(0).build();
         cartItem.decreaseQuantity();
+
         assertThat(cartItem.getQuantity()).isEqualTo(0);
     }
 
@@ -65,6 +71,7 @@ public class CartItemTest {
 
         Book book = Book.builder().id(1).build();
         CartItem cartItem = CartItem.builder().book(book).quantity(1).build();
+
         assertThat(cartItem.transferToOrderItem(1).getBookId()).isEqualTo(1);
         assertThat(cartItem.transferToOrderItem(1).getQuantity()).isEqualTo(1);
         assertThat(cartItem.transferToOrderItem(1).getOrderId()).isEqualTo(1);

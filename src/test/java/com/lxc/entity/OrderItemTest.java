@@ -11,6 +11,7 @@ public class OrderItemTest {
     public void getId_happyPath() {
 
         item.setId(1);
+
         assertThat(item.getId()).isEqualTo(1);
     }
 
@@ -18,6 +19,7 @@ public class OrderItemTest {
     public void getBookId_happyPath() {
 
         item.setBookId(1);
+
         assertThat(item.getBookId()).isEqualTo(1);
     }
 
@@ -25,6 +27,7 @@ public class OrderItemTest {
     public void getQuantity_happyPath() {
 
         item.setQuantity(1);
+
         assertThat(item.getQuantity()).isEqualTo(1);
     }
 
@@ -32,6 +35,7 @@ public class OrderItemTest {
     public void getOrderId_happyPath() {
 
         item.setOrderId(1);
+
         assertThat(item.getOrderId()).isEqualTo(1);
     }
 }

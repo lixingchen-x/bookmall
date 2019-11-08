@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends Base implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     @Column
     private String username;
@@ -45,12 +45,12 @@ public class User extends Base implements Serializable {
         this.role = role;
     }
 
-    public void setAdmin() {
+    public void changeRoleToAdmin() {
 
         this.role = new Role(Role.ADMIN_ROLE_CODE);
     }
 
-    public void setCustomer() {
+    public void changeRoleToCustomer() {
 
         this.role = new Role(Role.CUSTOMER_ROLE_CODE);
     }

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = {"classpath:application-test.properties"})
 @SpringBootTest
-public abstract class BaseRepositoryTest {
+public abstract class BaseEntityRepositoryTest {
 
     private final int PAGE_SIZE = 10;
 

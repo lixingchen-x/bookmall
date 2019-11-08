@@ -76,9 +76,21 @@ public class UserControllerTest {
     @Test
     public void addUser_happyPath() throws Exception {
 
+        when(userService.addUser(any())).thenReturn("success");
         this.mockMvc.perform(MockMvcRequestBuilders.post("/user/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/user/users"))
+                .andReturn();
+    }
+
+    @Test
+    public void addUser_shouldFail_ifUsernameExists() throws Exception {
+
+        when(userService.addUser(any())).thenReturn("fail");
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/user/add"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("userManagement/addUser.html"))
+                .andExpect(MockMvcResultMatchers.request().attribute("addUser", "新增用户失败，该用户名已存在！"))
                 .andReturn();
     }
 
@@ -115,22 +127,22 @@ public class UserControllerTest {
     }
 
     @Test
-    public void setAdmin_happyPath() throws Exception {
+    public void changeRoleToAdmin_happyPath() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/user/setAdmin/{userId}", 1))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/user/changeRoleToAdmin/{userId}", 1))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/user/users"))
                 .andReturn();
-        verify(userService).setAdmin(1);
+        verify(userService).changeRoleToAdmin(1);
     }
 
     @Test
-    public void setCustomer_happyPath() throws Exception {
+    public void changeRoleToCustomer_happyPath() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/user/setCustomer/{userId}", 1))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/user/changeRoleToCustomer/{userId}", 1))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/user/users"))
                 .andReturn();
-        verify(userService).setCustomer(1);
+        verify(userService).changeRoleToCustomer(1);
     }
 }

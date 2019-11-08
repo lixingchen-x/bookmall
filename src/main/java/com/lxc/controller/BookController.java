@@ -3,11 +3,18 @@ package com.lxc.controller;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.lxc.utils.Convertor;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/book")
@@ -45,10 +52,12 @@ public class BookController {
      * @return
      */
     @PostMapping("add")
-    public String addBook(Book book) {
+    public String addBook(Book book, HttpServletRequest request) {
 
-        book.setStatus("AVAILABLE");
-        bookService.save(book);
+        if ("fail".equals(bookService.addBook(book))) {
+            request.setAttribute("addBook", "新增图书失败，图书已存在！");
+            return "bookManagement/addBook.html";
+        }
         return "redirect:/book/books";
     }
 
@@ -124,10 +133,8 @@ public class BookController {
     public String findBookByName(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
 
-        request.setAttribute("bookPage", bookService.findByCondition("name", keyword, page));
-        request.setAttribute("page", page);
-        request.setAttribute("condition", "name");
-        request.setAttribute("keyword", keyword);
+        request.setAttribute("bookPage", bookService.findPageableByCondition("name", keyword, page));
+        setRequestAttributes(request, keyword, page, "name");
         return "bookManagement/bookList.html";
     }
 
@@ -135,10 +142,8 @@ public class BookController {
     public String findBookByAuthor(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
 
-        request.setAttribute("bookPage", bookService.findByCondition("author", keyword, page));
-        request.setAttribute("page", page);
-        request.setAttribute("condition", "author");
-        request.setAttribute("keyword", keyword);
+        request.setAttribute("bookPage", bookService.findPageableByCondition("author", keyword, page));
+        setRequestAttributes(request, keyword, page, "author");
         return "bookManagement/bookList.html";
     }
 
@@ -146,10 +151,24 @@ public class BookController {
     public String findBookByIsbn(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") Integer page, HttpServletRequest request) {
 
-        request.setAttribute("bookPage", bookService.findByCondition("isbn", keyword, page));
-        request.setAttribute("page", page);
-        request.setAttribute("condition", "isbn");
-        request.setAttribute("keyword", keyword);
+        Page<Book> bookPage = bookToBookPage(bookService.findByIsbn(keyword));
+        request.setAttribute("bookPage", bookPage);
+        setRequestAttributes(request, keyword, page, "isbn");
         return "bookManagement/bookList.html";
+    }
+
+    private void setRequestAttributes(HttpServletRequest request, String keyword, Integer page, String condition) {
+
+        request.setAttribute("page", page);
+        request.setAttribute("condition", condition);
+        request.setAttribute("keyword", keyword);
+    }
+
+    private Page<Book> bookToBookPage(Book book) {
+
+        List<Book> books = new ArrayList<>();
+        books.add(book);
+        Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
+        return Convertor.listConvertToPage(books, pageable);
     }
 }

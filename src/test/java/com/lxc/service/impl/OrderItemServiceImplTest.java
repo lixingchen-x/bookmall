@@ -24,7 +24,9 @@ public class OrderItemServiceImplTest {
     public void save_happyPath() {
 
         OrderItem orderItem = new OrderItem();
+
         orderItemService.save(orderItem);
+
         verify(orderItemRepository).save(orderItem);
     }
 }

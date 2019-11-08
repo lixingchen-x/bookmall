@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 用户的表现层
  */
@@ -49,9 +51,12 @@ public class UserController {
      * @return
      */
     @PostMapping("add")
-    public String add(User user) {
+    public String add(User user, HttpServletRequest request) {
 
-        userService.save(user);
+        if ("fail".equals(userService.addUser(user))) {
+            request.setAttribute("addUser", "新增用户失败，该用户名已存在！");
+            return "userManagement/addUser.html";
+        }
         return "redirect:/user/users";
     }
 
@@ -86,10 +91,10 @@ public class UserController {
      * @param id
      * @return
      */
-    @RequestMapping("setAdmin/{userId}")
-    public String setAdmin(@PathVariable("userId") Integer id) {
+    @RequestMapping("changeRoleToAdmin/{userId}")
+    public String changeRoleToAdmin(@PathVariable("userId") Integer id) {
 
-        userService.setAdmin(id);
+        userService.changeRoleToAdmin(id);
         return "redirect:/user/users";
     }
 
@@ -98,10 +103,10 @@ public class UserController {
      * @param id
      * @return
      */
-    @RequestMapping("setCustomer/{userId}")
-    public String setCustomer(@PathVariable("userId") Integer id) {
+    @RequestMapping("changeRoleToCustomer/{userId}")
+    public String changeRoleToCustomer(@PathVariable("userId") Integer id) {
 
-        userService.setCustomer(id);
+        userService.changeRoleToCustomer(id);
         return "redirect:/user/users";
     }
 }

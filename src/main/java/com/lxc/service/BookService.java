@@ -7,7 +7,9 @@ public interface BookService {
 
     Page<Book> findAllByPage(int pageNum);
 
-    Page<Book> findByCondition(String condition, String keyword, int pageNum);
+    Page<Book> findPageableByCondition(String condition, String keyword, int pageNum);
+
+    Book findByIsbn(String isbn);
 
     void update(Book book);
 
@@ -17,9 +19,9 @@ public interface BookService {
 
     Book findById(Integer id);
 
-    void save(Book book);
+    String addBook(Book book);
 
     void decreaseStock(Integer id);
 
-    void increaseStock(Integer id);
+    void increaseStock(Integer id, Integer increment);
 }

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class BookRepositoryTest extends BaseRepositoryTest {
+public class BookRepositoryTest extends BaseEntityRepositoryTest {
 
     @Autowired
     protected BookRepository bookRepository;
@@ -16,7 +16,9 @@ public class BookRepositoryTest extends BaseRepositoryTest {
     public void findByBookName_happyPath() {
 
         Book book = insertBookWithName("abc");
+
         Page<Book> page = bookRepository.findByBookName("abc", pageable);
+
         assertThat(page.getContent()).contains(book);
     }
 
@@ -24,7 +26,9 @@ public class BookRepositoryTest extends BaseRepositoryTest {
     public void findByBookName_shouldBeEmpty_ifBookDoesNotExist() {
 
         insertBookWithName("abc");
+
         Page<Book> page = bookRepository.findByBookName("def", pageable);
+
         assertThat(page.getContent()).isEmpty();
     }
 
@@ -32,7 +36,9 @@ public class BookRepositoryTest extends BaseRepositoryTest {
     public void findByAuthor_happyPath() {
 
         Book book = insertBookWithAuthor("abc");
+
         Page<Book> page = bookRepository.findByAuthor("abc", pageable);
+
         assertThat(page.getContent()).contains(book);
     }
 
@@ -40,24 +46,26 @@ public class BookRepositoryTest extends BaseRepositoryTest {
     public void findByAuthor_shouldBeEmpty_ifBookDoesNotExist() {
 
         insertBookWithAuthor("abc");
+
         Page<Book> page = bookRepository.findByAuthor("def", pageable);
+
         assertThat(page.getContent()).isEmpty();
     }
 
     @Test
     public void findByIsbn_happyPath() {
 
-        Book book = insertBookWithIsbn("123");
-        Page<Book> page = bookRepository.findByIsbn("123", pageable);
-        assertThat(page.getContent()).contains(book);
+        insertBookWithIsbn("123");
+
+        assertThat(bookRepository.findByIsbn("123")).isNotNull();
     }
 
     @Test
     public void findByIsbn_shouldBeEmpty_ifBookDoesNotExist() {
 
         insertBookWithIsbn("123");
-        Page<Book> page = bookRepository.findByIsbn("321", pageable);
-        assertThat(page.getContent()).isEmpty();
+
+        assertThat(bookRepository.findByIsbn("321")).isNull();
     }
 
     private Book insertBookWithName(String bookName) {

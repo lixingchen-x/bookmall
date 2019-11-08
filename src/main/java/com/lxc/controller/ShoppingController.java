@@ -50,7 +50,7 @@ public class ShoppingController {
         }
     }
 
-    public CartItem createCartItem(Integer id, Integer quantity) {
+    private CartItem createCartItem(Integer id, Integer quantity) {
 
         Book book = bookService.findById(id);
         return CartItem.builder().book(book).quantity(quantity).build();

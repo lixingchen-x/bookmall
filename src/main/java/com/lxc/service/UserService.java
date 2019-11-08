@@ -13,11 +13,13 @@ public interface UserService {
 
     User findById(Integer id);
 
-    void save(User user);
+    void saveAsCustomer(User user);
+
+    String addUser(User user);
 
     List<User> findAll();
 
-    void setAdmin(Integer id);
+    void changeRoleToAdmin(Integer id);
 
-    void setCustomer(Integer id);
+    void changeRoleToCustomer(Integer id);
 }

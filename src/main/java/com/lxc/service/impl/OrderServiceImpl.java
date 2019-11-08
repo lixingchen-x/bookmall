@@ -3,6 +3,7 @@ package com.lxc.service.impl;
 import com.lxc.entity.Order;
 import com.lxc.repository.OrderRepository;
 import com.lxc.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final int PAGE_SIZE = 10;
@@ -21,10 +23,10 @@ public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
 
     @Override
-    public Page<Order> findByUsername(String username, int pageNum) {
+    public Page<Order> findByUserId(Integer userId, int pageNum) {
 
         Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
-        return orderRepository.findByUsername(username, pageable);
+        return orderRepository.findByUserId(userId, pageable);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
             order.setStatus(status);
             orderRepository.saveAndFlush(order);
         }catch (EntityNotFoundException e) {
-            System.out.println("Order does not exist!");
+            log.error("OrderId = " + id +" does not exist!");
         }
     }
 }

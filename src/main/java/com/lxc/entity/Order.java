@@ -1,6 +1,5 @@
 package com.lxc.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
@@ -14,7 +13,7 @@ import java.util.List;
 @Table(name = "`order`")
 @Getter
 @Setter
-public class Order extends Base implements Serializable {
+public class Order extends BaseEntity implements Serializable {
 
     @OneToMany(targetEntity = OrderItem.class,cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
@@ -28,7 +27,7 @@ public class Order extends Base implements Serializable {
     private Date createDate;
 
     @Column
-    private String username;
+    private Integer userId;
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -36,9 +35,8 @@ public class Order extends Base implements Serializable {
     @Column
     private String status;
 
-    public Order() {}
+    @Column
+    private String receiver;
 
-    public Order(String username) {
-        this.username = username;
-    }
+    public Order() {}
 }

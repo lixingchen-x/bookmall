@@ -35,25 +35,29 @@ public class OrderServiceImplTest {
     private OrderServiceImpl orderService;
 
     @Test
-    public void findByUsername_happyPath() {
+    public void findByUserId_happyPath() {
 
         Page mockedPage = mock(Page.class);
-        when(orderRepository.findByUsername("abc", pageable)).thenReturn(mockedPage);
-        assertThat(orderService.findByUsername("abc", PAGE_NUM), is(mockedPage));
+        when(orderRepository.findByUserId(1, pageable)).thenReturn(mockedPage);
+
+        assertThat(orderService.findByUserId(1, PAGE_NUM), is(mockedPage));
     }
 
     @Test
-    public void findByUsername_shouldReturnNull_ifUsernameDoesNotExist() {
+    public void findByUserId_shouldReturnNull_ifUserIdDoesNotExist() {
 
-        when(orderRepository.findByUsername("abc", pageable)).thenReturn(null);
-        assertThat(orderService.findByUsername("abc", PAGE_NUM), is(nullValue()));
+        when(orderRepository.findByUserId(1, pageable)).thenReturn(null);
+
+        assertThat(orderService.findByUserId(1, PAGE_NUM), is(nullValue()));
     }
 
     @Test
     public void save_happyPath() {
 
         Order order = new Order();
+
         orderService.save(order);
+
         verify(orderRepository).saveAndFlush(order);
     }
 
@@ -62,7 +66,9 @@ public class OrderServiceImplTest {
 
         Order order = new Order();
         when(orderRepository.getOne(1)).thenReturn(order);
+
         orderService.setStatus("anyStatus", 1);
+
         assertThat(orderRepository.getOne(1).getStatus(), equalTo("anyStatus"));
     }
 
@@ -70,7 +76,9 @@ public class OrderServiceImplTest {
     public void setStatus_shouldDoNothing_ifOrderDoesNotExist() {
 
         when(orderRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+
         orderService.setStatus("ANY", 1);
+
         verify(orderRepository, never()).saveAndFlush(any());
     }
 }

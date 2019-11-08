@@ -15,8 +15,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BookControllerTest {
@@ -61,9 +64,21 @@ public class BookControllerTest {
     @Test
     public void addBook_happyPath() throws Exception {
 
+        when(bookService.addBook(any())).thenReturn("success");
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
+                .andReturn();
+    }
+
+    @Test
+    public void addBook_shouldFail_ifBookExists() throws Exception {
+
+        when(bookService.addBook(any())).thenReturn("fail");
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("bookManagement/addBook.html"))
+                .andExpect(MockMvcResultMatchers.request().attribute("addBook", "新增图书失败，图书已存在！"))
                 .andReturn();
     }
 
@@ -120,38 +135,32 @@ public class BookControllerTest {
     }
 
     @Test
-    public void findBookByName_happyPath() throws Exception {
+    public void findBookByName_happyPath() {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByName")
-                .param("page", String.valueOf(0)).param("keyword", "a"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
-                .andExpect(MockMvcResultMatchers.request().attribute("condition", "name"))
-                .andReturn();
-        verify(bookService).findByCondition("name", "a", 0);
+        when(bookService.findPageableByCondition("name", "a", 0)).thenReturn(mock(Page.class));
+
+        assertThat(bookController.findBookByName("a", 0, mock(HttpServletRequest.class)))
+                .isEqualTo("bookManagement/bookList.html");
+        verify(bookService).findPageableByCondition("name", "a", 0);
     }
 
     @Test
-    public void findBookByAuthor_happyPath() throws Exception {
+    public void findBookByAuthor_happyPath() {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByAuthor")
-                .param("page", String.valueOf(0)).param("keyword", "a"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
-                .andExpect(MockMvcResultMatchers.request().attribute("condition", "author"))
-                .andReturn();
-        verify(bookService).findByCondition("author", "a", 0);
+        when(bookService.findPageableByCondition("author", "a", 0)).thenReturn(mock(Page.class));
+
+        assertThat(bookController.findBookByAuthor("a", 0, mock(HttpServletRequest.class)))
+                .isEqualTo("bookManagement/bookList.html");
+        verify(bookService).findPageableByCondition("author", "a", 0);
     }
 
     @Test
-    public void findBookByIsbn_happyPath() throws Exception {
+    public void findBookByIsbn_happyPath() {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/findByIsbn")
-                .param("page", String.valueOf(0)).param("keyword", "a"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("bookManagement/bookList.html"))
-                .andExpect(MockMvcResultMatchers.request().attribute("condition", "isbn"))
-                .andReturn();
-        verify(bookService).findByCondition("isbn", "a", 0);
+        when(bookService.findByIsbn("a")).thenReturn(mock(Book.class));
+
+        assertThat(bookController.findBookByIsbn("a", 0, mock(HttpServletRequest.class)))
+                .isEqualTo("bookManagement/bookList.html");
+        verify(bookService).findByIsbn("a");
     }
 }

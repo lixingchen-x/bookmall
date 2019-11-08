@@ -14,5 +14,5 @@ public interface BookRepository extends JpaRepository<Book, Integer>{
 
     Page<Book> findByAuthor(String author, Pageable pageable);
 
-    Page<Book> findByIsbn(String isbn, Pageable pageable);
+    Book findByIsbn(String isbn);
 }

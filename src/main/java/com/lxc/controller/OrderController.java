@@ -24,12 +24,11 @@ public class OrderController {
     @RequestMapping("orders")
     public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, HttpSession session) {
 
-        Page<Order> orderPage = orderService.findByUsername(((User)session.getAttribute("user")).getUsername(), page);
+        Page<Order> orderPage = orderService.findByUserId(((User)session.getAttribute("user")).getId(), page);
         model.addAttribute("orderPage", orderPage);
         model.addAttribute("page", page);
         return "user/orders.html";
     }
-
 
     @GetMapping("orderInfo")
     public String toOrderInfo() {
@@ -42,6 +41,7 @@ public class OrderController {
 
         order.setCreateDate(new Date());
         order.setStatus("UNPAID");
+        order.setUserId(((User)session.getAttribute("user")).getId());
         orderService.save(order);
         saveOrderItem((Cart)session.getAttribute("cart"), order.getId());
         session.setAttribute("cart", new Cart((User) session.getAttribute("user")));
@@ -80,7 +80,7 @@ public class OrderController {
         return "forward:/order/orders";
     }
 
-    public void saveOrderItem(Cart cart, Integer id) {
+    private void saveOrderItem(Cart cart, Integer id) {
 
         cart.getCartItems().forEach(cartItem -> orderItemService.save(cartItem.transferToOrderItem(id)));
     }
