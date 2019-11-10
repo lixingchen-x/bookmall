@@ -104,6 +104,17 @@ public class CartControllerTest {
                 .andReturn();
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    public void rollBackStockForCartReset_happyPath() {
+
+        Cart cart = createCart(1, 1);
+        cartController.rollBackStockForCartReset(cart);
+        verify(bookService).increaseStock(1, 1);
+    }
+
+>>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
     private Cart createCart(Integer id, Integer quantity) {
 
         Book book = Book.builder().id(id).build();

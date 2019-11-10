@@ -88,7 +88,10 @@ public class BookTest {
 
         Book book = Book.builder().stock(1).build();
         book.increaseStock(1);
+<<<<<<< HEAD
 
+=======
+>>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
         assertThat(book.getStock()).isEqualTo(2);
     }
 

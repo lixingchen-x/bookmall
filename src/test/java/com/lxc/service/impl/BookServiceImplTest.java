@@ -244,9 +244,13 @@ public class BookServiceImplTest {
 
         Book book = createBook(1, 1);
         when(bookRepository.getOne(book.getId())).thenReturn(book);
+<<<<<<< HEAD
 
         bookService.increaseStock(book.getId(), 1);
 
+=======
+        bookService.increaseStock(book.getId(), 1);
+>>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
         verify(bookRepository).saveAndFlush(book);
         assertThat(book.getStock(), is(2));
     }
@@ -255,9 +259,13 @@ public class BookServiceImplTest {
     public void increaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
 
         when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+<<<<<<< HEAD
 
         bookService.increaseStock(1, 1);
 
+=======
+        bookService.increaseStock(1, 1);
+>>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
         verify(bookRepository, never()).saveAndFlush(any());
     }
 

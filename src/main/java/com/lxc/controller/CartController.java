@@ -1,6 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -98,7 +99,11 @@ public class CartController {
         return "redirect:/book/books";
     }
 
+<<<<<<< HEAD
     private void rollBackStockForCartReset(Cart cart) {
+=======
+    public void rollBackStockForCartReset(Cart cart) {
+>>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
 
         cart.getCartItems().forEach(cartItem ->
                 bookService.increaseStock(cartItem.getBook().getId(), cartItem.getQuantity()));
