@@ -1,5 +1,6 @@
 package com.lxc.entity;
 
+import com.lxc.constants.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
@@ -39,4 +40,9 @@ public class Order extends BaseEntity implements Serializable {
     private String receiver;
 
     public Order() {}
+
+    public void changeStatusTo(OrderStatus status) {
+
+        this.setStatus(status.getMsg());
+    }
 }

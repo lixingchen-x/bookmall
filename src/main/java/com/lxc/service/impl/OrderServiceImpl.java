@@ -1,5 +1,6 @@
 package com.lxc.service.impl;
 
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.Order;
 import com.lxc.repository.OrderRepository;
 import com.lxc.service.OrderService;
@@ -36,14 +37,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setStatus(String status, Integer id) {
+    public void setStatus(OrderStatus status, Integer id) {
 
         try {
             Order order = orderRepository.getOne(id);
-            order.setStatus(status);
+            order.changeStatusTo(status);
             orderRepository.saveAndFlush(order);
-        }catch (EntityNotFoundException e) {
-            log.error("OrderId = " + id +" does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("OrderId = {} does not exist!", id);
         }
     }
 }

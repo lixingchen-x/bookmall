@@ -1,5 +1,6 @@
 package com.lxc.service;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.Book;
 import org.springframework.data.domain.Page;
 
@@ -19,7 +20,7 @@ public interface BookService {
 
     Book findById(Integer id);
 
-    String addBook(Book book);
+    AddResults addBook(Book book);
 
     void decreaseStock(Integer id);
 

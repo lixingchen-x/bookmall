@@ -1,5 +1,6 @@
 package com.lxc.service.impl;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.Book;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
@@ -37,8 +38,8 @@ public class BookServiceImpl implements BookService {
             Book temp = bookRepository.getOne(newBook.getId());
             BeanUtils.copyProperties(newBook, temp);
             bookRepository.saveAndFlush(temp);
-        }catch (EntityNotFoundException e) {
-            log.error("BookId = " + newBook.getId() + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", newBook.getId());
         }
     }
 
@@ -48,8 +49,8 @@ public class BookServiceImpl implements BookService {
         try {
             bookRepository.getOne(id);
             bookRepository.deleteById(id);
-        }catch (EntityNotFoundException e) {
-            log.error("BookId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", id);
         }
     }
 
@@ -68,7 +69,7 @@ public class BookServiceImpl implements BookService {
 
         try {
             return bookRepository.findByIsbn(isbn);
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return null;
         }
     }
@@ -80,8 +81,8 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepository.getOne(id);
             book.setStatus(status);
             bookRepository.saveAndFlush(book);
-        }catch (EntityNotFoundException e) {
-            log.error("BookId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", id);
         }
     }
 
@@ -90,20 +91,20 @@ public class BookServiceImpl implements BookService {
 
         try {
             return bookRepository.getOne(id);
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return null;
         }
     }
 
     @Override
-    public String addBook(Book book) {
+    public AddResults addBook(Book book) {
 
         if (bookRepository.findByIsbn(book.getIsbn()) == null) {
             book.setStatus("AVAILABLE");
             bookRepository.saveAndFlush(book);
-            return "success";
+            return AddResults.SUCCESS;
         }
-        return "fail";
+        return AddResults.FAIL;
     }
 
     @Override
@@ -113,8 +114,8 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepository.getOne(id);
             book.decreaseStock();
             bookRepository.saveAndFlush(book);
-        }catch (EntityNotFoundException e) {
-            log.error("BookId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", id);
         }
     }
 
@@ -125,8 +126,8 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepository.getOne(id);
             book.increaseStock(increment);
             bookRepository.saveAndFlush(book);
-        }catch (EntityNotFoundException e) {
-            log.error("BookId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", id);
         }
     }
 }

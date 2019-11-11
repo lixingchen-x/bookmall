@@ -1,5 +1,6 @@
 package com.lxc.controller;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import org.junit.Before;
@@ -14,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.ui.Model;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -64,7 +64,7 @@ public class BookControllerTest {
     @Test
     public void addBook_happyPath() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn("success");
+        when(bookService.addBook(any())).thenReturn(AddResults.SUCCESS);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
@@ -74,7 +74,7 @@ public class BookControllerTest {
     @Test
     public void addBook_shouldFail_ifBookExists() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn("fail");
+        when(bookService.addBook(any())).thenReturn(AddResults.FAIL);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bookManagement/addBook.html"))
@@ -139,7 +139,7 @@ public class BookControllerTest {
 
         when(bookService.findPageableByCondition("name", "a", 0)).thenReturn(mock(Page.class));
 
-        assertThat(bookController.findBookByName("a", 0, mock(HttpServletRequest.class)))
+        assertThat(bookController.findBookByName("a", 0, mock(Model.class)))
                 .isEqualTo("bookManagement/bookList.html");
         verify(bookService).findPageableByCondition("name", "a", 0);
     }
@@ -149,7 +149,7 @@ public class BookControllerTest {
 
         when(bookService.findPageableByCondition("author", "a", 0)).thenReturn(mock(Page.class));
 
-        assertThat(bookController.findBookByAuthor("a", 0, mock(HttpServletRequest.class)))
+        assertThat(bookController.findBookByAuthor("a", 0, mock(Model.class)))
                 .isEqualTo("bookManagement/bookList.html");
         verify(bookService).findPageableByCondition("author", "a", 0);
     }
@@ -159,7 +159,7 @@ public class BookControllerTest {
 
         when(bookService.findByIsbn("a")).thenReturn(mock(Book.class));
 
-        assertThat(bookController.findBookByIsbn("a", 0, mock(HttpServletRequest.class)))
+        assertThat(bookController.findBookByIsbn("a", 0, mock(Model.class)))
                 .isEqualTo("bookManagement/bookList.html");
         verify(bookService).findByIsbn("a");
     }

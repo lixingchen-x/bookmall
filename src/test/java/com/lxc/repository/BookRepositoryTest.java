@@ -61,7 +61,7 @@ public class BookRepositoryTest extends BaseEntityRepositoryTest {
     }
 
     @Test
-    public void findByIsbn_shouldBeEmpty_ifBookDoesNotExist() {
+    public void findByIsbn_shouldBeNull_ifBookDoesNotExist() {
 
         insertBookWithIsbn("123");
 

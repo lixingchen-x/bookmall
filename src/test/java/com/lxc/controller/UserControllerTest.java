@@ -1,5 +1,6 @@
 package com.lxc.controller;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.User;
 import com.lxc.service.UserService;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
@@ -76,7 +76,7 @@ public class UserControllerTest {
     @Test
     public void addUser_happyPath() throws Exception {
 
-        when(userService.addUser(any())).thenReturn("success");
+        when(userService.addUser(any())).thenReturn(AddResults.SUCCESS);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/user/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/user/users"))
@@ -86,7 +86,7 @@ public class UserControllerTest {
     @Test
     public void addUser_shouldFail_ifUsernameExists() throws Exception {
 
-        when(userService.addUser(any())).thenReturn("fail");
+        when(userService.addUser(any())).thenReturn(AddResults.FAIL);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/user/add"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("userManagement/addUser.html"))

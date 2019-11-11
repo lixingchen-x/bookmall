@@ -2,7 +2,6 @@ package com.lxc.service.impl;
 
 import com.lxc.entity.OrderItem;
 import com.lxc.repository.OrderItemRepository;
-import com.lxc.service.impl.OrderItemServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

@@ -1,9 +1,9 @@
 package com.lxc.service.impl;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.Role;
 import com.lxc.entity.User;
 import com.lxc.repository.UserRepository;
-import com.lxc.service.impl.UserServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(null);
 
-        assertThat(userService.addUser(user), is("success"));
+        assertThat(userService.addUser(user), is(AddResults.SUCCESS));
         verify(userRepository).saveAndFlush(user);
     }
 
@@ -114,7 +114,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(user);
 
-        assertThat(userService.addUser(user), is("fail"));
+        assertThat(userService.addUser(user), is(AddResults.FAIL));
     }
 
     @Test

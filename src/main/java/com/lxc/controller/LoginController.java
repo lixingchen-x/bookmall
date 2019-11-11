@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
-import com.lxc.entity.Cart;
 import com.lxc.entity.User;
+import com.lxc.helper.AttributesHelper;
 import com.lxc.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -10,14 +10,17 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AttributesHelper attributesHelper;
 
     @RequestMapping("/login")
     public String login() {
@@ -31,22 +34,22 @@ public class LoginController {
     }
 
     @RequestMapping("/doLogin")
-    public String doLogin(HttpServletRequest request, User user) {
+    public String doLogin(Model model, User user) {
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         try {
             subject.login(token);
             User completeUser = userService.findByUsername(user.getUsername());
-            request.setAttribute("user", completeUser);
-            request.getSession().setAttribute("user", completeUser);
-            request.getSession().setAttribute("cart", new Cart(completeUser)); //初始化一个空购物车
+            model.addAttribute("user", completeUser);
+            attributesHelper.login(completeUser);
+            attributesHelper.initCart();
             return "index";
         } catch (UnknownAccountException e) {
-            request.setAttribute("msg", "账号错误");
+            model.addAttribute("msg", "账号错误");
             return "login";
         } catch (IncorrectCredentialsException e) {
-            request.setAttribute("msg", "密码错误");
+            model.addAttribute("msg", "密码错误");
             return "login";
         }
     }

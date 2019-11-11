@@ -3,7 +3,9 @@ package com.lxc.controller;
 import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
+import com.lxc.helper.AttributesHelper;
 import com.lxc.service.BookService;
+import com.lxc.service.CartService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CartControllerTest {
@@ -28,6 +31,12 @@ public class CartControllerTest {
 
     @Mock
     private BookService bookService;
+
+    @Mock
+    private CartService cartService;
+
+    @Mock
+    private AttributesHelper attributesHelper;
 
     @Before
     public void setUp() {
@@ -46,53 +55,51 @@ public class CartControllerTest {
     }
 
     @Test
-    public void increaseQuantity_happyPath() throws Exception {
+    public void increaseQuantity_happyPath() {
 
-        Cart mockedCart = mock(Cart.class);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/cart/increase/{bookId}", 1)
-                .sessionAttr("cart", mockedCart))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
-                .andReturn();
-        verify(mockedCart).increaseQuantity(1);
+        Cart cart = createCart(1, 1);
+
+        assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
+
+        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(2);
         verify(bookService).decreaseStock(1);
+        verify(attributesHelper).updateCart(cart);
     }
 
     @Test
-    public void decreaseQuantity_happyPath() throws Exception {
-
-        Cart mockedCart = mock(Cart.class);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/cart/decrease/{bookId}", 1)
-                .sessionAttr("cart", mockedCart))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
-                .andReturn();
-        verify(mockedCart).decreaseQuantity(1);
-        verify(bookService).increaseStock(1, 1);
-    }
-
-    @Test
-    public void deleteCartItem_happyPath() throws Exception {
+    public void decreaseQuantity_happyPath() {
 
         Cart cart = createCart(1, 1);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/cart/delete/{bookId}", 1)
-                .sessionAttr("cart", cart))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
-                .andReturn();
+
+        assertThat(cartController.decrease(1, cart)).isEqualTo("redirect:/cart/cartItems");
+
+        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(0);
         verify(bookService).increaseStock(1, 1);
+        verify(attributesHelper).updateCart(cart);
     }
 
     @Test
-    public void reset_happyPath() throws Exception {
+    public void deleteCartItem_happyPath() {
 
         Cart cart = createCart(1, 1);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/cart/reset")
-                .sessionAttr("cart", cart))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.view().name("redirect:/cart/cartItems"))
-                .andReturn();
+
+        assertThat(cartController.delete(1, cart)).isEqualTo("redirect:/cart/cartItems");
+
+        assertThat(cart.getCartItems()).hasSize(0);
         verify(bookService).increaseStock(1, 1);
+        verify(attributesHelper).updateCart(cart);
+    }
+
+    @Test
+    public void reset_happyPath() {
+
+        Cart cart = createCart(1, 1);
+
+        assertThat(cartController.reset(cart)).isEqualTo("redirect:/cart/cartItems");
+
+        assertThat(cart.getCartItems()).hasSize(0);
+        verify(cartService).rollBackStockForCartReset(cart);
+        verify(attributesHelper).updateCart(cart);
     }
 
     @Test
@@ -104,17 +111,6 @@ public class CartControllerTest {
                 .andReturn();
     }
 
-<<<<<<< HEAD
-=======
-    @Test
-    public void rollBackStockForCartReset_happyPath() {
-
-        Cart cart = createCart(1, 1);
-        cartController.rollBackStockForCartReset(cart);
-        verify(bookService).increaseStock(1, 1);
-    }
-
->>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
     private Cart createCart(Integer id, Integer quantity) {
 
         Book book = Book.builder().id(id).build();

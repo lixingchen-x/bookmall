@@ -1,8 +1,8 @@
 package com.lxc.service.impl;
 
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.Order;
 import com.lxc.repository.OrderRepository;
-import com.lxc.service.impl.OrderServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -67,9 +67,9 @@ public class OrderServiceImplTest {
         Order order = new Order();
         when(orderRepository.getOne(1)).thenReturn(order);
 
-        orderService.setStatus("anyStatus", 1);
+        orderService.setStatus(OrderStatus.PAID, 1);
 
-        assertThat(orderRepository.getOne(1).getStatus(), equalTo("anyStatus"));
+        assertThat(orderRepository.getOne(1).getStatus(), equalTo("PAID"));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class OrderServiceImplTest {
 
         when(orderRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        orderService.setStatus("ANY", 1);
+        orderService.setStatus(OrderStatus.PAID, 1);
 
         verify(orderRepository, never()).saveAndFlush(any());
     }

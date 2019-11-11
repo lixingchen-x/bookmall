@@ -1,13 +1,14 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.entity.CartItem;
+import com.lxc.helper.AttributesHelper;
+import com.lxc.helper.CurrentCart;
 import com.lxc.service.BookService;
+import com.lxc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/cart")
@@ -15,6 +16,12 @@ public class CartController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private AttributesHelper attributesHelper;
 
     /**
      * 购物车中书籍展示
@@ -29,63 +36,59 @@ public class CartController {
     /**
      * 购物车书籍数量加1
      * @param id
-     * @param session
+     * @param cart
      * @return
      */
     @RequestMapping("increase/{bookId}")
-    public String increase(@PathVariable("bookId") Integer id, HttpSession session) {
+    public String increase(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        Cart cart = (Cart) session.getAttribute("cart");
         cart.increaseQuantity(id);
         bookService.decreaseStock(id);
-        session.setAttribute("cart", cart);
+        attributesHelper.updateCart(cart);
         return "redirect:/cart/cartItems";
     }
 
     /**
      * 购物车书籍数量减1
      * @param id
-     * @param session
+     * @param cart
      * @return
      */
     @RequestMapping("decrease/{bookId}")
-    public String decrease(@PathVariable("bookId") Integer id, HttpSession session) {
+    public String decrease(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        Cart cart = (Cart) session.getAttribute("cart");
         cart.decreaseQuantity(id);
         bookService.increaseStock(id, 1);
-        session.setAttribute("cart", cart);
+        attributesHelper.updateCart(cart);
         return "redirect:/cart/cartItems";
     }
 
     /**
      * 从购物车中删除此书
      * @param id
-     * @param session
+     * @param cart
      * @return
      */
     @RequestMapping("delete/{bookId}")
-    public String delete(@PathVariable("bookId") Integer id, HttpSession session) {
+    public String delete(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        Cart cart = (Cart) session.getAttribute("cart");
         bookService.increaseStock(id, cart.getByBookId(id).getQuantity());
         cart.removeCartItem(id);
-        session.setAttribute("cart", cart);
+        attributesHelper.updateCart(cart);
         return "redirect:/cart/cartItems";
     }
 
     /**
      * 清空购物车
-     * @param session
+     * @param cart
      * @return
      */
     @RequestMapping("reset")
-    public String reset(HttpSession session) {
+    public String reset(@CurrentCart Cart cart) {
 
-        Cart cart = (Cart)session.getAttribute("cart");
-        rollBackStockForCartReset(cart);
+        cartService.rollBackStockForCartReset(cart);
         cart.resetCart();
-        session.setAttribute("cart", cart);
+        attributesHelper.updateCart(cart);
         return "redirect:/cart/cartItems";
     }
 
@@ -97,15 +100,5 @@ public class CartController {
     public String confirm() {
 
         return "redirect:/book/books";
-    }
-
-<<<<<<< HEAD
-    private void rollBackStockForCartReset(Cart cart) {
-=======
-    public void rollBackStockForCartReset(Cart cart) {
->>>>>>> aaf0422d94439d859bb47ee116a0f517071a213c
-
-        cart.getCartItems().forEach(cartItem ->
-                bookService.increaseStock(cartItem.getBook().getId(), cartItem.getQuantity()));
     }
 }

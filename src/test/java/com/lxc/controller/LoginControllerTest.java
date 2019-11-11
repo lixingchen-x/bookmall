@@ -1,6 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
+import com.lxc.helper.AttributesHelper;
 import com.lxc.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -16,14 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -40,10 +39,7 @@ public class LoginControllerTest {
     private SecurityManager securityManager;
 
     @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private MockHttpSession session;
+    private AttributesHelper attributesHelper;
 
     @Mock
     private UserService userService;
@@ -84,9 +80,10 @@ public class LoginControllerTest {
         Subject subject = createMockedSubject();
         when(securityManager.createSubject(any())).thenReturn(subject);
         when(userService.findByUsername("a")).thenReturn(valid);
-        when(request.getSession()).thenReturn(session);
 
-        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("index");
+        assertThat(loginController.doLogin(mock(Model.class), unchecked)).isEqualTo("index");
+        verify(attributesHelper).login(valid);
+        verify(attributesHelper).initCart();
     }
 
     @Test
@@ -97,7 +94,7 @@ public class LoginControllerTest {
         when(securityManager.createSubject(any())).thenReturn(subject);
         doThrow(new UnknownAccountException()).when(subject).login(any(UsernamePasswordToken.class));
 
-        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
+        assertThat(loginController.doLogin(mock(Model.class), unchecked)).isEqualTo("login");
     }
 
     @Test
@@ -108,7 +105,7 @@ public class LoginControllerTest {
         when(securityManager.createSubject(any())).thenReturn(subject);
         doThrow(new IncorrectCredentialsException()).when(subject).login(any(UsernamePasswordToken.class));
 
-        assertThat(loginController.doLogin(request, unchecked)).isEqualTo("login");
+        assertThat(loginController.doLogin(mock(Model.class), unchecked)).isEqualTo("login");
     }
 
     @Test

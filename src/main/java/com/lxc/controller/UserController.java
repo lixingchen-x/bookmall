@@ -1,13 +1,12 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
+import com.lxc.constants.AddResults;
 import com.lxc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户的表现层
@@ -51,10 +50,10 @@ public class UserController {
      * @return
      */
     @PostMapping("add")
-    public String add(User user, HttpServletRequest request) {
+    public String add(User user, Model model) {
 
-        if ("fail".equals(userService.addUser(user))) {
-            request.setAttribute("addUser", "新增用户失败，该用户名已存在！");
+        if (AddResults.FAIL.equals(userService.addUser(user))) {
+            model.addAttribute("addUser", "新增用户失败，该用户名已存在！");
             return "userManagement/addUser.html";
         }
         return "redirect:/user/users";

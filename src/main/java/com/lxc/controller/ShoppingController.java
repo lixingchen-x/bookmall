@@ -1,11 +1,13 @@
 package com.lxc.controller;
 
-import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
-import com.lxc.entity.CartItem;
+import com.lxc.helper.AttributesHelper;
+import com.lxc.helper.CurrentCart;
 import com.lxc.service.BookService;
+import com.lxc.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,6 +19,12 @@ public class ShoppingController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private CartItemService cartItemService;
+
+    @Autowired
+    private AttributesHelper attributesHelper;
 
     @RequestMapping("cart")
     public String cart() {
@@ -31,14 +39,14 @@ public class ShoppingController {
     public String addToCart(@RequestParam(value = "bookId") Integer id,
                             @RequestParam(defaultValue = "0") Integer page,
                             @RequestParam(value = "condition", required = false) String condition,
-                            @RequestParam(value = "keyword", required = false) String keyword, HttpServletRequest request) {
+                            @RequestParam(value = "keyword", required = false) String keyword, Model model,
+                            @CurrentCart Cart cart) {
 
-        request.setAttribute("page", page);
-        request.setAttribute("condition", condition);
-        request.setAttribute("keyword", keyword);
-        Cart cart = (Cart)request.getSession().getAttribute("cart");
+        model.addAttribute("page", page);
+        model.addAttribute("condition", condition);
+        model.addAttribute("keyword", keyword);
         bookService.decreaseStock(id);
-        request.getSession().setAttribute("cart", cart.updateCart(createCartItem(id, 1)));
+        attributesHelper.updateCart(cart.updateCart(cartItemService.createCartItem(id, 1)));
         if ("name".equals(condition)) {
             return "forward:/book/findByName";
         }else if ("author".equals(condition)) {
@@ -48,11 +56,5 @@ public class ShoppingController {
         }else {
             return "forward:/book/books";
         }
-    }
-
-    private CartItem createCartItem(Integer id, Integer quantity) {
-
-        Book book = bookService.findById(id);
-        return CartItem.builder().book(book).quantity(quantity).build();
     }
 }

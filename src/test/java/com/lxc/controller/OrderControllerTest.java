@@ -1,7 +1,9 @@
 package com.lxc.controller;
 
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
-import com.lxc.service.OrderItemService;
+import com.lxc.helper.AttributesHelper;
+import com.lxc.service.CartService;
 import com.lxc.service.OrderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,16 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,7 +34,10 @@ public class OrderControllerTest {
     private OrderService orderService;
 
     @Mock
-    private OrderItemService orderItemService;
+    private CartService cartService;
+
+    @Mock
+    private AttributesHelper attributesHelper;
 
     @Before
     public void setUp() {
@@ -47,18 +50,12 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void getOrders_happyPath() throws Exception {
+    public void getOrders_happyPath() {
 
-        Page mockedPage = mock(Page.class);
         User user = User.builder().id(1).build();
-        when(orderService.findByUserId(1, 0)).thenReturn(mockedPage);
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/order/orders")
-                .param("page", String.valueOf(0))
-                .sessionAttr("user", user))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("user/orders.html"))
-                .andExpect(MockMvcResultMatchers.model().attribute("orderPage", mockedPage))
-                .andReturn();
+
+        assertThat(orderController.orders(mock(Model.class), 0, user)).isEqualTo("user/orders.html");
+
         verify(orderService).findByUserId(1, 0);
     }
 
@@ -74,15 +71,14 @@ public class OrderControllerTest {
     @Test
     public void completeOrderInfo_happyPath() {
 
-        MockHttpSession mockedSession = mock(MockHttpSession.class);
-        Cart cart = mockSessionAttributes(mockedSession);
-        OrderItem mockedOrderItem = getMockedOrderItem(cart);
+        Cart cart = new Cart();
         Order order = createOrder(1);
 
-        assertThat(orderController.completeOrderInfo(mockedSession, order)).isEqualTo("index");
+        assertThat(orderController.completeOrderInfo(mock(User.class), cart, order)).isEqualTo("index");
 
         verify(orderService).save(order);
-        verify(orderItemService).save(mockedOrderItem);
+        verify(cartService).saveOrderItem(cart, 1);
+        verify(attributesHelper).initCart();
     }
 
     @Test
@@ -93,7 +89,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus("PAID", 1);
+        verify(orderService).setStatus(OrderStatus.PAID, 1);
     }
 
     @Test
@@ -104,7 +100,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus("CANCELLED", 1);
+        verify(orderService).setStatus(OrderStatus.CANCELLED, 1);
     }
 
     @Test
@@ -115,7 +111,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus("UNPAID", 1);
+        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
     }
 
     @Test
@@ -126,7 +122,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus("UNPAID", 1);
+        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
     }
 
     private Order createOrder(Integer id) {
@@ -134,23 +130,5 @@ public class OrderControllerTest {
         Order order = new Order();
         order.setId(id);
         return order;
-    }
-
-    private OrderItem getMockedOrderItem(Cart cart) {
-
-        CartItem cartItem = mock(CartItem.class);
-        cart.getCartItems().add(cartItem);
-        OrderItem orderItem = mock(OrderItem.class);
-        when(cartItem.transferToOrderItem(1)).thenReturn(orderItem);
-        return orderItem;
-    }
-
-    private Cart mockSessionAttributes(MockHttpSession session) {
-
-        Cart cart = new Cart();
-        User user = User.builder().id(1).build();
-        when(session.getAttribute("cart")).thenReturn(cart);
-        when(session.getAttribute("user")).thenReturn(user);
-        return cart;
     }
 }

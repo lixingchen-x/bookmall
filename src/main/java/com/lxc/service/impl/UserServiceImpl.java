@@ -1,5 +1,6 @@
 package com.lxc.service.impl;
 
+import com.lxc.constants.AddResults;
 import com.lxc.entity.User;
 import com.lxc.repository.UserRepository;
 import com.lxc.service.UserService;
@@ -25,8 +26,8 @@ public class UserServiceImpl implements UserService {
             oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
             userRepository.saveAndFlush(oldUser);
-        }catch (EntityNotFoundException e) {
-            log.error("UserId = " + user.getId() + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("UserId = {} does not exist!", user.getId());
         }
     }
 
@@ -36,8 +37,8 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.getOne(id);
             userRepository.deleteById(id);
-        }catch (EntityNotFoundException e) {
-            log.error("UserId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("UserId = {} does not exist!", id);
         }
     }
 
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             return userRepository.getOne(id);
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return null;
         }
     }
@@ -59,13 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String addUser(User user) {
+    public AddResults addUser(User user) {
 
         if (userRepository.findByUsername(user.getUsername()) == null) {
             saveAsCustomer(user);
-            return "success";
+            return AddResults.SUCCESS;
         }
-        return "fail";
+        return AddResults.FAIL;
     }
 
     @Override
@@ -87,8 +88,8 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.getOne(id);
             user.changeRoleToAdmin();
             userRepository.saveAndFlush(user);
-        }catch (EntityNotFoundException e) {
-            log.error("UserId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("UserId = {} does not exist!", id);
         }
     }
 
@@ -98,8 +99,8 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userRepository.getOne(id);
             saveAsCustomer(user);
-        }catch (EntityNotFoundException e) {
-            log.error("UserId = " + id + " does not exist!");
+        } catch (EntityNotFoundException e) {
+            log.error("UserId = {} does not exist!", id);
         }
     }
 }
