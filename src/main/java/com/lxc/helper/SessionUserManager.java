@@ -1,6 +1,5 @@
 package com.lxc.helper;
 
-import com.lxc.entity.Cart;
 import com.lxc.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,10 +7,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class SessionAttributesHelper implements AttributesHelper{
+public class SessionUserManager implements UserManager {
 
     public final static String SESSION_USER = "user";
-    public final static String SESSION_CART = "cart";
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -39,12 +37,6 @@ public class SessionAttributesHelper implements AttributesHelper{
     }
 
     @Override
-    public Cart getCurrentCart() {
-
-        return (Cart) request.getSession().getAttribute(this.SESSION_CART);
-    }
-
-    @Override
     public void login(User user) {
 
         setAttribute(this.SESSION_USER, user);
@@ -55,16 +47,5 @@ public class SessionAttributesHelper implements AttributesHelper{
 
         removeAttribute(this.SESSION_USER);
     }
-
-    @Override
-    public void initCart() {
-
-        setAttribute(this.SESSION_CART, new Cart(getCurrentUser()));
-    }
-
-    @Override
-    public void updateCart(Cart cart) {
-
-        setAttribute(this.SESSION_CART, cart);
-    }
 }
+

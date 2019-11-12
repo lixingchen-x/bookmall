@@ -1,7 +1,9 @@
 package com.lxc.service.impl;
 
 import com.lxc.constants.AddResults;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
+import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,20 +131,18 @@ public class BookServiceImplTest {
     @Test
     public void findByIsbn_happyPath() {
 
-        Book expected = Book.builder().isbn("123").build();
-        when(bookRepository.findByIsbn("123")).thenReturn(expected);
+        Book book = mock(Book.class);
+        when(bookRepository.findByIsbn("123")).thenReturn(book);
 
-        Book actual = bookService.findByIsbn("123");
-
-        assertThat(actual, is(expected));
+        assertThat(bookService.bookToBookPage(book), is(bookService.findByIsbn("123")));
     }
 
     @Test
-    public void findByIsbn_shouldReturnNull_ifIsbnDoesNotExist() {
+    public void findByIsbn_shouldReturnEmptyPage_ifIsbnDoesNotExist() {
 
         when(bookRepository.findByIsbn("123")).thenThrow(EntityNotFoundException.class);
 
-        assertThat(bookService.findByIsbn("123"), is(nullValue()));
+        assertThat(bookService.bookToBookPage(null), is(bookService.findByIsbn("123")));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class BookServiceImplTest {
         Book actual = new Book();
         when(bookRepository.getOne(1)).thenReturn(actual);
 
-        bookService.setStatus("AVAILABLE", 1);
+        bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository).saveAndFlush(actual);
         assertThat(actual.getStatus(), equalTo("AVAILABLE"));
@@ -162,7 +162,7 @@ public class BookServiceImplTest {
 
         when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        bookService.setStatus("ANY", 1);
+        bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository, never()).saveAndFlush(any());
     }
@@ -209,49 +209,41 @@ public class BookServiceImplTest {
     public void decreaseStock_happyPath() {
 
         Book book = createBook(1, 1);
-        when(bookRepository.getOne(book.getId())).thenReturn(book);
+        when(bookRepository.getOne(1)).thenReturn(book);
 
-        bookService.decreaseStock(book.getId());
-
-        verify(bookRepository).saveAndFlush(book);
-        assertThat(book.getStock(), is(0));
-    }
-
-    @Test
-    public void decreaseStock_shouldBeZero_ifStockIsZero() {
-
-        Book book = createBook(1, 0);
-        when(bookRepository.getOne(book.getId())).thenReturn(book);
-
-        bookService.decreaseStock(book.getId());
+        bookService.decreaseStock(1, 1);
 
         verify(bookRepository).saveAndFlush(book);
         assertThat(book.getStock(), is(0));
     }
 
     @Test
-    public void decreaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
+    public void decreaseStock_shouldCatchException_ifStockIsNotEnough() {
 
-        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        Book book = Book.builder().id(1).stock(0).build();
+        when(bookRepository.getOne(1)).thenReturn(book);
 
-        bookService.decreaseStock(1);
-
-        verify(bookRepository, never()).saveAndFlush(any());
+        bookService.decreaseStock(1, 1);
+        try {
+            book.decreaseStock(1);
+        } catch (StockNotEnoughException e) {
+            assertThat(e.getMessage(), is("STOCK_IS_NOT_ENOUGH"));
+        }
     }
 
     @Test
     public void increaseStock_happyPath() {
 
         Book book = createBook(1, 1);
-        when(bookRepository.getOne(book.getId())).thenReturn(book);
+        when(bookRepository.getOne(1)).thenReturn(book);
 
-        bookService.increaseStock(book.getId(), 1);
+        bookService.increaseStock(1, 1);
 
         verify(bookRepository).saveAndFlush(book);
         assertThat(book.getStock(), is(2));
     }
 
-    @Test
+    /*@Test
     public void increaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
 
         when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
@@ -259,7 +251,7 @@ public class BookServiceImplTest {
         bookService.increaseStock(1, 1);
 
         verify(bookRepository, never()).saveAndFlush(any());
-    }
+    }*/
 
     private Book createBook(Integer bookId, Integer stock) {
 

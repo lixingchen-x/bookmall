@@ -1,7 +1,9 @@
 package com.lxc.service;
 
 import com.lxc.constants.AddResults;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
+import com.lxc.exception.StockNotEnoughException;
 import org.springframework.data.domain.Page;
 
 public interface BookService {
@@ -10,19 +12,19 @@ public interface BookService {
 
     Page<Book> findPageableByCondition(String condition, String keyword, int pageNum);
 
-    Book findByIsbn(String isbn);
+    Page<Book> findByIsbn(String isbn);
 
     void update(Book book);
 
     void deleteById(Integer id);
 
-    void setStatus(String status, Integer id);
+    void setStatus(BookStatus status, Integer id);
 
     Book findById(Integer id);
 
     AddResults addBook(Book book);
 
-    void decreaseStock(Integer id);
+    void decreaseStock(Integer id, Integer decrement);
 
     void increaseStock(Integer id, Integer increment);
 }

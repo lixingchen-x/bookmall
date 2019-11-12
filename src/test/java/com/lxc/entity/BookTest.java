@@ -1,5 +1,7 @@
 package com.lxc.entity;
 
+import com.lxc.constants.BookStatus;
+import com.lxc.exception.StockNotEnoughException;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -68,9 +70,9 @@ public class BookTest {
     public void getStatus_happyPath() {
 
         Book book = new Book();
-        book.setStatus("PAID");
+        book.setStatus(BookStatus.AVAILABLE.getMsg());
 
-        assertThat(book.getStatus()).isEqualTo("PAID");
+        assertThat(book.getStatus()).isEqualTo("AVAILABLE");
     }
 
     @Test
@@ -93,21 +95,19 @@ public class BookTest {
     }
 
     @Test
-    public void decreaseStock_happyPath() {
+    public void decreaseStock_happyPath() throws StockNotEnoughException {
 
         Book book = Book.builder().stock(1).build();
-        book.decreaseStock();
+        book.decreaseStock(1);
 
         assertThat(book.getStock()).isEqualTo(0);
     }
 
-    @Test
-    public void decreaseStock_shouldBeZero_ifStockIsZero() {
+    @Test(expected = StockNotEnoughException.class)
+    public void decreaseStock_shouldBeZero_ifStockIsZero() throws StockNotEnoughException {
 
         Book book = Book.builder().stock(0).build();
-        book.decreaseStock();
-
-        assertThat(book.getStock()).isEqualTo(0);
+        book.decreaseStock(1);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BookTest {
     public void builder_happyPath() throws ParseException {
 
         Book book = Book.builder().id(1).bookName("a").isbn("123").stock(1).price(100.0).author("a")
-                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status("PAID").build();
+                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE.getMsg()).build();
 
         assertThat(book.getId()).isEqualTo(1);
         assertThat(book.getBookName()).isEqualTo("a");
@@ -131,6 +131,6 @@ public class BookTest {
         assertThat(book.getAuthor()).isEqualTo("a");
         assertThat(book.getIntro()).isEqualTo("a");
         assertThat(book.getPublishDate()).isEqualTo("2019-10-29");
-        assertThat(book.getStatus()).isEqualTo("PAID");
+        assertThat(book.getStatus()).isEqualTo("AVAILABLE");
     }
 }

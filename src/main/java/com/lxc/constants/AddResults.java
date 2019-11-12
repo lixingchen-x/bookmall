@@ -13,11 +13,11 @@ public enum AddResults {
 
     private final String msg;
 
-    public Integer getCode(){
+    public Integer getCode() {
         return code;
     }
 
-    public String getMsg(){
+    public String getMsg() {
         return msg;
     }
 }

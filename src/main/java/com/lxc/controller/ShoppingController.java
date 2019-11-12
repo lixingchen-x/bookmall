@@ -1,30 +1,24 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.helper.AttributesHelper;
+import com.lxc.helper.CartManager;
 import com.lxc.helper.CurrentCart;
-import com.lxc.service.BookService;
-import com.lxc.service.CartItemService;
+import com.lxc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 @RequestMapping("/shopping")
 public class ShoppingController {
 
     @Autowired
-    private BookService bookService;
+    private CartService cartService;
 
     @Autowired
-    private CartItemService cartItemService;
-
-    @Autowired
-    private AttributesHelper attributesHelper;
+    private CartManager cartManager;
 
     @RequestMapping("cart")
     public String cart() {
@@ -42,11 +36,10 @@ public class ShoppingController {
                             @RequestParam(value = "keyword", required = false) String keyword, Model model,
                             @CurrentCart Cart cart) {
 
+        cartManager.updateCart(cart.updateCart(cartService.createCartItem(id, 1)));
         model.addAttribute("page", page);
         model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);
-        bookService.decreaseStock(id);
-        attributesHelper.updateCart(cart.updateCart(cartItemService.createCartItem(id, 1)));
         if ("name".equals(condition)) {
             return "forward:/book/findByName";
         }else if ("author".equals(condition)) {

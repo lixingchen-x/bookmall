@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.helper.AttributesHelper;
+import com.lxc.helper.UserManager;
 import com.lxc.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -20,7 +20,7 @@ public class LoginController {
     private UserService userService;
 
     @Autowired
-    private AttributesHelper attributesHelper;
+    private UserManager userManager;
 
     @RequestMapping("/login")
     public String login() {
@@ -40,10 +40,7 @@ public class LoginController {
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         try {
             subject.login(token);
-            User completeUser = userService.findByUsername(user.getUsername());
-            model.addAttribute("user", completeUser);
-            attributesHelper.login(completeUser);
-            attributesHelper.initCart();
+            model.addAttribute("user", userService.getCompleteUser(user));
             return "index";
         } catch (UnknownAccountException e) {
             model.addAttribute("msg", "账号错误");
@@ -59,6 +56,7 @@ public class LoginController {
 
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
+        userManager.logout();
         return "login";
     }
 }

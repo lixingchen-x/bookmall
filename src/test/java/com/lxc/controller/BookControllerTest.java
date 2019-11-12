@@ -1,6 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.constants.AddResults;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import org.junit.Before;
@@ -109,7 +110,7 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus("WITHDRAW", book.getId());
+        verify(bookService).setStatus(BookStatus.WITHDRAW, book.getId());
     }
 
     @Test
@@ -121,7 +122,7 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus("AVAILABLE", book.getId());
+        verify(bookService).setStatus(BookStatus.AVAILABLE, book.getId());
     }
 
     @Test
@@ -157,7 +158,7 @@ public class BookControllerTest {
     @Test
     public void findBookByIsbn_happyPath() {
 
-        when(bookService.findByIsbn("a")).thenReturn(mock(Book.class));
+        when(bookService.findByIsbn("a")).thenReturn(mock(Page.class));
 
         assertThat(bookController.findBookByIsbn("a", 0, mock(Model.class)))
                 .isEqualTo("bookManagement/bookList.html");

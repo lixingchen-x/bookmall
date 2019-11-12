@@ -1,10 +1,17 @@
 package com.lxc.service;
 
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
 
 public interface CartService {
 
-    void rollBackStockForCartReset(Cart cart);
+    void increaseQuantity(Integer bookId, Cart cart);
 
-    void saveOrderItem(Cart cart, Integer id);
+    void decreaseQuantity(Integer bookId, Cart cart);
+
+    void deleteBook(Integer bookId, Cart cart);
+
+    void reset(Cart cart);
+
+    CartItem createCartItem(Integer id, Integer quantity);
 }

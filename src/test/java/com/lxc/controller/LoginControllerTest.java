@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.helper.AttributesHelper;
+import com.lxc.helper.UserManager;
 import com.lxc.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -39,10 +39,10 @@ public class LoginControllerTest {
     private SecurityManager securityManager;
 
     @Mock
-    private AttributesHelper attributesHelper;
+    private UserService userService;
 
     @Mock
-    private UserService userService;
+    private UserManager userManager;
 
     @Before
     public void setUp() {
@@ -79,11 +79,9 @@ public class LoginControllerTest {
         User unchecked = User.builder().username("a").password("123456").build();
         Subject subject = createMockedSubject();
         when(securityManager.createSubject(any())).thenReturn(subject);
-        when(userService.findByUsername("a")).thenReturn(valid);
+        when(userService.getCompleteUser(unchecked)).thenReturn(valid);
 
         assertThat(loginController.doLogin(mock(Model.class), unchecked)).isEqualTo("index");
-        verify(attributesHelper).login(valid);
-        verify(attributesHelper).initCart();
     }
 
     @Test
@@ -115,6 +113,7 @@ public class LoginControllerTest {
         when(securityManager.createSubject(any())).thenReturn(subject);
 
         assertThat(loginController.doLogout()).isEqualTo("login");
+        verify(userManager).logout();
     }
 
     private Subject createMockedSubject() {

@@ -2,9 +2,8 @@ package com.lxc.controller;
 
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
-import com.lxc.helper.AttributesHelper;
-import com.lxc.service.BookService;
-import com.lxc.service.CartItemService;
+import com.lxc.helper.CartManager;
+import com.lxc.service.CartService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,13 +22,10 @@ public class ShoppingControllerTest {
     private ShoppingController shoppingController;
 
     @Mock
-    private BookService bookService;
+    private CartService cartService;
 
     @Mock
-    private CartItemService cartItemService;
-
-    @Mock
-    private AttributesHelper attributesHelper;
+    private CartManager cartManager;
 
     @Test
     public void toCart_happyPath() {
@@ -40,75 +36,64 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByALL_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        Cart mockedCart = getMockedCart(cart);
+        Cart mockedCart = getMockedCart();
 
-        assertThat(shoppingController.addToCart(1, 0, "all", "a", mock(Model.class), cart))
+        assertThat(shoppingController.addToCart(1, 0, "all", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/books");
 
-        assert_addToCart_success(1, mockedCart);
+        verify(cartManager).updateCart(mockedCart);
     }
 
     @Test
     public void addToCart_whenFindByName_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        Cart mockedCart = getMockedCart(cart);
+        Cart mockedCart = getMockedCart();
 
-        assertThat(shoppingController.addToCart(1, 0, "name", "a", mock(Model.class), cart))
+        assertThat(shoppingController.addToCart(1, 0, "name", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByName");
 
-        assert_addToCart_success(1, mockedCart);
+        verify(cartManager).updateCart(mockedCart);
     }
 
     @Test
     public void addToCart_whenFindByAuthor_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        Cart mockedCart = getMockedCart(cart);
+        Cart mockedCart = getMockedCart();
 
-        assertThat(shoppingController.addToCart(1, 0, "author", "a", mock(Model.class), cart))
+        assertThat(shoppingController.addToCart(1, 0, "author", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByAuthor");
 
-        assert_addToCart_success(1, mockedCart);
+        verify(cartManager).updateCart(mockedCart);
     }
 
     @Test
     public void addToCart_whenFindByIsbn_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        Cart mockedCart = getMockedCart(cart);
+        Cart mockedCart = getMockedCart();
 
-        assertThat(shoppingController.addToCart(1, 0, "isbn", "a", mock(Model.class), cart))
+        assertThat(shoppingController.addToCart(1, 0, "isbn", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByIsbn");
 
-        assert_addToCart_success(1, mockedCart);
+        verify(cartManager).updateCart(mockedCart);
     }
 
     @Test
     public void addToCart_whenFindByALLWithNoParameter_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        Cart mockedCart = getMockedCart(cart);
+        Cart mockedCart = getMockedCart();
 
-        assertThat(shoppingController.addToCart(1, 0, "", "a", mock(Model.class), cart))
+        assertThat(shoppingController.addToCart(1, 0, "", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/books");
 
-        assert_addToCart_success(1, mockedCart);
+        verify(cartManager).updateCart(mockedCart);
     }
 
-    private Cart getMockedCart(Cart cart) {
+    private Cart getMockedCart() {
 
         Cart mockedCart = mock(Cart.class);
         CartItem mockedCartItem = mock(CartItem.class);
-        when(cart.updateCart(mockedCartItem)).thenReturn(mockedCart);
-        when(cartItemService.createCartItem(1, 1)).thenReturn(mockedCartItem);
+        when(mockedCart.updateCart(mockedCartItem)).thenReturn(mockedCart);
+        when(cartService.createCartItem(1, 1)).thenReturn(mockedCartItem);
         return mockedCart;
-    }
-
-    private void assert_addToCart_success(Integer bookId, Cart cart) {
-
-        verify(bookService).decreaseStock(bookId);
-        attributesHelper.updateCart(cart);
     }
 }

@@ -2,6 +2,8 @@ package com.lxc.service.impl;
 
 import com.lxc.constants.AddResults;
 import com.lxc.entity.User;
+import com.lxc.helper.CartManager;
+import com.lxc.helper.UserManager;
 import com.lxc.repository.UserRepository;
 import com.lxc.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,21 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartManager cartManager;
+
+    @Autowired
+    private UserManager userManager;
+
+    @Override
+    public User getCompleteUser(User user) {
+
+        User completeUser = findByUsername(user.getUsername());
+        userManager.login(completeUser);
+        cartManager.initCart();
+        return completeUser;
+    }
 
     @Override
     public void update(User user) {

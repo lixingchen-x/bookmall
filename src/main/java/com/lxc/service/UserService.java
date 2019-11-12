@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface UserService {
 
+    User getCompleteUser(User user);
+
     User findByUsername(String username);
 
     void update(User user);

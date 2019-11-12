@@ -1,9 +1,11 @@
 package com.lxc.service.impl;
 
+import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
+import com.lxc.helper.CartManager;
 import com.lxc.service.BookService;
 import com.lxc.service.CartService;
-import com.lxc.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +16,40 @@ public class CartServiceImpl implements CartService {
     private BookService bookService;
 
     @Autowired
-    private OrderItemService orderItemService;
+    private CartManager cartManager;
 
     @Override
-    public void rollBackStockForCartReset(Cart cart) {
+    public void increaseQuantity(Integer bookId, Cart cart) {
 
-        cart.getCartItems().forEach(cartItem ->
-                bookService.increaseStock(cartItem.getBook().getId(), cartItem.getQuantity()));
+        cart.increaseQuantity(bookId);
+        cartManager.updateCart(cart);
     }
 
     @Override
-    public void saveOrderItem(Cart cart, Integer orderId) {
+    public void decreaseQuantity(Integer bookId, Cart cart) {
 
-        cart.getCartItems().forEach(cartItem -> orderItemService.save(cartItem.transferToOrderItem(orderId)));
+        cart.decreaseQuantity(bookId);
+        cartManager.updateCart(cart);
+    }
+
+    @Override
+    public void deleteBook(Integer bookId, Cart cart) {
+
+        cart.removeCartItem(bookId);
+        cartManager.updateCart(cart);
+    }
+
+    @Override
+    public void reset(Cart cart) {
+
+        cart.resetCart();
+        cartManager.updateCart(cart);
+    }
+
+    @Override
+    public CartItem createCartItem(Integer id, Integer quantity) {
+
+        Book book = bookService.findById(id);
+        return CartItem.builder().book(book).quantity(quantity).build();
     }
 }

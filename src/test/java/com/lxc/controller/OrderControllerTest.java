@@ -2,8 +2,6 @@ package com.lxc.controller;
 
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
-import com.lxc.helper.AttributesHelper;
-import com.lxc.service.CartService;
 import com.lxc.service.OrderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +30,6 @@ public class OrderControllerTest {
 
     @Mock
     private OrderService orderService;
-
-    @Mock
-    private CartService cartService;
-
-    @Mock
-    private AttributesHelper attributesHelper;
 
     @Before
     public void setUp() {
@@ -71,36 +63,29 @@ public class OrderControllerTest {
     @Test
     public void completeOrderInfo_happyPath() {
 
-        Cart cart = new Cart();
-        Order order = createOrder(1);
+        User user = mock(User.class);
+        Cart cart = mock(Cart.class);
+        Order order = mock(Order.class);
 
-        assertThat(orderController.completeOrderInfo(mock(User.class), cart, order)).isEqualTo("index");
+        assertThat(orderController.completeOrderInfo(user, cart, order)).isEqualTo("index");
 
-        verify(orderService).save(order);
-        verify(cartService).saveOrderItem(cart, 1);
-        verify(attributesHelper).initCart();
+        verify(orderService).completeOrderInfo(user, cart, order);
     }
 
     @Test
-    public void pay_happyPath() throws Exception {
+    public void pay_happyPath() {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/order/pay")
-                .param("orderId", String.valueOf(1)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
-                .andReturn();
-        verify(orderService).setStatus(OrderStatus.PAID, 1);
+        assertThat(orderController.pay(1, 0, mock(Model.class))).isEqualTo("forward:/order/orders");
+
+        verify(orderService).pay(1);
     }
 
     @Test
-    public void cancel_happyPath() throws Exception {
+    public void cancel_happyPath() {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/order/cancel")
-                .param("orderId", String.valueOf(1)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
-                .andReturn();
-        verify(orderService).setStatus(OrderStatus.CANCELLED, 1);
+        assertThat(orderController.cancel(1, 0, mock(Model.class))).isEqualTo("forward:/order/orders");
+
+        verify(orderService).cancel(1);
     }
 
     @Test
@@ -123,12 +108,5 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
         verify(orderService).setStatus(OrderStatus.UNPAID, 1);
-    }
-
-    private Order createOrder(Integer id) {
-
-        Order order = new Order();
-        order.setId(id);
-        return order;
     }
 }

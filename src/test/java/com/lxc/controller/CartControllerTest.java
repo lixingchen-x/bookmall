@@ -3,8 +3,6 @@ package com.lxc.controller;
 import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
-import com.lxc.helper.AttributesHelper;
-import com.lxc.service.BookService;
 import com.lxc.service.CartService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,13 +28,7 @@ public class CartControllerTest {
     private CartController cartController;
 
     @Mock
-    private BookService bookService;
-
-    @Mock
     private CartService cartService;
-
-    @Mock
-    private AttributesHelper attributesHelper;
 
     @Before
     public void setUp() {
@@ -61,9 +53,7 @@ public class CartControllerTest {
 
         assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
-        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(2);
-        verify(bookService).decreaseStock(1);
-        verify(attributesHelper).updateCart(cart);
+        verify(cartService).increaseQuantity(1, cart);
     }
 
     @Test
@@ -73,9 +63,7 @@ public class CartControllerTest {
 
         assertThat(cartController.decrease(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
-        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(0);
-        verify(bookService).increaseStock(1, 1);
-        verify(attributesHelper).updateCart(cart);
+        verify(cartService).decreaseQuantity(1, cart);
     }
 
     @Test
@@ -85,9 +73,7 @@ public class CartControllerTest {
 
         assertThat(cartController.delete(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
-        assertThat(cart.getCartItems()).hasSize(0);
-        verify(bookService).increaseStock(1, 1);
-        verify(attributesHelper).updateCart(cart);
+        verify(cartService).deleteBook(1, cart);
     }
 
     @Test
@@ -97,9 +83,7 @@ public class CartControllerTest {
 
         assertThat(cartController.reset(cart)).isEqualTo("redirect:/cart/cartItems");
 
-        assertThat(cart.getCartItems()).hasSize(0);
-        verify(cartService).rollBackStockForCartReset(cart);
-        verify(attributesHelper).updateCart(cart);
+        verify(cartService).reset(cart);
     }
 
     @Test

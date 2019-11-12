@@ -1,19 +1,13 @@
 package com.lxc.controller;
 
 import com.lxc.constants.AddResults;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.lxc.utils.Convertor;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/book")
@@ -81,7 +75,6 @@ public class BookController {
     @PutMapping("update")
     public String updateBook(Book book) {
 
-        book.setStatus("AVAILABLE");
         bookService.update(book);
         return "redirect:/book/books";
     }
@@ -97,7 +90,7 @@ public class BookController {
     public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus("WITHDRAW", id);
+        bookService.setStatus(BookStatus.WITHDRAW, id);
         return "redirect:/book/books";
     }
 
@@ -112,7 +105,7 @@ public class BookController {
     public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus("AVAILABLE", id);
+        bookService.setStatus(BookStatus.AVAILABLE, id);
         return "redirect:/book/books";
     }
 
@@ -150,8 +143,7 @@ public class BookController {
     public String findBookByIsbn(@RequestParam(value = "keyword", required = false) String keyword,
                                  @RequestParam(defaultValue = "0") Integer page, Model model) {
 
-        Page<Book> bookPage = bookToBookPage(bookService.findByIsbn(keyword));
-        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("bookPage", bookService.findByIsbn(keyword));
         addModelAttributes(model, keyword, page, "isbn");
         return "bookManagement/bookList.html";
     }
@@ -161,11 +153,5 @@ public class BookController {
         model.addAttribute("page", page);
         model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);
-    }
-
-    private Page<Book> bookToBookPage(Book book) {
-
-        Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
-        return Convertor.listConvertToPage(List.of(book), pageable);
     }
 }

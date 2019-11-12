@@ -3,6 +3,8 @@ package com.lxc.service.impl;
 import com.lxc.constants.AddResults;
 import com.lxc.entity.Role;
 import com.lxc.entity.User;
+import com.lxc.helper.CartManager;
+import com.lxc.helper.UserManager;
 import com.lxc.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,12 @@ public class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+    @Mock
+    private CartManager cartManager;
+
+    @Mock
+    private UserManager userManager;
 
     @Test
     public void update_happyPath() {
@@ -183,5 +191,19 @@ public class UserServiceImplTest {
         userService.changeRoleToCustomer(1);
 
         verify(userRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    public void getCompleteUser_happyPath() {
+
+        User user = User.builder().id(1).username("a").build();
+        when(userRepository.findByUsername("a")).thenReturn(user);
+
+        assertThat(userService.getCompleteUser(user), is(user));
+
+        verify(userManager).login(user);
+        verify(cartManager).initCart();
+
+
     }
 }

@@ -1,9 +1,12 @@
 package com.lxc.service.impl;
 
 import com.lxc.constants.AddResults;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
+import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
+import com.lxc.utils.ListConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -35,6 +39,7 @@ public class BookServiceImpl implements BookService {
     public void update(Book newBook) {
 
         try {
+            newBook.changeStatusTo(BookStatus.AVAILABLE);
             Book temp = bookRepository.getOne(newBook.getId());
             BeanUtils.copyProperties(newBook, temp);
             bookRepository.saveAndFlush(temp);
@@ -65,21 +70,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findByIsbn(String isbn) {
+    public Page<Book> findByIsbn(String isbn) {
 
         try {
-            return bookRepository.findByIsbn(isbn);
+            Book book = bookRepository.findByIsbn(isbn);
+            return bookToBookPage(book);
         } catch (EntityNotFoundException e) {
-            return null;
+
+            return bookToBookPage(null);
         }
     }
 
     @Override
-    public void setStatus(String status, Integer id) {
+    public void setStatus(BookStatus status, Integer id) {
 
         try {
             Book book = bookRepository.getOne(id);
-            book.setStatus(status);
+            book.changeStatusTo(status);
             bookRepository.saveAndFlush(book);
         } catch (EntityNotFoundException e) {
             log.error("BookId = {} does not exist!", id);
@@ -92,6 +99,7 @@ public class BookServiceImpl implements BookService {
         try {
             return bookRepository.getOne(id);
         } catch (EntityNotFoundException e) {
+            log.error("BookId = {} does not exist!", id);
             return null;
         }
     }
@@ -100,7 +108,7 @@ public class BookServiceImpl implements BookService {
     public AddResults addBook(Book book) {
 
         if (bookRepository.findByIsbn(book.getIsbn()) == null) {
-            book.setStatus("AVAILABLE");
+            book.changeStatusTo(BookStatus.AVAILABLE);
             bookRepository.saveAndFlush(book);
             return AddResults.SUCCESS;
         }
@@ -108,26 +116,31 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void decreaseStock(Integer id) {
+    public void decreaseStock(Integer id, Integer decrement) {
 
+        Book book = bookRepository.getOne(id);
         try {
-            Book book = bookRepository.getOne(id);
-            book.decreaseStock();
+            book.decreaseStock(decrement);
             bookRepository.saveAndFlush(book);
-        } catch (EntityNotFoundException e) {
-            log.error("BookId = {} does not exist!", id);
+        } catch (StockNotEnoughException e) {
+            log.error("BookId = {} does not have enough stock!", id);
         }
     }
 
     @Override
     public void increaseStock(Integer id, Integer increment) {
 
-        try {
-            Book book = bookRepository.getOne(id);
-            book.increaseStock(increment);
-            bookRepository.saveAndFlush(book);
-        } catch (EntityNotFoundException e) {
-            log.error("BookId = {} does not exist!", id);
+        Book book = bookRepository.getOne(id);
+        book.increaseStock(increment);
+        bookRepository.saveAndFlush(book);
+    }
+
+    public Page<Book> bookToBookPage(Book book) {
+
+        if (book == null) {
+            book = Book.builder().id(1).build();
         }
+        Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
+        return ListConvertor.listConvertToPage(List.of(book), pageable);
     }
 }

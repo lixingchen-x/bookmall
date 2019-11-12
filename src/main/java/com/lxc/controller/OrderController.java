@@ -2,17 +2,14 @@ package com.lxc.controller;
 
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
-import com.lxc.helper.AttributesHelper;
 import com.lxc.helper.CurrentCart;
 import com.lxc.helper.CurrentUser;
-import com.lxc.service.CartService;
 import com.lxc.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.Date;
 
 @Controller
 @RequestMapping("/order")
@@ -20,12 +17,6 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private AttributesHelper attributesHelper;
 
     @RequestMapping("orders")
     public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, @CurrentUser User user) {
@@ -45,12 +36,7 @@ public class OrderController {
     @PostMapping("orderInfo")
     public String completeOrderInfo(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
 
-        order.setCreateDate(new Date());
-        order.changeStatusTo(OrderStatus.UNPAID);
-        order.setUserId(user.getId());
-        orderService.save(order);
-        cartService.saveOrderItem(cart, order.getId());
-        attributesHelper.initCart();
+        orderService.completeOrderInfo(user, cart, order);
         return "index";
     }
 
@@ -58,7 +44,7 @@ public class OrderController {
     public String pay(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatus.PAID, id);
+        orderService.pay(id);
         return "forward:/order/orders";
     }
 
@@ -66,7 +52,7 @@ public class OrderController {
     public String cancel(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatus.CANCELLED, id);
+        orderService.cancel(id);
         return "forward:/order/orders";
     }
 

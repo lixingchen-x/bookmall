@@ -1,6 +1,8 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lxc.constants.BookStatus;
+import com.lxc.exception.StockNotEnoughException;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
@@ -62,10 +64,17 @@ public class Book extends BaseEntity implements Serializable {
         this.stock += increment;
     }
 
-    public void decreaseStock() {
+    public void decreaseStock(Integer decrement) throws StockNotEnoughException {
 
-        if (this.stock >= 1) {
-            this.stock -= 1;
+        if ((this.stock - decrement) >= 0) {
+            this.stock -= decrement;
+        } else {
+            throw new StockNotEnoughException("STOCK_IS_NOT_ENOUGH");
         }
+    }
+
+    public void changeStatusTo(BookStatus status) {
+
+        this.setStatus(status.getMsg());
     }
 }

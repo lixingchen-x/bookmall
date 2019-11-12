@@ -1,9 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.helper.AttributesHelper;
 import com.lxc.helper.CurrentCart;
-import com.lxc.service.BookService;
 import com.lxc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,13 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CartController {
 
     @Autowired
-    private BookService bookService;
-
-    @Autowired
     private CartService cartService;
-
-    @Autowired
-    private AttributesHelper attributesHelper;
 
     /**
      * 购物车中书籍展示
@@ -42,9 +34,7 @@ public class CartController {
     @RequestMapping("increase/{bookId}")
     public String increase(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        cart.increaseQuantity(id);
-        bookService.decreaseStock(id);
-        attributesHelper.updateCart(cart);
+        cartService.increaseQuantity(id, cart);
         return "redirect:/cart/cartItems";
     }
 
@@ -57,9 +47,7 @@ public class CartController {
     @RequestMapping("decrease/{bookId}")
     public String decrease(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        cart.decreaseQuantity(id);
-        bookService.increaseStock(id, 1);
-        attributesHelper.updateCart(cart);
+        cartService.decreaseQuantity(id, cart);
         return "redirect:/cart/cartItems";
     }
 
@@ -72,9 +60,7 @@ public class CartController {
     @RequestMapping("delete/{bookId}")
     public String delete(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        bookService.increaseStock(id, cart.getByBookId(id).getQuantity());
-        cart.removeCartItem(id);
-        attributesHelper.updateCart(cart);
+        cartService.deleteBook(id, cart);
         return "redirect:/cart/cartItems";
     }
 
@@ -86,9 +72,7 @@ public class CartController {
     @RequestMapping("reset")
     public String reset(@CurrentCart Cart cart) {
 
-        cartService.rollBackStockForCartReset(cart);
-        cart.resetCart();
-        attributesHelper.updateCart(cart);
+        cartService.reset(cart);
         return "redirect:/cart/cartItems";
     }
 

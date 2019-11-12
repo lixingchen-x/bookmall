@@ -1,10 +1,10 @@
 package com.lxc.constants;
 
-public enum OrderStatus {
+public enum BookStatus {
 
-    UNPAID(1,"UNPAID"), PAID(2,"PAID"), CANCELLED(3,"CANCELLED");
+    AVAILABLE(1,"AVAILABLE"), WITHDRAW(2,"WITHDRAW");
 
-    private OrderStatus(Integer code, String msg) {
+    private BookStatus(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
