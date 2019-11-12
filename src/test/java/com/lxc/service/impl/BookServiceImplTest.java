@@ -154,7 +154,7 @@ public class BookServiceImplTest {
         bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository).saveAndFlush(actual);
-        assertThat(actual.getStatus(), equalTo("AVAILABLE"));
+        assertThat(actual.getStatus(), equalTo(BookStatus.AVAILABLE));
     }
 
     @Test

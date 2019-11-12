@@ -72,7 +72,7 @@ public class OrderServiceImplTest {
 
         orderService.setStatus(OrderStatus.PAID, 1);
 
-        assertThat(orderRepository.getOne(1).getStatus(), equalTo("PAID"));
+        assertThat(orderRepository.getOne(1).getStatus(), equalTo(OrderStatus.PAID));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class OrderServiceImplTest {
 
         orderService.pay(1);
 
-        assertThat(order.getStatus()).isEqualTo("PAID");
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
         verify(bookService).decreaseStock(1, 1);
     }
 
@@ -111,7 +111,7 @@ public class OrderServiceImplTest {
 
         orderService.cancel(1);
 
-        assertThat(order.getStatus()).isEqualTo("CANCELLED");
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
         verify(bookService).increaseStock(1, 1);
     }
 

@@ -44,10 +44,11 @@ public class Book extends BaseEntity implements Serializable {
     private Integer stock;
 
     @Column(name = "book_status")
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private BookStatus status;
 
     @Builder
-    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, String status) {
+    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatus status) {
         super(id);
         this.bookName = bookName;
         this.author = author;
@@ -75,6 +76,6 @@ public class Book extends BaseEntity implements Serializable {
 
     public void changeStatusTo(BookStatus status) {
 
-        this.setStatus(status.getMsg());
+        this.setStatus(status);
     }
 }

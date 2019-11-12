@@ -57,9 +57,9 @@ public class OrderTest {
     @Test
     public void getStatus_happyPath() {
 
-        order.setStatus(OrderStatus.PAID.getMsg());
+        order.setStatus(OrderStatus.PAID);
 
-        assertThat(order.getStatus()).isEqualTo("PAID");
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
     }
 
     @Test

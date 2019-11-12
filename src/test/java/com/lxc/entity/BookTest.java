@@ -70,9 +70,9 @@ public class BookTest {
     public void getStatus_happyPath() {
 
         Book book = new Book();
-        book.setStatus(BookStatus.AVAILABLE.getMsg());
+        book.setStatus(BookStatus.AVAILABLE);
 
-        assertThat(book.getStatus()).isEqualTo("AVAILABLE");
+        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BookTest {
     public void builder_happyPath() throws ParseException {
 
         Book book = Book.builder().id(1).bookName("a").isbn("123").stock(1).price(100.0).author("a")
-                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE.getMsg()).build();
+                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE).build();
 
         assertThat(book.getId()).isEqualTo(1);
         assertThat(book.getBookName()).isEqualTo("a");
@@ -131,6 +131,6 @@ public class BookTest {
         assertThat(book.getAuthor()).isEqualTo("a");
         assertThat(book.getIntro()).isEqualTo("a");
         assertThat(book.getPublishDate()).isEqualTo("2019-10-29");
-        assertThat(book.getStatus()).isEqualTo("AVAILABLE");
+        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
     }
 }

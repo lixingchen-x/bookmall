@@ -91,7 +91,7 @@
                             <td>
                                 <div th:switch="${session.user.username}">
                                     <div th:case="admin">
-                                        <div th:switch="${book.status}">
+                                        <div th:switch="${book.status.getMsg()}">
                                             <div th:case="'WITHDRAW'">
                                                 <a class="btn btn-sm btn-primary" th:href="@{/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
                                                 <a class="btn btn-sm btn-primary" th:href="@{/book/delete/}+${book.id}">删除</a>

@@ -35,7 +35,8 @@ public class Order extends BaseEntity implements Serializable {
     private String phoneNumber;
 
     @Column
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus status;
 
     @Column
     private String receiver;
@@ -44,7 +45,7 @@ public class Order extends BaseEntity implements Serializable {
 
     public void changeStatusTo(OrderStatus status) {
 
-        this.setStatus(status.getMsg());
+        this.setStatus(status);
     }
 
     public void addOrderItem(OrderItem orderItem) {
