@@ -34,9 +34,10 @@ public class OrderController {
     }
 
     @PostMapping("orderInfo")
-    public String completeOrderInfo(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
+    public String completeOrderInfoAndSave(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
 
-        orderService.completeOrderInfo(user, cart, order);
+        Order completeOrder = orderService.completeOrderInfo(user, cart, order);
+        orderService.saveOrderInfo(completeOrder);
         return "index";
     }
 

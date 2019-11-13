@@ -61,15 +61,15 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void completeOrderInfo_happyPath() {
+    public void completeOrderInfoAndSave_happyPath() {
 
         User user = mock(User.class);
         Cart cart = mock(Cart.class);
         Order order = mock(Order.class);
+        when(orderService.completeOrderInfo(user, cart, order)).thenReturn(order);
 
-        assertThat(orderController.completeOrderInfo(user, cart, order)).isEqualTo("index");
-
-        verify(orderService).completeOrderInfo(user, cart, order);
+        assertThat(orderController.completeOrderInfoAndSave(user, cart, order)).isEqualTo("index");
+        verify(orderService).saveOrderInfo(order);
     }
 
     @Test

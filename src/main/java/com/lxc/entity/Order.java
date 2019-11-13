@@ -53,14 +53,9 @@ public class Order extends BaseEntity implements Serializable {
         this.orderItems.add(orderItem);
     }
 
-    /*public OrderItem getByBookId(Integer id) {
+    public Order loadOrderItemsFromCart(Cart cart) {
 
-        return orderItems.stream().filter(orderItem -> orderItem.getBookId().equals(id))
-                .findFirst().orElse(null);
+        cart.getCartItems().forEach(cartItem -> this.addOrderItem(cartItem.transferToOrderItem(this.getId())));
+        return this;
     }
-
-    public boolean contains(Integer id) {
-
-        return getByBookId(id) != null;
-    }*/
 }

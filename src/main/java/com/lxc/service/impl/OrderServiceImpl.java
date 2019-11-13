@@ -5,7 +5,6 @@ import com.lxc.entity.Cart;
 import com.lxc.entity.Order;
 import com.lxc.entity.OrderItem;
 import com.lxc.entity.User;
-import com.lxc.exception.StockNotEnoughException;
 import com.lxc.helper.CartManager;
 import com.lxc.repository.OrderItemRepository;
 import com.lxc.repository.OrderRepository;
@@ -60,17 +59,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void completeOrderInfo(User user, Cart cart, Order order) {
-
-        order.setCreateDate(new Date());
-        order.changeStatusTo(OrderStatus.UNPAID);
-        order.setUserId(user.getId());
-
-        getOrderItems(cart, order);
-        save(order);
-        saveOrderItems(order);
+    public Order completeOrderInfo(User user, Cart cart, Order order) {
 
         cartManager.initCart();
+        Order completeOrder = order.loadOrderItemsFromCart(cart);
+        completeOrder.setCreateDate(new Date());
+        completeOrder.changeStatusTo(OrderStatus.UNPAID);
+        completeOrder.setUserId(user.getId());
+        return completeOrder;
+    }
+
+    @Override
+    public void saveOrderInfo(Order order) {
+
+        save(order);
+        saveOrderItems(order);
     }
 
     @Override
@@ -87,20 +90,21 @@ public class OrderServiceImpl implements OrderService {
         rollBackStocks(orderRepository.getOne(orderId));
     }
 
-    private void save(Order order) {
-
-        orderRepository.saveAndFlush(order);
-    }
-
     private void rollBackStocks(Order order) {
 
         order.getOrderItems().forEach(orderItem ->
                 bookService.increaseStock(orderItem.getBookId(), orderItem.getQuantity()));
     }
 
-    private void getOrderItems(Cart cart, Order order) {
+    private void decreaseStocks(Order order) {
 
-        cart.getCartItems().forEach(cartItem -> order.addOrderItem(cartItem.transferToOrderItem(order.getId())));
+        order.getOrderItems().forEach(orderItem ->
+                bookService.decreaseStock(orderItem.getBookId(), orderItem.getQuantity()));
+    }
+
+    private void save(Order order) {
+
+        orderRepository.saveAndFlush(order);
     }
 
     private void saveSingleOrderItem(OrderItem orderItem) {
@@ -111,11 +115,5 @@ public class OrderServiceImpl implements OrderService {
     private void saveOrderItems(Order order) {
 
         order.getOrderItems().forEach(this::saveSingleOrderItem);
-    }
-
-    private void decreaseStocks(Order order) {
-
-        order.getOrderItems().forEach(orderItem ->
-                bookService.decreaseStock(orderItem.getBookId(), orderItem.getQuantity()));
     }
 }

@@ -78,4 +78,9 @@ public class Cart implements Serializable {
         cartItems.add(cartItem);
         return this;
     }
+
+    public void addCartItemToEmptyCart(CartItem cartItem) {
+
+        this.cartItems.add(cartItem);
+    }
 }

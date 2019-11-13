@@ -78,4 +78,37 @@ public class OrderTest {
 
         assertThat(order.getOrderItems()).isEqualTo(mockedOrderItems);
     }
+
+    @Test
+    public void loadOrderItemsFromCart_happyPath() {
+
+        Cart cart = new Cart();
+        CartItem cartItem = mockCartItem(cart);
+        Order order = mockOrder(cartItem);
+
+        assertThat(order.loadOrderItemsFromCart(cart)).isEqualTo(order);
+    }
+
+    private Order createOrder(Integer orderId) {
+
+        Order order = new Order();
+        order.setId(1);
+        return order;
+    }
+
+    private CartItem mockCartItem(Cart cart) {
+
+        CartItem cartItem = mock(CartItem.class);
+        cart.addCartItemToEmptyCart(cartItem);
+        return cartItem;
+    }
+
+    private Order mockOrder(CartItem cartItem) {
+
+        Order order = createOrder(1);
+        OrderItem orderItem = mock(OrderItem.class);
+        when(cartItem.transferToOrderItem(1)).thenReturn(orderItem);
+        order.addOrderItem(orderItem);
+        return order;
+    }
 }

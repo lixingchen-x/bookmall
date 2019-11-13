@@ -18,10 +18,9 @@ import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityNotFoundException;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrderServiceImplTest {
@@ -53,7 +52,7 @@ public class OrderServiceImplTest {
         Page mockedPage = mock(Page.class);
         when(orderRepository.findByUserId(1, pageable)).thenReturn(mockedPage);
 
-        assertThat(orderService.findByUserId(1, PAGE_NUM), is(mockedPage));
+        assertThat(orderService.findByUserId(1, PAGE_NUM)).isEqualTo(mockedPage);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class OrderServiceImplTest {
 
         when(orderRepository.findByUserId(1, pageable)).thenReturn(null);
 
-        assertThat(orderService.findByUserId(1, PAGE_NUM), is(nullValue()));
+        assertThat(orderService.findByUserId(1, PAGE_NUM)).isNull();
     }
 
     @Test
@@ -72,7 +71,7 @@ public class OrderServiceImplTest {
 
         orderService.setStatus(OrderStatus.PAID, 1);
 
-        assertThat(orderRepository.getOne(1).getStatus(), equalTo(OrderStatus.PAID));
+        assertThat(orderRepository.getOne(1).getStatus()).isEqualTo(OrderStatus.PAID);
     }
 
     @Test
@@ -88,7 +87,29 @@ public class OrderServiceImplTest {
     @Test
     public void completeOrderInfo_happyPath() {
 
-        //ToDo 补充单元测试
+        Order order = mock(Order.class);
+        Order completeOrder = createOrder(1, 1, 1);
+        Cart cart = mock(Cart.class);
+        when(order.loadOrderItemsFromCart(cart)).thenReturn(completeOrder);
+
+        assertThat(orderService.completeOrderInfo(User.builder().id(1).build(), cart, order)).isEqualTo(completeOrder);
+
+        verify(cartManager).initCart();
+        assertThat(completeOrder.getStatus()).isEqualTo(OrderStatus.UNPAID);
+        assertThat(completeOrder.getUserId()).isEqualTo(1);
+    }
+
+    @Test
+    public void saveOrderInfo_happyPath() {
+
+        Order order = new Order();
+        OrderItem orderItem = mock(OrderItem.class);
+        order.addOrderItem(orderItem);
+
+        orderService.saveOrderInfo(order);
+
+        verify(orderRepository).saveAndFlush(order);
+        verify(orderItemRepository).saveAndFlush(orderItem);
     }
 
     @Test
@@ -115,14 +136,6 @@ public class OrderServiceImplTest {
         verify(bookService).increaseStock(1, 1);
     }
 
-    private Cart createCart(Integer id, Integer quantity) {
-
-        Book book = Book.builder().id(id).build();
-        Cart cart = new Cart();
-        cart.updateCart(CartItem.builder().book(book).quantity(quantity).build());
-        return cart;
-    }
-
     private Order createOrder(Integer orderId, Integer bookId, Integer quantity) {
 
         Order order = new Order();
@@ -133,28 +146,4 @@ public class OrderServiceImplTest {
         order.addOrderItem(orderItem);
         return order;
     }
-
-    /*private CartItem createCartItem(Integer id, Integer quantity) {
-
-        Book book = Book.builder().id(id).build();
-        return CartItem.builder().book(book).quantity(quantity).build();
-    }
-
-    private OrderItem getMockedOrderItem(Cart cart) {
-
-        CartItem cartItem = mock(CartItem.class);
-        cart.getCartItems().add(cartItem);
-        OrderItem orderItem = mock(OrderItem.class);
-        when(cartItem.transferToOrderItem(1)).thenReturn(orderItem);
-        return orderItem;
-    }
-
-    private Cart getMockedCart() {
-
-        Cart mockedCart = mock(Cart.class);
-        CartItem mockedCartItem = cartService.createCartItem(1, 1);
-        when(mockedCart.updateCart(mockedCartItem)).thenReturn(mockedCart);
-        when(cartService.createCartItem(1, 1)).thenReturn(mockedCartItem);
-        return mockedCart;
-    }*/
 }
