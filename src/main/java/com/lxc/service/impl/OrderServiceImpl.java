@@ -5,6 +5,7 @@ import com.lxc.entity.Cart;
 import com.lxc.entity.Order;
 import com.lxc.entity.OrderItem;
 import com.lxc.entity.User;
+import com.lxc.exception.StockNotEnoughException;
 import com.lxc.helper.CartManager;
 import com.lxc.repository.OrderItemRepository;
 import com.lxc.repository.OrderRepository;
@@ -99,7 +100,13 @@ public class OrderServiceImpl implements OrderService {
     private void decreaseStocks(Order order) {
 
         order.getOrderItems().forEach(orderItem ->
-                bookService.decreaseStock(orderItem.getBookId(), orderItem.getQuantity()));
+        {
+            try {
+                bookService.decreaseStock(orderItem.getBookId(), orderItem.getQuantity());
+            } catch (StockNotEnoughException e) {
+                log.error("BookId = {} does not have enough stock!", orderItem.getBookId());
+            }
+        });
     }
 
     private void save(Order order) {

@@ -2,11 +2,14 @@ package com.lxc.service.impl;
 
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
+import com.lxc.exception.StockNotEnoughException;
 import com.lxc.helper.CartManager;
 import com.lxc.repository.OrderItemRepository;
 import com.lxc.repository.OrderRepository;
 import com.lxc.service.BookService;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -113,7 +116,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    public void pay_happyPath() {
+    public void pay_happyPath() throws StockNotEnoughException {
 
         Order order = createOrder(1, 1, 1);
         when(orderRepository.getOne(1)).thenReturn(order);
@@ -122,6 +125,16 @@ public class OrderServiceImplTest {
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
         verify(bookService).decreaseStock(1, 1);
+    }
+
+    @Test
+    public void pay_shouldCatchException_ifSomeBookDoesNotHaveEnoughStock() throws StockNotEnoughException {
+
+        Order order = createOrder(1, 1, 1);
+        when(orderRepository.getOne(1)).thenReturn(order);
+        doThrow(StockNotEnoughException.class).when(bookService).decreaseStock(1, 1);
+
+        orderService.pay(1);
     }
 
     @Test

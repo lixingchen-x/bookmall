@@ -25,7 +25,7 @@ public interface BookService {
 
     AddResults addBook(Book book);
 
-    void decreaseStock(Integer id, Integer decrement);
+    void decreaseStock(Integer id, Integer decrement) throws StockNotEnoughException;
 
     void increaseStock(Integer id, Integer increment);
 

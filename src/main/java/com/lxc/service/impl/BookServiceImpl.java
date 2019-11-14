@@ -46,25 +46,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public void update(Book newBook) {
 
-        try {
-            newBook.changeStatusTo(BookStatus.AVAILABLE);
-            Book temp = bookRepository.getOne(newBook.getId());
-            BeanUtils.copyProperties(newBook, temp);
-            bookRepository.saveAndFlush(temp);
-        } catch (EntityNotFoundException e) {
-            log.error("BookId = {} does not exist!", newBook.getId());
-        }
+        newBook.changeStatusTo(BookStatus.AVAILABLE);
+        Book temp = this.findById(newBook.getId());
+        BeanUtils.copyProperties(newBook, temp);
+        bookRepository.saveAndFlush(temp);
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        try {
-            bookRepository.getOne(id);
-            bookRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            log.error("BookId = {} does not exist!", id);
-        }
+        this.findById(id);
+        bookRepository.deleteById(id);
     }
 
     @Override
@@ -84,7 +76,6 @@ public class BookServiceImpl implements BookService {
             Book book = bookRepository.findByIsbn(isbn);
             return bookToBookPage(book);
         } catch (EntityNotFoundException e) {
-
             return bookToBookPage(null);
         }
     }
@@ -92,24 +83,22 @@ public class BookServiceImpl implements BookService {
     @Override
     public void setStatus(BookStatus status, Integer id) {
 
-        try {
-            Book book = bookRepository.getOne(id);
-            book.changeStatusTo(status);
-            bookRepository.saveAndFlush(book);
-        } catch (EntityNotFoundException e) {
-            log.error("BookId = {} does not exist!", id);
-        }
+        Book book = this.findById(id);
+        book.changeStatusTo(status);
+        bookRepository.saveAndFlush(book);
     }
 
     @Override
     public Book findById(Integer id) {
 
+        Book book;
         try {
-            return bookRepository.getOne(id);
+            book = bookRepository.getOne(id);
         } catch (EntityNotFoundException e) {
             log.error("BookId = {} does not exist!", id);
-            return null;
+            throw new EntityNotFoundException("BOOK_DOES_NOT_EXIST");
         }
+        return book;
     }
 
     @Override
@@ -124,21 +113,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void decreaseStock(Integer id, Integer decrement) {
+    public void decreaseStock(Integer id, Integer decrement) throws StockNotEnoughException {
 
-        Book book = bookRepository.getOne(id);
+        Book book = this.findById(id);
         try {
             book.decreaseStock(decrement);
             bookRepository.saveAndFlush(book);
         } catch (StockNotEnoughException e) {
             log.error("BookId = {} does not have enough stock!", id);
+            throw new StockNotEnoughException("STOCK_IS_NOT_ENOUGH");
         }
     }
 
     @Override
     public void increaseStock(Integer id, Integer increment) {
 
-        Book book = bookRepository.getOne(id);
+        Book book = this.findById(id);
         book.increaseStock(increment);
         bookRepository.saveAndFlush(book);
     }

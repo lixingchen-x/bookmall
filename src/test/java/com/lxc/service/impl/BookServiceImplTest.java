@@ -5,7 +5,6 @@ import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
-import com.lxc.utils.UUIDGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,8 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BookServiceImplTest {
@@ -51,7 +49,7 @@ public class BookServiceImplTest {
         Page mockedPage = mock(Page.class);
         when(bookRepository.findAll(pageable)).thenReturn(mockedPage);
 
-        assertThat(bookService.findAllByPage(PAGE_NUM), is(mockedPage));
+        assertThat(bookService.findAllByPage(PAGE_NUM)).isEqualTo(mockedPage);
     }
 
     @Test
@@ -59,7 +57,7 @@ public class BookServiceImplTest {
 
         when(bookRepository.findAll(pageable)).thenReturn(null);
 
-        assertThat(bookService.findAllByPage(PAGE_NUM), is(nullValue()));
+        assertThat(bookService.findAllByPage(PAGE_NUM)).isNull();
     }
 
     @Test
@@ -67,7 +65,7 @@ public class BookServiceImplTest {
 
         Book newBook = Book.builder().id(1).build();
         Book temp = mock(Book.class);
-        when(bookRepository.getOne(1)).thenReturn(temp);
+        when(bookService.findById(1)).thenReturn(temp);
 
         bookService.update(newBook);
 
@@ -75,14 +73,16 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void update_shouldDoNothing_ifBookIdDoesNotExist() {
+    public void update_shouldThrowException_ifBookIdDoesNotExist() {
 
         Book newBook = Book.builder().id(1).build();
-        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
 
-        bookService.update(newBook);
-
-        verify(bookRepository, never()).saveAndFlush(any());
+        try {
+            bookService.update(newBook);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
@@ -94,13 +94,15 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void deleteById_shouldDoNothing_ifBookIdDoesNotExist() {
+    public void deleteById_shouldThrowException_ifBookIdDoesNotExist() {
 
-        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
 
-        bookService.deleteById(1);
-
-        verify(bookRepository, never()).deleteById(1);
+        try {
+            bookService.deleteById(1);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
@@ -109,7 +111,7 @@ public class BookServiceImplTest {
         Page mockedPage = mock(Page.class);
         when(bookRepository.findByBookName("abc", pageable)).thenReturn(mockedPage);
 
-        assertThat(bookService.findPageableByCondition("name", "abc", PAGE_NUM), is(mockedPage));
+        assertThat(bookService.findPageableByCondition("name", "abc", PAGE_NUM)).isEqualTo(mockedPage);
     }
 
     @Test
@@ -117,7 +119,7 @@ public class BookServiceImplTest {
 
         when(bookRepository.findByBookName("abc", pageable)).thenReturn(null);
 
-        assertThat(bookService.findPageableByCondition("name", "abc", PAGE_NUM), is(nullValue()));
+        assertThat(bookService.findPageableByCondition("name", "abc", PAGE_NUM)).isNull();
     }
 
     @Test
@@ -126,7 +128,7 @@ public class BookServiceImplTest {
         Page mockedPage = mock(Page.class);
         when(bookRepository.findByAuthor("abc", pageable)).thenReturn(mockedPage);
 
-        assertThat(bookService.findPageableByCondition("author", "abc", PAGE_NUM), is(mockedPage));
+        assertThat(bookService.findPageableByCondition("author", "abc", PAGE_NUM)).isEqualTo(mockedPage);
     }
 
     @Test
@@ -134,7 +136,7 @@ public class BookServiceImplTest {
 
         when(bookRepository.findByAuthor("abc", pageable)).thenReturn(null);
 
-        assertThat(bookService.findPageableByCondition("author", "abc", PAGE_NUM), is(nullValue()));
+        assertThat(bookService.findPageableByCondition("author", "abc", PAGE_NUM)).isNull();
     }
 
     @Test
@@ -143,7 +145,7 @@ public class BookServiceImplTest {
         Book book = mock(Book.class);
         when(bookRepository.findByIsbn("123")).thenReturn(book);
 
-        assertThat(bookService.bookToBookPage(book), is(bookService.findByIsbn("123")));
+        assertThat(bookService.bookToBookPage(book)).isEqualTo(bookService.findByIsbn("123"));
     }
 
     @Test
@@ -151,29 +153,31 @@ public class BookServiceImplTest {
 
         when(bookRepository.findByIsbn("123")).thenThrow(EntityNotFoundException.class);
 
-        assertThat(bookService.bookToBookPage(null), is(bookService.findByIsbn("123")));
+        assertThat(bookService.bookToBookPage(null)).isEqualTo(bookService.findByIsbn("123"));
     }
 
     @Test
     public void setStatus_happyPath() {
 
         Book actual = new Book();
-        when(bookRepository.getOne(1)).thenReturn(actual);
+        when(bookService.findById(1)).thenReturn(actual);
 
         bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository).saveAndFlush(actual);
-        assertThat(actual.getStatus(), equalTo(BookStatus.AVAILABLE));
+        assertThat(actual.getStatus()).isEqualTo(BookStatus.AVAILABLE);
     }
 
     @Test
-    public void setStatus_shouldDoNothing_ifBookIdDoesNotExist() {
+    public void setStatus_shouldThrowException_ifBookIdDoesNotExist() {
 
-        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
 
-        bookService.setStatus(BookStatus.AVAILABLE, 1);
-
-        verify(bookRepository, never()).saveAndFlush(any());
+        try {
+            bookService.setStatus(BookStatus.AVAILABLE, 1);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
@@ -184,15 +188,19 @@ public class BookServiceImplTest {
 
         Book actual = bookService.findById(1);
 
-        assertThat(actual, is(expected));
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void findById_shouldReturnNull_ifBookIdDoesNotExist() {
+    public void findById_shouldThrowException_ifBookIdDoesNotExist() {
 
         when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        assertThat(bookService.findById(1), is(nullValue()));
+        try {
+            bookService.findById(1);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
@@ -201,7 +209,7 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn("123")).thenReturn(null);
 
-        assertThat(bookService.addBook(book), is(AddResults.SUCCESS));
+        assertThat(bookService.addBook(book)).isEqualTo(AddResults.SUCCESS);
         verify(bookRepository).saveAndFlush(book);
     }
 
@@ -211,32 +219,43 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn(book.getIsbn())).thenReturn(book);
 
-        assertThat(bookService.addBook(book), is(AddResults.FAIL));
+        assertThat(bookService.addBook(book)).isEqualTo(AddResults.FAIL);
     }
 
     @Test
-    public void decreaseStock_happyPath() {
+    public void decreaseStock_happyPath() throws StockNotEnoughException {
 
         Book book = createBook(1, 1);
-        when(bookRepository.getOne(1)).thenReturn(book);
+        when(bookService.findById(1)).thenReturn(book);
 
         bookService.decreaseStock(1, 1);
 
         verify(bookRepository).saveAndFlush(book);
-        assertThat(book.getStock(), is(0));
+        assertThat(book.getStock()).isEqualTo(0);
+    }
+
+    @Test
+    public void decreaseStock_shouldThrowException_ifBookIdDoesNotExist() throws StockNotEnoughException {
+
+        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+
+        try {
+            bookService.decreaseStock(1, 1);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
     public void decreaseStock_shouldCatchException_ifStockIsNotEnough() {
 
         Book book = Book.builder().id(1).stock(0).build();
-        when(bookRepository.getOne(1)).thenReturn(book);
+        when(bookService.findById(1)).thenReturn(book);
 
-        bookService.decreaseStock(1, 1);
         try {
-            book.decreaseStock(1);
+            bookService.decreaseStock(1, 1);
         } catch (StockNotEnoughException e) {
-            assertThat(e.getMessage(), is("STOCK_IS_NOT_ENOUGH"));
+            assertThat(e.getMessage()).isEqualTo("STOCK_IS_NOT_ENOUGH");
         }
     }
 
@@ -244,12 +263,24 @@ public class BookServiceImplTest {
     public void increaseStock_happyPath() {
 
         Book book = createBook(1, 1);
-        when(bookRepository.getOne(1)).thenReturn(book);
+        when(bookService.findById(1)).thenReturn(book);
 
         bookService.increaseStock(1, 1);
 
         verify(bookRepository).saveAndFlush(book);
-        assertThat(book.getStock(), is(2));
+        assertThat(book.getStock()).isEqualTo(2);
+    }
+
+    @Test
+    public void increaseStock_shouldCatchException_ifBookIdDoesNotExist() {
+
+        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+
+        try {
+            bookService.increaseStock(1, 1);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
+        }
     }
 
     @Test
@@ -284,7 +315,7 @@ public class BookServiceImplTest {
 
         bookService.saveUrl(1, "a");
 
-        assertThat(book.getImgUrl(), is("a"));
+        assertThat(book.getImgUrl()).isEqualTo("a");
         verify(bookRepository).saveAndFlush(book);
     }
 

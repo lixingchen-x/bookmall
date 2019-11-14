@@ -38,35 +38,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
 
-        try {
-            User oldUser = userRepository.getOne(user.getId());
-            oldUser.setPassword(user.getPassword());
-            oldUser.setEmail(user.getEmail());
-            userRepository.saveAndFlush(oldUser);
-        } catch (EntityNotFoundException e) {
-            log.error("UserId = {} does not exist!", user.getId());
-        }
+        User oldUser = this.findById(user.getId());
+        oldUser.setPassword(user.getPassword());
+        oldUser.setEmail(user.getEmail());
+        userRepository.saveAndFlush(oldUser);
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        try {
-            userRepository.getOne(id);
-            userRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            log.error("UserId = {} does not exist!", id);
-        }
+        this.findById(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public User findById(Integer id) {
 
+        User user;
         try {
-            return userRepository.getOne(id);
+            user = userRepository.getOne(id);
         } catch (EntityNotFoundException e) {
-            return null;
+            log.error("UserId = {} does not exist!", id);
+            throw new EntityNotFoundException("USER_DOES_NOT_EXIST");
         }
+        return user;
     }
 
     @Override
@@ -101,23 +96,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeRoleToAdmin(Integer id) {
 
-        try {
-            User user = userRepository.getOne(id);
-            user.changeRoleToAdmin();
-            userRepository.saveAndFlush(user);
-        } catch (EntityNotFoundException e) {
-            log.error("UserId = {} does not exist!", id);
-        }
+        User user = this.findById(id);
+        user.changeRoleToAdmin();
+        userRepository.saveAndFlush(user);
     }
 
     @Override
     public void changeRoleToCustomer(Integer id) {
 
-        try {
-            User user = userRepository.getOne(id);
-            saveAsCustomer(user);
-        } catch (EntityNotFoundException e) {
-            log.error("UserId = {} does not exist!", id);
-        }
+        User user = this.findById(id);
+        this.saveAsCustomer(user);
     }
 }
