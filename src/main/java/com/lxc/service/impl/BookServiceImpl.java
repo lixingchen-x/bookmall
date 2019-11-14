@@ -7,16 +7,21 @@ import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
 import com.lxc.utils.ListConvertor;
+import com.lxc.utils.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -27,6 +32,9 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Value("${file.upload.path}")
+    private String filePath;
 
     @Override
     public Page<Book> findAllByPage(int pageNum) {
@@ -132,6 +140,28 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.getOne(id);
         book.increaseStock(increment);
+        bookRepository.saveAndFlush(book);
+    }
+
+    @Override
+    public String uploadImg(MultipartFile file) {
+
+        String filename = file.getOriginalFilename();
+        File destination = new File(filePath, filename);
+        String uniqueId = UUIDGenerator.getUUID(filename);
+        try {
+            file.transferTo(destination);
+        } catch (IOException e) {
+            log.error("{} failed writing into directory.", filename);
+        }
+        return filePath+uniqueId;
+    }
+
+    @Override
+    public void saveUrl(Integer id, String url) {
+
+        Book book = bookRepository.getOne(id);
+        book.setImgUrl(url);
         bookRepository.saveAndFlush(book);
     }
 

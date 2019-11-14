@@ -9,8 +9,8 @@
     <title>图书列表</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <!-- Custom styles for this template -->
     <link th:href="@{resource/css/dashboard.css}" rel="stylesheet">
     <link rel="icon" href="../../favicon.ico">
@@ -87,7 +87,7 @@
                             <td th:text="${book.price}"></td>
                             <td th:text="${book.stock}"></td>
                             <td th:text="${book.intro}"></td>
-                            <td th:text="${book.status}"></td>
+                            <td th:text="${book.status.getMsg()}"></td>
                             <td>
                                 <div th:switch="${session.user.username}">
                                     <div th:case="admin">
@@ -103,8 +103,8 @@
                                         </div>
                                     </div>
                                     <div th:case="*">
-                                        <a th:if="${book.status} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page}, condition = ${condition}, keyword = ${keyword})}">添加到购物车</a>
-                                        <span th:if="${book.status} eq 'WITHDRAW'">已下架</span>
+                                        <a th:if="${book.status.getMsg()} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page}, condition = ${condition}, keyword = ${keyword})}">添加到购物车</a>
+                                        <span th:if="${book.status.getMsg()} eq 'WITHDRAW'">已下架</span>
                                     </div>
                                 </div>
                             </td>

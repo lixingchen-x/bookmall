@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -163,5 +164,26 @@ public class BookControllerTest {
         assertThat(bookController.findBookByIsbn("a", 0, mock(Model.class)))
                 .isEqualTo("bookManagement/bookList.html");
         verify(bookService).findByIsbn("a");
+    }
+
+    @Test
+    public void toAddBookImage_happyPath() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/book/upload"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("bookManagement/upload.html"))
+                .andReturn();
+    }
+
+    @Test
+    public void imageUpload_happyPath() {
+
+        String url = "any";
+        MultipartFile file = mock(MultipartFile.class);
+        when(bookService.uploadImg(file)).thenReturn(url);
+
+        assertThat(bookController.imageUpload(1, file, mock(Model.class))).isEqualTo("bookManagement/upload.html");
+
+        verify(bookService).saveUrl(1, url);
     }
 }

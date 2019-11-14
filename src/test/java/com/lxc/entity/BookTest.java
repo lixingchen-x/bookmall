@@ -86,6 +86,15 @@ public class BookTest {
     }
 
     @Test
+    public void getImgUrl_happyPath() {
+
+        Book book = new Book();
+        book.setImgUrl("a");
+
+        assertThat(book.getImgUrl()).isEqualTo("a");
+    }
+
+    @Test
     public void increaseStock_happyPath() {
 
         Book book = Book.builder().stock(1).build();
@@ -114,14 +123,14 @@ public class BookTest {
     public void toString_happyPath() {
 
         assertThat(Book.builder().toString()).isEqualTo("Book.BookBuilder(id=null, bookName=null, author=null, " +
-                "isbn=null, publishDate=null, intro=null, price=null, stock=null, status=null)");
+                "isbn=null, publishDate=null, intro=null, price=null, stock=null, status=null, imgUrl=null)");
     }
 
     @Test
     public void builder_happyPath() throws ParseException {
 
         Book book = Book.builder().id(1).bookName("a").isbn("123").stock(1).price(100.0).author("a")
-                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE).build();
+                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE).imgUrl("a").build();
 
         assertThat(book.getId()).isEqualTo(1);
         assertThat(book.getBookName()).isEqualTo("a");
@@ -132,5 +141,6 @@ public class BookTest {
         assertThat(book.getIntro()).isEqualTo("a");
         assertThat(book.getPublishDate()).isEqualTo("2019-10-29");
         assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+        assertThat(book.getImgUrl()).isEqualTo("a");
     }
 }

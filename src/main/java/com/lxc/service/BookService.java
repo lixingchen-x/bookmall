@@ -5,6 +5,7 @@ import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
 
@@ -27,4 +28,8 @@ public interface BookService {
     void decreaseStock(Integer id, Integer decrement);
 
     void increaseStock(Integer id, Integer increment);
+
+    String uploadImg(MultipartFile file);
+
+    void saveUrl(Integer id, String url);
 }

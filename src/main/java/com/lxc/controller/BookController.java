@@ -5,9 +5,14 @@ import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/book")
@@ -146,6 +151,20 @@ public class BookController {
         model.addAttribute("bookPage", bookService.findByIsbn(keyword));
         addModelAttributes(model, keyword, page, "isbn");
         return "bookManagement/bookList.html";
+    }
+
+    @GetMapping("upload")
+    public String toAddBookImage() {
+        return "bookManagement/upload.html";
+    }
+
+    @RequestMapping("upload/{bookId}")
+    public String imageUpload(@PathVariable("bookId") Integer id, @RequestParam("file") MultipartFile file, Model model) {
+
+        String url = bookService.uploadImg(file);
+        bookService.saveUrl(id, url);
+        model.addAttribute("url", url);
+        return "bookManagement/upload.html";
     }
 
     private void addModelAttributes(Model model, String keyword, Integer page, String condition) {

@@ -5,17 +5,23 @@ import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
+import com.lxc.utils.UUIDGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -35,6 +41,9 @@ public class BookServiceImplTest {
 
     @InjectMocks
     private BookServiceImpl bookService;
+
+    @Value("${file.upload.path}")
+    private String filePath;
 
     @Test
     public void findAllByPage_happyPath() {
@@ -243,15 +252,41 @@ public class BookServiceImplTest {
         assertThat(book.getStock(), is(2));
     }
 
-    /*@Test
-    public void increaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
+    @Test
+    public void uploadImg_happyPath() throws IOException {
 
-        when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("a.jpg");
+        File destination = new File(filePath, "a.jpg");
 
-        bookService.increaseStock(1, 1);
+        bookService.uploadImg(file);
 
-        verify(bookRepository, never()).saveAndFlush(any());
-    }*/
+        verify(file).transferTo(destination);
+    }
+
+    @Test
+    public void uploadImg_shouldThrowException_ifIOFails() throws IOException {
+
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("a.jpg");
+        File destination = new File(filePath, "a.jpg");
+        IOException exception = mock(IOException.class);
+        doThrow(exception).when(file).transferTo(destination);
+
+        bookService.uploadImg(file);
+    }
+
+    @Test
+    public void saveUrl_happyPath() {
+
+        Book book = Book.builder().id(1).build();
+        when(bookRepository.getOne(1)).thenReturn(book);
+
+        bookService.saveUrl(1, "a");
+
+        assertThat(book.getImgUrl(), is("a"));
+        verify(bookRepository).saveAndFlush(book);
+    }
 
     private Book createBook(Integer bookId, Integer stock) {
 

@@ -47,8 +47,11 @@ public class Book extends BaseEntity implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private BookStatus status;
 
+    @Column(name = "img_url")
+    private String imgUrl;
+
     @Builder
-    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatus status) {
+    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatus status, String imgUrl) {
         super(id);
         this.bookName = bookName;
         this.author = author;
@@ -58,6 +61,7 @@ public class Book extends BaseEntity implements Serializable {
         this.price = price;
         this.stock = stock;
         this.status = status;
+        this.imgUrl = imgUrl;
     }
 
     public void increaseStock(Integer increment) {
