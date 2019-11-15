@@ -1,7 +1,6 @@
 package com.lxc.controller;
 
 import com.lxc.entity.Cart;
-import com.lxc.helper.CartManager;
 import com.lxc.helper.CurrentCart;
 import com.lxc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ public class ShoppingController {
     @Autowired
     private CartService cartService;
 
-    @Autowired
-    private CartManager cartManager;
-
     @RequestMapping("cart")
     public String cart() {
 
@@ -27,7 +23,7 @@ public class ShoppingController {
     }
 
     /**
-     * 添加图书到购物车，并同步更新购物车
+     * 添加图书到购物车中
      */
     @RequestMapping("add")
     public String addToCart(@RequestParam(value = "bookId") Integer id,
@@ -36,7 +32,7 @@ public class ShoppingController {
                             @RequestParam(value = "keyword", required = false) String keyword, Model model,
                             @CurrentCart Cart cart) {
 
-        cartManager.updateCart(cart.updateCart(cartService.createCartItem(id, 1)));
+        cart.updateCart(cartService.createCartItem(id, 1));
         model.addAttribute("page", page);
         model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);

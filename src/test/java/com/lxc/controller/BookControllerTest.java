@@ -4,6 +4,7 @@ import com.lxc.constants.AddResults;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
+import com.lxc.service.FileService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.*;
@@ -33,6 +36,9 @@ public class BookControllerTest {
 
     @Mock
     private BookService bookService;
+
+    @Mock
+    private FileService fileService;
 
     @Before
     public void setUp() {
@@ -176,11 +182,11 @@ public class BookControllerTest {
     }
 
     @Test
-    public void imageUpload_happyPath() {
+    public void imageUpload_happyPath() throws IOException {
 
         String url = "any";
         MultipartFile file = mock(MultipartFile.class);
-        when(bookService.uploadImg(file)).thenReturn(url);
+        when(fileService.uploadImg(file)).thenReturn(url);
 
         assertThat(bookController.imageUpload(1, file, mock(Model.class))).isEqualTo("bookManagement/upload.html");
 

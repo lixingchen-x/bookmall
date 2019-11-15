@@ -82,33 +82,43 @@ public class OrderTest {
     @Test
     public void loadOrderItemsFromCart_happyPath() {
 
-        Cart cart = new Cart();
-        CartItem cartItem = mockCartItem(cart);
-        Order order = mockOrder(cartItem);
+        Cart cart = mock(Cart.class);
+        CartItem cartItem = getCartItem(cart);
+        OrderItem orderItem = getOrderItem(cartItem);
+        Order order = getOrder(orderItem);
 
-        assertThat(order.loadOrderItemsFromCart(cart)).isEqualTo(order);
+        order.loadOrderItemsFromCart(cart);
+
+        assertThat(orderItem.getBookId()).isEqualTo(cartItem.getBook().getId());
+        assertThat(orderItem.getQuantity()).isEqualTo(cartItem.getQuantity());
     }
 
     private Order createOrder(Integer orderId) {
 
         Order order = new Order();
-        order.setId(1);
+        order.setId(orderId);
         return order;
     }
 
-    private CartItem mockCartItem(Cart cart) {
+    private CartItem getCartItem(Cart cart) {
 
-        CartItem cartItem = mock(CartItem.class);
-        cart.addCartItemToEmptyCart(cartItem);
+        Book book = Book.builder().id(1).build();
+        CartItem cartItem = CartItem.builder().book(book).quantity(1).build();
+        when(cart.getByBookId(1)).thenReturn(null);
+        cart.updateCart(cartItem);
+        when(cart.getCartItems()).thenReturn(List.of(cartItem));
         return cartItem;
     }
 
-    private Order mockOrder(CartItem cartItem) {
+    private Order getOrder(OrderItem orderItem) {
 
         Order order = createOrder(1);
-        OrderItem orderItem = mock(OrderItem.class);
-        when(cartItem.transferToOrderItem(1)).thenReturn(orderItem);
         order.addOrderItem(orderItem);
         return order;
+    }
+
+    private OrderItem getOrderItem(CartItem cartItem) {
+
+        return cartItem.transferToOrderItem(1);
     }
 }

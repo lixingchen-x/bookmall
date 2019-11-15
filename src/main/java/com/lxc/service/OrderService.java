@@ -12,11 +12,11 @@ public interface OrderService {
 
     void setStatus(OrderStatus status, Integer orderId);
 
-    Order completeOrderInfo(User user, Cart cart, Order order);
+    void completeOrderInfo(User user, Cart cart, Order order);
 
     void pay(Integer orderId);
 
     void cancel(Integer orderId);
 
-    void saveOrderInfo(Order order);
+    void save(Order order);
 }

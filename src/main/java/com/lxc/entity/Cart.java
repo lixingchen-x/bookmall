@@ -68,19 +68,13 @@ public class Cart implements Serializable {
         return getByBookId(id) != null;
     }
 
-    public Cart updateCart(CartItem cartItem) {
+    public void updateCart(CartItem cartItem) {
 
         CartItem item = this.getByBookId(cartItem.getBook().getId());
         if (item != null) {
             item.setQuantity(item.getQuantity() + cartItem.getQuantity());
-            return this;
+            return;
         }
         cartItems.add(cartItem);
-        return this;
-    }
-
-    public void addCartItemToEmptyCart(CartItem cartItem) {
-
-        this.cartItems.add(cartItem);
     }
 }

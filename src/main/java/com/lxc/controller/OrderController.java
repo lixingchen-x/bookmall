@@ -2,6 +2,7 @@ package com.lxc.controller;
 
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
+import com.lxc.helper.CartManager;
 import com.lxc.helper.CurrentCart;
 import com.lxc.helper.CurrentUser;
 import com.lxc.service.OrderService;
@@ -17,6 +18,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CartManager cartManager;
 
     @RequestMapping("orders")
     public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, @CurrentUser User user) {
@@ -36,8 +40,9 @@ public class OrderController {
     @PostMapping("orderInfo")
     public String completeOrderInfoAndSave(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
 
-        Order completeOrder = orderService.completeOrderInfo(user, cart, order);
-        orderService.saveOrderInfo(completeOrder);
+        orderService.completeOrderInfo(user, cart, order);
+        orderService.save(order);
+        cartManager.initCart();
         return "index";
     }
 

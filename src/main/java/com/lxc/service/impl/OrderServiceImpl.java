@@ -3,11 +3,8 @@ package com.lxc.service.impl;
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.Cart;
 import com.lxc.entity.Order;
-import com.lxc.entity.OrderItem;
 import com.lxc.entity.User;
 import com.lxc.exception.StockNotEnoughException;
-import com.lxc.helper.CartManager;
-import com.lxc.repository.OrderItemRepository;
 import com.lxc.repository.OrderRepository;
 import com.lxc.service.BookService;
 import com.lxc.service.OrderService;
@@ -34,12 +31,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private BookService bookService;
 
-    @Autowired
-    private CartManager cartManager;
-
-    @Autowired
-    OrderItemRepository orderItemRepository;
-
     @Override
     public Page<Order> findByUserId(Integer userId, int pageNum) {
 
@@ -60,21 +51,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order completeOrderInfo(User user, Cart cart, Order order) {
+    public void completeOrderInfo(User user, Cart cart, Order order) {
 
-        cartManager.initCart();
-        Order completeOrder = order.loadOrderItemsFromCart(cart);
-        completeOrder.setCreateDate(new Date());
-        completeOrder.changeStatusTo(OrderStatus.UNPAID);
-        completeOrder.setUserId(user.getId());
-        return completeOrder;
-    }
-
-    @Override
-    public void saveOrderInfo(Order order) {
-
-        save(order);
-        saveOrderItems(order);
+        order.loadOrderItemsFromCart(cart);
+        order.setCreateDate(new Date());
+        order.changeStatusTo(OrderStatus.UNPAID);
+        order.setUserId(user.getId());
     }
 
     @Override
@@ -89,6 +71,12 @@ public class OrderServiceImpl implements OrderService {
 
         setStatus(OrderStatus.CANCELLED, orderId);
         rollBackStocks(orderRepository.getOne(orderId));
+    }
+
+    @Override
+    public void save(Order order) {
+
+        orderRepository.saveAndFlush(order);
     }
 
     private void rollBackStocks(Order order) {
@@ -107,20 +95,5 @@ public class OrderServiceImpl implements OrderService {
                 log.error("BookId = {} does not have enough stock!", orderItem.getBookId());
             }
         });
-    }
-
-    private void save(Order order) {
-
-        orderRepository.saveAndFlush(order);
-    }
-
-    private void saveSingleOrderItem(OrderItem orderItem) {
-
-        orderItemRepository.saveAndFlush(orderItem);
-    }
-
-    private void saveOrderItems(Order order) {
-
-        order.getOrderItems().forEach(this::saveSingleOrderItem);
     }
 }

@@ -15,12 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -73,20 +69,20 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void update_shouldThrowException_ifBookIdDoesNotExist() {
+    public void update_shouldDoNothing_ifBookIdDoesNotExist() {
 
         Book newBook = Book.builder().id(1).build();
-        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenReturn(null);
 
-        try {
-            bookService.update(newBook);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
+        bookService.update(newBook);
+
+        verify(bookRepository, never()).saveAndFlush(any());
     }
 
     @Test
     public void deleteById_happyPath() {
+
+        when(bookService.findById(1)).thenReturn(mock(Book.class));
 
         bookService.deleteById(1);
 
@@ -94,15 +90,13 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void deleteById_shouldThrowException_ifBookIdDoesNotExist() {
+    public void deleteById_shouldDoNothing_ifBookIdDoesNotExist() {
 
-        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenReturn(null);
 
-        try {
-            bookService.deleteById(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
+        bookService.deleteById(1);
+
+        verify(bookRepository, never()).deleteById(1);
     }
 
     @Test
@@ -169,15 +163,13 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void setStatus_shouldThrowException_ifBookIdDoesNotExist() {
+    public void setStatus_shouldDoNothing_ifBookIdDoesNotExist() {
 
-        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenReturn(null);
 
-        try {
-            bookService.setStatus(BookStatus.AVAILABLE, 1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
+        bookService.setStatus(BookStatus.AVAILABLE, 1);
+
+        verify(bookRepository, never()).saveAndFlush(null);
     }
 
     @Test
@@ -186,21 +178,15 @@ public class BookServiceImplTest {
         Book expected = new Book();
         when(bookRepository.getOne(1)).thenReturn(expected);
 
-        Book actual = bookService.findById(1);
-
-        assertThat(actual).isEqualTo(expected);
+        assertThat(bookService.findById(1)).isEqualTo(expected);
     }
 
     @Test
-    public void findById_shouldThrowException_ifBookIdDoesNotExist() {
+    public void findById_shouldReturnNull_ifBookIdDoesNotExist() {
 
         when(bookRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        try {
-            bookService.findById(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
+        assertThat(bookService.findById(1)).isNull();
     }
 
     @Test
@@ -235,28 +221,24 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void decreaseStock_shouldThrowException_ifBookIdDoesNotExist() throws StockNotEnoughException {
+    public void decreaseStock_shouldDoNothing_ifBookIdDoesNotExist() throws StockNotEnoughException {
 
-        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenReturn(null);
 
-        try {
-            bookService.decreaseStock(1, 1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
+        bookService.decreaseStock(1, 1);
+
+        verify(bookRepository, never()).saveAndFlush(null);
     }
 
-    @Test
-    public void decreaseStock_shouldCatchException_ifStockIsNotEnough() {
+    @Test(expected = StockNotEnoughException.class)
+    public void decreaseStock_shouldCatchException_ifStockIsNotEnough() throws StockNotEnoughException {
 
         Book book = Book.builder().id(1).stock(0).build();
         when(bookService.findById(1)).thenReturn(book);
 
-        try {
-            bookService.decreaseStock(1, 1);
-        } catch (StockNotEnoughException e) {
-            assertThat(e.getMessage()).isEqualTo("STOCK_IS_NOT_ENOUGH");
-        }
+        bookService.decreaseStock(1, 1);
+
+        verify(bookRepository, never()).saveAndFlush(book);
     }
 
     @Test
@@ -272,51 +254,35 @@ public class BookServiceImplTest {
     }
 
     @Test
-    public void increaseStock_shouldCatchException_ifBookIdDoesNotExist() {
+    public void increaseStock_shouldDoNothing_ifBookIdDoesNotExist() {
 
-        when(bookService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(bookService.findById(1)).thenReturn(null);
 
-        try {
-            bookService.increaseStock(1, 1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("BOOK_DOES_NOT_EXIST");
-        }
-    }
+        bookService.increaseStock(1, 1);
 
-    @Test
-    public void uploadImg_happyPath() throws IOException {
-
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getOriginalFilename()).thenReturn("a.jpg");
-        File destination = new File(filePath, "a.jpg");
-
-        bookService.uploadImg(file);
-
-        verify(file).transferTo(destination);
-    }
-
-    @Test
-    public void uploadImg_shouldThrowException_ifIOFails() throws IOException {
-
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getOriginalFilename()).thenReturn("a.jpg");
-        File destination = new File(filePath, "a.jpg");
-        IOException exception = mock(IOException.class);
-        doThrow(exception).when(file).transferTo(destination);
-
-        bookService.uploadImg(file);
+        verify(bookRepository, never()).saveAndFlush(null);
     }
 
     @Test
     public void saveUrl_happyPath() {
 
         Book book = Book.builder().id(1).build();
-        when(bookRepository.getOne(1)).thenReturn(book);
+        when(bookService.findById(1)).thenReturn(book);
 
         bookService.saveUrl(1, "a");
 
         assertThat(book.getImgUrl()).isEqualTo("a");
         verify(bookRepository).saveAndFlush(book);
+    }
+
+    @Test
+    public void saveUrl_shouldDoNothing_ifBookIdDoesNotExist() {
+
+        when(bookService.findById(1)).thenReturn(null);
+
+        bookService.saveUrl(1, "a");
+
+        verify(bookRepository, never()).saveAndFlush(null);
     }
 
     private Book createBook(Integer bookId, Integer stock) {

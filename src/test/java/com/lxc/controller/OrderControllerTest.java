@@ -2,6 +2,7 @@ package com.lxc.controller;
 
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
+import com.lxc.helper.CartManager;
 import com.lxc.service.OrderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,9 @@ public class OrderControllerTest {
 
     @Mock
     private OrderService orderService;
+
+    @Mock
+    private CartManager cartManager;
 
     @Before
     public void setUp() {
@@ -66,10 +70,12 @@ public class OrderControllerTest {
         User user = mock(User.class);
         Cart cart = mock(Cart.class);
         Order order = mock(Order.class);
-        when(orderService.completeOrderInfo(user, cart, order)).thenReturn(order);
 
         assertThat(orderController.completeOrderInfoAndSave(user, cart, order)).isEqualTo("index");
-        verify(orderService).saveOrderInfo(order);
+
+        verify(orderService).completeOrderInfo(user, cart, order);
+        verify(orderService).save(order);
+        verify(cartManager).initCart();
     }
 
     @Test

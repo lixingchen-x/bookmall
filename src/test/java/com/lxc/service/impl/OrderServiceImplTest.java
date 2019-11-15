@@ -3,13 +3,9 @@ package com.lxc.service.impl;
 import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
 import com.lxc.exception.StockNotEnoughException;
-import com.lxc.helper.CartManager;
-import com.lxc.repository.OrderItemRepository;
 import com.lxc.repository.OrderRepository;
 import com.lxc.service.BookService;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,12 +32,6 @@ public class OrderServiceImplTest {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderItemRepository orderItemRepository;
-
-    @Mock
-    private CartManager cartManager;
 
     @Mock
     private BookService bookService;
@@ -90,29 +80,22 @@ public class OrderServiceImplTest {
     @Test
     public void completeOrderInfo_happyPath() {
 
-        Order order = mock(Order.class);
-        Order completeOrder = createOrder(1, 1, 1);
-        Cart cart = mock(Cart.class);
-        when(order.loadOrderItemsFromCart(cart)).thenReturn(completeOrder);
+        Order order = createOrder(1, 1, 1);
 
-        assertThat(orderService.completeOrderInfo(User.builder().id(1).build(), cart, order)).isEqualTo(completeOrder);
+        orderService.completeOrderInfo(User.builder().id(1).build(), mock(Cart.class), order);
 
-        verify(cartManager).initCart();
-        assertThat(completeOrder.getStatus()).isEqualTo(OrderStatus.UNPAID);
-        assertThat(completeOrder.getUserId()).isEqualTo(1);
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.UNPAID);
+        assertThat(order.getUserId()).isEqualTo(1);
     }
 
     @Test
-    public void saveOrderInfo_happyPath() {
+    public void save_happyPath() {
 
         Order order = new Order();
-        OrderItem orderItem = mock(OrderItem.class);
-        order.addOrderItem(orderItem);
 
-        orderService.saveOrderInfo(order);
+        orderService.save(order);
 
         verify(orderRepository).saveAndFlush(order);
-        verify(orderItemRepository).saveAndFlush(orderItem);
     }
 
     @Test

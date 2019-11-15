@@ -7,21 +7,16 @@ import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
 import com.lxc.utils.ListConvertor;
-import com.lxc.utils.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -32,9 +27,6 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookRepository bookRepository;
-
-    @Value("${file.upload.path}")
-    private String filePath;
 
     @Override
     public Page<Book> findAllByPage(int pageNum) {
@@ -48,15 +40,18 @@ public class BookServiceImpl implements BookService {
 
         newBook.changeStatusTo(BookStatus.AVAILABLE);
         Book temp = this.findById(newBook.getId());
-        BeanUtils.copyProperties(newBook, temp);
-        bookRepository.saveAndFlush(temp);
+        if (null != temp) {
+            BeanUtils.copyProperties(newBook, temp);
+            bookRepository.saveAndFlush(temp);
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        this.findById(id);
-        bookRepository.deleteById(id);
+        if (null != this.findById(id)) {
+            bookRepository.deleteById(id);
+        }
     }
 
     @Override
@@ -84,21 +79,21 @@ public class BookServiceImpl implements BookService {
     public void setStatus(BookStatus status, Integer id) {
 
         Book book = this.findById(id);
-        book.changeStatusTo(status);
-        bookRepository.saveAndFlush(book);
+        if (null != book) {
+            book.changeStatusTo(status);
+            bookRepository.saveAndFlush(book);
+        }
     }
 
     @Override
     public Book findById(Integer id) {
 
-        Book book;
         try {
-            book = bookRepository.getOne(id);
+            return bookRepository.getOne(id);
         } catch (EntityNotFoundException e) {
             log.error("BookId = {} does not exist!", id);
-            throw new EntityNotFoundException("BOOK_DOES_NOT_EXIST");
+            return null;
         }
-        return book;
     }
 
     @Override
@@ -116,12 +111,14 @@ public class BookServiceImpl implements BookService {
     public void decreaseStock(Integer id, Integer decrement) throws StockNotEnoughException {
 
         Book book = this.findById(id);
-        try {
-            book.decreaseStock(decrement);
-            bookRepository.saveAndFlush(book);
-        } catch (StockNotEnoughException e) {
-            log.error("BookId = {} does not have enough stock!", id);
-            throw new StockNotEnoughException("STOCK_IS_NOT_ENOUGH");
+        if (null != book) {
+            try {
+                book.decreaseStock(decrement);
+                bookRepository.saveAndFlush(book);
+            } catch (StockNotEnoughException e) {
+                log.error("BookId = {} does not have enough stock!", id);
+                throw new StockNotEnoughException("STOCK_IS_NOT_ENOUGH");
+            }
         }
     }
 
@@ -129,38 +126,26 @@ public class BookServiceImpl implements BookService {
     public void increaseStock(Integer id, Integer increment) {
 
         Book book = this.findById(id);
-        book.increaseStock(increment);
-        bookRepository.saveAndFlush(book);
-    }
-
-    @Override
-    public String uploadImg(MultipartFile file) {
-
-        String filename = file.getOriginalFilename();
-        File destination = new File(filePath, filename);
-        String uniqueId = UUIDGenerator.getUUID(filename);
-        try {
-            file.transferTo(destination);
-        } catch (IOException e) {
-            log.error("{} failed writing into directory.", filename);
+        if (null != book) {
+            book.increaseStock(increment);
+            bookRepository.saveAndFlush(book);
         }
-        return filePath+uniqueId;
     }
 
     @Override
     public void saveUrl(Integer id, String url) {
 
-        Book book = bookRepository.getOne(id);
-        book.setImgUrl(url);
-        bookRepository.saveAndFlush(book);
+        Book book = this.findById(id);
+        if (null != book) {
+            book.setImgUrl(url);
+            bookRepository.saveAndFlush(book);
+        }
     }
 
     public Page<Book> bookToBookPage(Book book) {
 
-        if (book == null) {
-            book = Book.builder().id(1).build();
-        }
+        List<Book> books = book != null ? List.of(book) : List.of();
         Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
-        return ListConvertor.listConvertToPage(List.of(book), pageable);
+        return ListConvertor.listConvertToPage(books, pageable);
     }
 }

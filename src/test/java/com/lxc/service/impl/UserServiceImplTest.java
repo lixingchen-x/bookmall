@@ -37,30 +37,32 @@ public class UserServiceImplTest {
     @Test
     public void update_happyPath() {
 
-        User newUser = User.builder().id(1).build();
-        User oldUser = mock(User.class);
+        User newUser = User.builder().id(1).password("123456").email("abc@abc").build();
+        User oldUser = new User();
         when(userService.findById(1)).thenReturn(oldUser);
 
         userService.update(newUser);
 
         verify(userRepository).saveAndFlush(oldUser);
+        assertThat(oldUser.getPassword()).isEqualTo("123456");
+        assertThat(oldUser.getEmail()).isEqualTo("abc@abc");
     }
 
     @Test
-    public void update_shouldThrowException_ifUserDoesNotExist() {
+    public void update_shouldDoNothing_ifUserDoesNotExist() {
 
         User user = User.builder().id(1).build();
-        when(userService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(userService.findById(1)).thenReturn(null);
 
-        try {
-            userService.update(user);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("USER_DOES_NOT_EXIST");
-        }
+        userService.update(user);
+
+        verify(userRepository, never()).saveAndFlush(null);
     }
 
     @Test
     public void deleteById_happyPath() {
+
+        when(userService.findById(1)).thenReturn(mock(User.class));
 
         userService.deleteById(1);
 
@@ -68,15 +70,13 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void deleteById_shouldThrowException_ifUserDoesNotExist() {
+    public void deleteById_shouldDoNothing_ifUserDoesNotExist() {
 
-        when(userService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(userService.findById(1)).thenReturn(null);
 
-        try {
-            userService.deleteById(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("USER_DOES_NOT_EXIST");
-        }
+        userService.deleteById(1);
+
+        verify(userRepository, never()).deleteById(1);
     }
 
     @Test
@@ -85,21 +85,15 @@ public class UserServiceImplTest {
         User expected = new User();
         when(userService.findById(1)).thenReturn(expected);
 
-        User actual = userService.findById(1);
-
-        assertThat(actual).isEqualTo(expected);
+        assertThat(userService.findById(1)).isEqualTo(expected);
     }
 
     @Test
-    public void findById_shouldThrowException_ifUserDoesNotExist() {
+    public void findById_shouldReturnNull_ifUserDoesNotExist() {
 
         when(userRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        try {
-            userService.findById(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("USER_DOES_NOT_EXIST");
-        }
+        assertThat(userService.findById(1)).isNull();
     }
 
     @Test
@@ -167,18 +161,17 @@ public class UserServiceImplTest {
         userService.changeRoleToAdmin(1);
 
         assertThat(userRepository.getOne(1).getRole().getName()).isEqualTo("ADMIN");
+        verify(userRepository).saveAndFlush(user);
     }
 
     @Test
-    public void changeRoleToAdmin_shouldThrowException_ifUserDoesNotExist() {
+    public void changeRoleToAdmin_shouldDoNothing_ifUserDoesNotExist() {
 
-        when(userService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(userService.findById(1)).thenReturn(null);
 
-        try {
-            userService.changeRoleToAdmin(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("USER_DOES_NOT_EXIST");
-        }
+        userService.changeRoleToAdmin(1);
+
+        verify(userRepository, never()).saveAndFlush(null);
     }
 
     @Test
@@ -190,18 +183,17 @@ public class UserServiceImplTest {
         userService.changeRoleToCustomer(1);
 
         assertThat(userRepository.getOne(1).getRole().getName()).isEqualTo("CUSTOMER");
+        verify(userRepository).saveAndFlush(user);
     }
 
     @Test
-    public void changeRoleToCustomer_shouldThrowException_ifUserDoesNotExist() {
+    public void changeRoleToCustomer_shouldDoNothing_ifUserDoesNotExist() {
 
-        when(userService.findById(1)).thenThrow(EntityNotFoundException.class);
+        when(userService.findById(1)).thenReturn(null);
 
-        try {
-            userService.changeRoleToCustomer(1);
-        } catch (EntityNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("USER_DOES_NOT_EXIST");
-        }
+        userService.changeRoleToCustomer(1);
+
+        verify(userRepository, never()).saveAndFlush(null);
     }
 
     @Test
@@ -214,5 +206,14 @@ public class UserServiceImplTest {
 
         verify(userManager).login(user);
         verify(cartManager).initCart();
+    }
+
+    @Test
+    public void getCompleteUser_shouldReturnNull_ifUserDoesNotExist() {
+
+        User user = User.builder().id(1).username("a").build();
+        when(userRepository.findByUsername("a")).thenReturn(null);
+
+        assertThat(userService.getCompleteUser(user)).isNull();
     }
 }

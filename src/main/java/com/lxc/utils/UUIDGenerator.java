@@ -4,11 +4,8 @@ import java.util.UUID;
 
 public class UUIDGenerator {
 
-    public static String getUUID(String filename) {
+    public static String generate() {
 
-        int index = filename.lastIndexOf(".");
-        String suffix = filename.substring(index);
-        String uniqueId = UUID.randomUUID().toString().replace("-", "");
-        return uniqueId+suffix;
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

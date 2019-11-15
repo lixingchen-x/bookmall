@@ -4,14 +4,13 @@ import com.lxc.constants.AddResults;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
+import com.lxc.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @Controller
@@ -20,6 +19,9 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private FileService fileService;
 
     /**
      * 图书展示页面
@@ -159,9 +161,9 @@ public class BookController {
     }
 
     @RequestMapping("upload/{bookId}")
-    public String imageUpload(@PathVariable("bookId") Integer id, @RequestParam("file") MultipartFile file, Model model) {
+    public String imageUpload(@PathVariable("bookId") Integer id, @RequestParam("file") MultipartFile file, Model model) throws IOException {
 
-        String url = bookService.uploadImg(file);
+        String url = fileService.uploadImg(file);
         bookService.saveUrl(id, url);
         model.addAttribute("url", url);
         return "bookManagement/upload.html";

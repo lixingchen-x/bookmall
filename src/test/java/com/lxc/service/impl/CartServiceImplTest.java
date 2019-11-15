@@ -94,7 +94,7 @@ public class CartServiceImplTest {
 
     private Book createBook(Integer bookId) {
 
-        return Book.builder().id(1).build();
+        return Book.builder().id(bookId).build();
     }
 
     private Cart createCart(Integer id, Integer quantity) {

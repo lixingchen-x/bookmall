@@ -30,38 +30,42 @@ public class UserServiceImpl implements UserService {
     public User getCompleteUser(User user) {
 
         User completeUser = findByUsername(user.getUsername());
-        userManager.login(completeUser);
-        cartManager.initCart();
-        return completeUser;
+        if (null != completeUser) {
+            userManager.login(completeUser);
+            cartManager.initCart();
+            return completeUser;
+        }
+        return null;
     }
 
     @Override
     public void update(User user) {
 
         User oldUser = this.findById(user.getId());
-        oldUser.setPassword(user.getPassword());
-        oldUser.setEmail(user.getEmail());
-        userRepository.saveAndFlush(oldUser);
+        if (null != oldUser) {
+            oldUser.setPassword(user.getPassword());
+            oldUser.setEmail(user.getEmail());
+            userRepository.saveAndFlush(oldUser);
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        this.findById(id);
-        userRepository.deleteById(id);
+        if (null != this.findById(id)) {
+            userRepository.deleteById(id);
+        }
     }
 
     @Override
     public User findById(Integer id) {
 
-        User user;
         try {
-            user = userRepository.getOne(id);
+            return userRepository.getOne(id);
         } catch (EntityNotFoundException e) {
             log.error("UserId = {} does not exist!", id);
-            throw new EntityNotFoundException("USER_DOES_NOT_EXIST");
+            return null;
         }
-        return user;
     }
 
     @Override
@@ -97,14 +101,19 @@ public class UserServiceImpl implements UserService {
     public void changeRoleToAdmin(Integer id) {
 
         User user = this.findById(id);
-        user.changeRoleToAdmin();
-        userRepository.saveAndFlush(user);
+        if (null != user) {
+            user.changeRoleToAdmin();
+            userRepository.saveAndFlush(user);
+        }
     }
 
     @Override
     public void changeRoleToCustomer(Integer id) {
 
         User user = this.findById(id);
-        this.saveAsCustomer(user);
+        if (null != user) {
+            user.changeRoleToCustomer();
+            userRepository.saveAndFlush(user);
+        }
     }
 }

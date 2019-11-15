@@ -2,7 +2,6 @@ package com.lxc.controller;
 
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
-import com.lxc.helper.CartManager;
 import com.lxc.service.CartService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,9 +23,6 @@ public class ShoppingControllerTest {
     @Mock
     private CartService cartService;
 
-    @Mock
-    private CartManager cartManager;
-
     @Test
     public void toCart_happyPath() {
 
@@ -36,64 +32,67 @@ public class ShoppingControllerTest {
     @Test
     public void addToCart_whenFindByALL_happyPath() {
 
-        Cart mockedCart = getMockedCart();
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = getMockedCartItem();
 
         assertThat(shoppingController.addToCart(1, 0, "all", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/books");
 
-        verify(cartManager).updateCart(mockedCart);
+        verify(mockedCart).updateCart(mockedCartItem);
     }
 
     @Test
     public void addToCart_whenFindByName_happyPath() {
 
-        Cart mockedCart = getMockedCart();
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = getMockedCartItem();
 
         assertThat(shoppingController.addToCart(1, 0, "name", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByName");
 
-        verify(cartManager).updateCart(mockedCart);
+        verify(mockedCart).updateCart(mockedCartItem);
     }
 
     @Test
     public void addToCart_whenFindByAuthor_happyPath() {
 
-        Cart mockedCart = getMockedCart();
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = getMockedCartItem();
 
         assertThat(shoppingController.addToCart(1, 0, "author", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByAuthor");
 
-        verify(cartManager).updateCart(mockedCart);
+        verify(mockedCart).updateCart(mockedCartItem);
     }
 
     @Test
     public void addToCart_whenFindByIsbn_happyPath() {
 
-        Cart mockedCart = getMockedCart();
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = getMockedCartItem();
 
         assertThat(shoppingController.addToCart(1, 0, "isbn", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/findByIsbn");
 
-        verify(cartManager).updateCart(mockedCart);
+        verify(mockedCart).updateCart(mockedCartItem);
     }
 
     @Test
     public void addToCart_whenFindByALLWithNoParameter_happyPath() {
 
-        Cart mockedCart = getMockedCart();
+        Cart mockedCart = mock(Cart.class);
+        CartItem mockedCartItem = getMockedCartItem();
 
         assertThat(shoppingController.addToCart(1, 0, "", "a", mock(Model.class), mockedCart))
                 .isEqualTo("forward:/book/books");
 
-        verify(cartManager).updateCart(mockedCart);
+        verify(mockedCart).updateCart(mockedCartItem);
     }
 
-    private Cart getMockedCart() {
+    private CartItem getMockedCartItem() {
 
-        Cart mockedCart = mock(Cart.class);
         CartItem mockedCartItem = mock(CartItem.class);
-        when(mockedCart.updateCart(mockedCartItem)).thenReturn(mockedCart);
         when(cartService.createCartItem(1, 1)).thenReturn(mockedCartItem);
-        return mockedCart;
+        return mockedCartItem;
     }
 }

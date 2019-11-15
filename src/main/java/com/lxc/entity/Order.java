@@ -53,9 +53,8 @@ public class Order extends BaseEntity implements Serializable {
         this.orderItems.add(orderItem);
     }
 
-    public Order loadOrderItemsFromCart(Cart cart) {
+    public void loadOrderItemsFromCart(Cart cart) {
 
         cart.getCartItems().forEach(cartItem -> this.addOrderItem(cartItem.transferToOrderItem(this.getId())));
-        return this;
     }
 }
