@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
@@ -195,7 +195,7 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn("123")).thenReturn(null);
 
-        assertThat(bookService.addBook(book)).isEqualTo(AddResults.SUCCESS);
+        assertThat(bookService.addBook(book)).isEqualTo(AddResult.SUCCESS);
         verify(bookRepository).saveAndFlush(book);
     }
 
@@ -205,7 +205,7 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn(book.getIsbn())).thenReturn(book);
 
-        assertThat(bookService.addBook(book)).isEqualTo(AddResults.FAIL);
+        assertThat(bookService.addBook(book)).isEqualTo(AddResult.FAIL);
     }
 
     @Test

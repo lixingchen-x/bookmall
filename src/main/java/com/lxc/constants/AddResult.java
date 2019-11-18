@@ -1,10 +1,10 @@
 package com.lxc.constants;
 
-public enum AddResults {
+public enum AddResult {
 
     SUCCESS(0, "success"), FAIL(1, "entity_exists");
 
-    private AddResults(Integer code, String msg) {
+    private AddResult(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }

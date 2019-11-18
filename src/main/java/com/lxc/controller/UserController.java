@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,7 +52,7 @@ public class UserController {
     @PostMapping("add")
     public String add(User user, Model model) {
 
-        if (AddResults.FAIL.equals(userService.addUser(user))) {
+        if (AddResult.FAIL.equals(userService.addUser(user))) {
             model.addAttribute("addUser", "新增用户失败，该用户名已存在！");
             return "userManagement/addUser.html";
         }

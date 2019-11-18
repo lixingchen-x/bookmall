@@ -1,57 +1,50 @@
 package com.lxc.service.impl;
 
 import com.lxc.utils.FileUtils;
-import com.lxc.utils.FilenameGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({FileUtils.class, FilenameGenerator.class})
-@PowerMockIgnore("javax.management.*")
+@RunWith(MockitoJUnitRunner.class)
 public class FileServiceImplTest {
 
     @InjectMocks
     private FileServiceImpl fileService;
 
+    @Mock
+    private FileUtils fileUtils;
+
     @Before
     public void setUp() {
 
-        PowerMockito.mockStatic(FileUtils.class);
-        PowerMockito.mockStatic(FilenameGenerator.class);
         ReflectionTestUtils.setField(fileService, "filePath", "E:\\images\\");
+        ReflectionTestUtils.setField(fileService, "fileRelativePath", "\\images\\");
     }
 
     @Test
-    public void uploadImg_happyPath() throws Exception {
+    public void upload_happyPath() throws IOException {
 
-        MultipartFile file = PowerMockito.mock(MultipartFile.class);
-        PowerMockito.when(file.getOriginalFilename()).thenReturn("a.jpg");
-        PowerMockito.when(FilenameGenerator.generate("a.jpg")).thenReturn("123.jpg");
-        File destination = mockFile();
-        PowerMockito.when(FileUtils.writeSuccess(file, destination)).thenReturn(true);
+        MultipartFile file = mockMultipartFile();
+        when(fileUtils.filenameGenerator("a.jpg")).thenReturn("123.jpg");
 
-        assertThat(fileService.uploadImg(file)).isEqualTo("E:\\images\\"+"123.jpg");
+        assertThat(fileService.upload(file)).isEqualTo("\\images\\"+"123.jpg");
     }
 
-    private File mockFile() throws Exception {
+    private MultipartFile mockMultipartFile() throws IOException {
 
-        File file = PowerMockito.mock(File.class);
-        PowerMockito.whenNew(File.class).withParameterTypes(java.lang.String.class, java.lang.String.class)
-                .withArguments("E:\\images\\", "a.jpg").thenReturn(file);
-        return file;
+        FileInputStream fileInputStream = new FileInputStream("E:\\images\\"+"a.jpg");
+        return new MockMultipartFile("a.jpg", "a.jpg", "multipart/form-data", fileInputStream);
     }
 }

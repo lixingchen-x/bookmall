@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class SessionUserManager implements UserManager {
 
-    public final static String SESSION_USER = "user";
+    private final static String SESSION_USER = "user";
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -33,19 +33,19 @@ public class SessionUserManager implements UserManager {
     @Override
     public User getCurrentUser() {
 
-        return (User) request.getSession().getAttribute(this.SESSION_USER);
+        return (User) request.getSession().getAttribute(SESSION_USER);
     }
 
     @Override
     public void login(User user) {
 
-        setAttribute(this.SESSION_USER, user);
+        setAttribute(SESSION_USER, user);
     }
 
     @Override
     public void logout() {
 
-        removeAttribute(this.SESSION_USER);
+        removeAttribute(SESSION_USER);
     }
 }
 

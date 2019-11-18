@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.entity.User;
 import com.lxc.helper.CartManager;
 import com.lxc.helper.UserManager;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
 
-        User oldUser = this.findById(user.getId());
+        User oldUser = findById(user.getId());
         if (null != oldUser) {
             oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
@@ -76,13 +76,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddResults addUser(User user) {
+    public AddResult addUser(User user) {
 
         if (userRepository.findByUsername(user.getUsername()) == null) {
             saveAsCustomer(user);
-            return AddResults.SUCCESS;
+            return AddResult.SUCCESS;
         }
-        return AddResults.FAIL;
+        return AddResult.FAIL;
     }
 
     @Override

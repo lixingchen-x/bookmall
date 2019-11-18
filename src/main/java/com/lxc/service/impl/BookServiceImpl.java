@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void update(Book newBook) {
 
-        newBook.changeStatusTo(BookStatus.AVAILABLE);
+        newBook.setStatus(BookStatus.AVAILABLE);
         Book temp = this.findById(newBook.getId());
         if (null != temp) {
             BeanUtils.copyProperties(newBook, temp);
@@ -80,7 +80,7 @@ public class BookServiceImpl implements BookService {
 
         Book book = this.findById(id);
         if (null != book) {
-            book.changeStatusTo(status);
+            book.setStatus(status);
             bookRepository.saveAndFlush(book);
         }
     }
@@ -97,14 +97,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public AddResults addBook(Book book) {
+    public AddResult addBook(Book book) {
 
         if (bookRepository.findByIsbn(book.getIsbn()) == null) {
-            book.changeStatusTo(BookStatus.AVAILABLE);
+            book.setStatus(BookStatus.AVAILABLE);
             bookRepository.saveAndFlush(book);
-            return AddResults.SUCCESS;
+            return AddResult.SUCCESS;
         }
-        return AddResults.FAIL;
+        return AddResult.FAIL;
     }
 
     @Override

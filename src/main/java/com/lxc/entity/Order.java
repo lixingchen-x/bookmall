@@ -43,11 +43,6 @@ public class Order extends BaseEntity implements Serializable {
 
     public Order() {}
 
-    public void changeStatusTo(OrderStatus status) {
-
-        this.setStatus(status);
-    }
-
     public void addOrderItem(OrderItem orderItem) {
 
         this.orderItems.add(orderItem);

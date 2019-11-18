@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
@@ -13,14 +13,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -72,7 +72,7 @@ public class BookControllerTest {
     @Test
     public void addBook_happyPath() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn(AddResults.SUCCESS);
+        when(bookService.addBook(any())).thenReturn(AddResult.SUCCESS);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
@@ -82,7 +82,7 @@ public class BookControllerTest {
     @Test
     public void addBook_shouldFail_ifBookExists() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn(AddResults.FAIL);
+        when(bookService.addBook(any())).thenReturn(AddResult.FAIL);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bookManagement/addBook.html"))
@@ -182,14 +182,26 @@ public class BookControllerTest {
     }
 
     @Test
-    public void imageUpload_happyPath() throws IOException {
+    public void imageUpload_happyPath() {
 
         String url = "any";
         MultipartFile file = mock(MultipartFile.class);
-        when(fileService.uploadImg(file)).thenReturn(url);
+        when(fileService.upload(file)).thenReturn(url);
 
         assertThat(bookController.imageUpload(1, file, mock(Model.class))).isEqualTo("bookManagement/upload.html");
 
         verify(bookService).saveUrl(1, url);
+    }
+
+    @Test
+    public void imageUpload_shouldFail_ifIOFailed() throws Exception {
+
+        MockMultipartFile file = mock(MockMultipartFile.class);
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/book/upload", 1)
+                .file(file)
+                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }

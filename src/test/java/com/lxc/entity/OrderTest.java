@@ -89,7 +89,7 @@ public class OrderTest {
 
         order.loadOrderItemsFromCart(cart);
 
-        assertThat(orderItem.getBookId()).isEqualTo(cartItem.getBook().getId());
+        assertThat(orderItem.getBookId()).isEqualTo(cartItem.getBookId());
         assertThat(orderItem.getQuantity()).isEqualTo(cartItem.getQuantity());
     }
 

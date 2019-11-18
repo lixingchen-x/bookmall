@@ -77,9 +77,4 @@ public class Book extends BaseEntity implements Serializable {
             throw new StockNotEnoughException("STOCK_IS_NOT_ENOUGH");
         }
     }
-
-    public void changeStatusTo(BookStatus status) {
-
-        this.setStatus(status);
-    }
 }

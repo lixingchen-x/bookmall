@@ -43,4 +43,9 @@ public class CartItem implements Serializable {
         orderItem.setQuantity(this.quantity);
         return orderItem;
     }
+
+    public Integer getBookId() {
+
+        return this.book.getId();
+    }
 }

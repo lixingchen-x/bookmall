@@ -30,12 +30,12 @@ public class Cart implements Serializable {
 
     public void resetCart() {
 
-        cartItems.removeAll(cartItems);
+        cartItems.clear();
     }
 
     public CartItem getByBookId(Integer id) {
 
-        return cartItems.stream().filter(cartItem -> cartItem.getBook().getId().equals(id))
+        return cartItems.stream().filter(cartItem -> cartItem.getBookId().equals(id))
                 .findFirst().orElse(null);
     }
 
@@ -70,7 +70,7 @@ public class Cart implements Serializable {
 
     public void updateCart(CartItem cartItem) {
 
-        CartItem item = this.getByBookId(cartItem.getBook().getId());
+        CartItem item = this.getByBookId(cartItem.getBookId());
         if (item != null) {
             item.setQuantity(item.getQuantity() + cartItem.getQuantity());
             return;

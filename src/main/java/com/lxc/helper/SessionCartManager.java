@@ -12,7 +12,7 @@ public class SessionCartManager implements CartManager {
     @Autowired
     private UserManager userManager;
 
-    public final static String SESSION_CART = "cart";
+    private final static String SESSION_CART = "cart";
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -36,18 +36,18 @@ public class SessionCartManager implements CartManager {
     @Override
     public Cart getCurrentCart() {
 
-        return (Cart) request.getSession().getAttribute(this.SESSION_CART);
+        return (Cart) request.getSession().getAttribute(SESSION_CART);
     }
 
     @Override
     public void initCart() {
 
-        setAttribute(this.SESSION_CART, new Cart(userManager.getCurrentUser()));
+        setAttribute(SESSION_CART, new Cart(userManager.getCurrentUser()));
     }
 
     @Override
     public void updateCart(Cart cart) {
 
-        setAttribute(this.SESSION_CART, cart);
+        setAttribute(SESSION_CART, cart);
     }
 }

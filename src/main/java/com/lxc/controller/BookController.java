@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Controller
 @RequestMapping("/book")
@@ -54,7 +52,7 @@ public class BookController {
     @PostMapping("add")
     public String addBook(Book book, Model model) {
 
-        if (AddResults.FAIL.equals(bookService.addBook(book))) {
+        if (AddResult.FAIL.equals(bookService.addBook(book))) {
             model.addAttribute("addBook", "新增图书失败，图书已存在！");
             return "bookManagement/addBook.html";
         }
@@ -161,9 +159,9 @@ public class BookController {
     }
 
     @RequestMapping("upload/{bookId}")
-    public String imageUpload(@PathVariable("bookId") Integer id, @RequestParam("file") MultipartFile file, Model model) throws IOException {
+    public String imageUpload(@PathVariable("bookId") Integer id, @RequestParam("file") MultipartFile file, Model model) {
 
-        String url = fileService.uploadImg(file);
+        String url = fileService.upload(file);
         bookService.saveUrl(id, url);
         model.addAttribute("url", url);
         return "bookManagement/upload.html";

@@ -86,7 +86,7 @@ public class CartTest {
 
         Cart cart = createCart(1);
 
-        assertThat(cart.getByBookId(1).getBook().getId(), is(1));
+        assertThat(cart.getByBookId(1).getBookId(), is(1));
     }
 
     @Test

@@ -71,7 +71,7 @@ public class OrderControllerTest {
         Cart cart = mock(Cart.class);
         Order order = mock(Order.class);
 
-        assertThat(orderController.completeOrderInfoAndSave(user, cart, order)).isEqualTo("index");
+        assertThat(orderController.completeOrderInfoThenSave(user, cart, order)).isEqualTo("index");
 
         verify(orderService).completeOrderInfo(user, cart, order);
         verify(orderService).save(order);

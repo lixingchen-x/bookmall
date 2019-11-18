@@ -1,6 +1,6 @@
 package com.lxc.service;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
@@ -22,7 +22,7 @@ public interface BookService {
 
     Book findById(Integer id);
 
-    AddResults addBook(Book book);
+    AddResult addBook(Book book);
 
     void decreaseStock(Integer id, Integer decrement) throws StockNotEnoughException;
 

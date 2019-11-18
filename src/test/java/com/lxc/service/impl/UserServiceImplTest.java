@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResults;
+import com.lxc.constants.AddResult;
 import com.lxc.entity.Role;
 import com.lxc.entity.User;
 import com.lxc.helper.CartManager;
@@ -113,7 +113,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(null);
 
-        assertThat(userService.addUser(user)).isEqualTo(AddResults.SUCCESS);
+        assertThat(userService.addUser(user)).isEqualTo(AddResult.SUCCESS);
         verify(userRepository).saveAndFlush(user);
     }
 
@@ -123,7 +123,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(user);
 
-        assertThat(userService.addUser(user)).isEqualTo(AddResults.FAIL);
+        assertThat(userService.addUser(user)).isEqualTo(AddResult.FAIL);
     }
 
     @Test

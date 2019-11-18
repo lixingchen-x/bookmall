@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
         try {
             Order order = orderRepository.getOne(orderId);
-            order.changeStatusTo(status);
+            order.setStatus(status);
             orderRepository.saveAndFlush(order);
         } catch (EntityNotFoundException e) {
             log.error("OrderId = {} does not exist!", orderId);
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.loadOrderItemsFromCart(cart);
         order.setCreateDate(new Date());
-        order.changeStatusTo(OrderStatus.UNPAID);
+        order.setStatus(OrderStatus.UNPAID);
         order.setUserId(user.getId());
     }
 
