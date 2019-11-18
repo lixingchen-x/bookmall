@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
-import com.lxc.constants.AddResult;
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import com.lxc.service.FileService;
@@ -21,11 +21,6 @@ public class BookController {
     @Autowired
     private FileService fileService;
 
-    /**
-     * 图书展示页面
-     * @param model
-     * @return
-     */
     @GetMapping("books")
     public String findAll(Model model, @RequestParam(defaultValue = "0") Integer page) {
 
@@ -35,36 +30,21 @@ public class BookController {
         return "bookManagement/bookList.html";
     }
 
-    /**
-     * 图书添加的跳转
-     * @return
-     */
     @GetMapping("add")
     public String toAddBook() {
         return "bookManagement/addBook.html";
     }
 
-    /**
-     * 图书添加
-     * @param book
-     * @return
-     */
     @PostMapping("add")
     public String addBook(Book book, Model model) {
 
-        if (AddResult.FAIL.equals(bookService.addBook(book))) {
+        if (AddResultEnum.FAIL.equals(bookService.addBook(book))) {
             model.addAttribute("addBook", "新增图书失败，图书已存在！");
             return "bookManagement/addBook.html";
         }
         return "redirect:/book/books";
     }
 
-    /**
-     * 跳转到修改页面
-     * @param id
-     * @param model
-     * @return
-     */
     @GetMapping("update/{bookId}")
     public String toUpdateBook(@PathVariable("bookId") Integer id, Model model) {
 
@@ -72,11 +52,6 @@ public class BookController {
         return "bookManagement/editBook.html";
     }
 
-    /**
-     * 编辑图书信息
-     * @param book
-     * @return
-     */
     @PutMapping("update")
     public String updateBook(Book book) {
 
@@ -84,41 +59,22 @@ public class BookController {
         return "redirect:/book/books";
     }
 
-    /**
-     * 下架书籍
-     * @param id
-     * @param page
-     * @param model
-     * @return
-     */
     @RequestMapping("withdraw")
     public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus(BookStatus.WITHDRAW, id);
+        bookService.setStatus(BookStatusEnum.WITHDRAW, id);
         return "redirect:/book/books";
     }
 
-    /**
-     * 上架书籍
-     * @param id
-     * @param page
-     * @param model
-     * @return
-     */
     @RequestMapping("onSale")
     public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus(BookStatus.AVAILABLE, id);
+        bookService.setStatus(BookStatusEnum.AVAILABLE, id);
         return "redirect:/book/books";
     }
 
-    /**
-     * 从数据库中永久删除
-     * @param id
-     * @return
-     */
     @RequestMapping("delete/{bookId}")
     public String deleteBook(@PathVariable("bookId") Integer id) {
 

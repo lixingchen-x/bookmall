@@ -17,13 +17,13 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager defaultWebSecurityManager) {
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        //设置安全管理器
         shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
 
         shiroFilterFactoryBean.setLoginUrl("/login");
         Map<String, String> filterMap = new LinkedHashMap<>();
+        //"anon"：无需认证即可访问
         filterMap.put("/resources/**", "anon");
-        filterMap.put("/doLogin", "anon"); //"anon"：无需认证即可访问
+        filterMap.put("/doLogin", "anon");
         filterMap.put("/register", "anon");
         filterMap.put("/doRegister", "anon");
         filterMap.put("/logout", "logout");

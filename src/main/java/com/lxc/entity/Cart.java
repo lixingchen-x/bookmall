@@ -7,9 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 购物车的实体类
- */
 @Getter
 @Setter
 public class Cart implements Serializable {

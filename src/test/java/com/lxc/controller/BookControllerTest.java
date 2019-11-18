@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
-import com.lxc.constants.AddResult;
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
 import com.lxc.service.FileService;
@@ -72,7 +72,7 @@ public class BookControllerTest {
     @Test
     public void addBook_happyPath() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn(AddResult.SUCCESS);
+        when(bookService.addBook(any())).thenReturn(AddResultEnum.SUCCESS);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrlTemplate("/book/books"))
@@ -82,7 +82,7 @@ public class BookControllerTest {
     @Test
     public void addBook_shouldFail_ifBookExists() throws Exception {
 
-        when(bookService.addBook(any())).thenReturn(AddResult.FAIL);
+        when(bookService.addBook(any())).thenReturn(AddResultEnum.FAIL);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/book/add"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("bookManagement/addBook.html"))
@@ -117,7 +117,7 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus(BookStatus.WITHDRAW, book.getId());
+        verify(bookService).setStatus(BookStatusEnum.WITHDRAW, book.getId());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus(BookStatus.AVAILABLE, book.getId());
+        verify(bookService).setStatus(BookStatusEnum.AVAILABLE, book.getId());
     }
 
     @Test

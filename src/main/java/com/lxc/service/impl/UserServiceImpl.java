@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResult;
+import com.lxc.constants.AddResultEnum;
 import com.lxc.entity.User;
 import com.lxc.helper.CartManager;
 import com.lxc.helper.UserManager;
@@ -76,13 +76,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddResult addUser(User user) {
+    public AddResultEnum addUser(User user) {
 
         if (userRepository.findByUsername(user.getUsername()) == null) {
             saveAsCustomer(user);
-            return AddResult.SUCCESS;
+            return AddResultEnum.SUCCESS;
         }
-        return AddResult.FAIL;
+        return AddResultEnum.FAIL;
     }
 
     @Override

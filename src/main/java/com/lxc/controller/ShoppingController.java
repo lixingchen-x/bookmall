@@ -22,9 +22,6 @@ public class ShoppingController {
         return "/user/cart.html";
     }
 
-    /**
-     * 添加图书到购物车中
-     */
     @RequestMapping("add")
     public String addToCart(@RequestParam(value = "bookId") Integer id,
                             @RequestParam(defaultValue = "0") Integer page,

@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.OrderStatus;
+import com.lxc.constants.OrderStatusEnum;
 import com.lxc.entity.Cart;
 import com.lxc.entity.Order;
 import com.lxc.entity.User;
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setStatus(OrderStatus status, Integer orderId) {
+    public void setStatus(OrderStatusEnum status, Integer orderId) {
 
         try {
             Order order = orderRepository.getOne(orderId);
@@ -55,21 +55,21 @@ public class OrderServiceImpl implements OrderService {
 
         order.loadOrderItemsFromCart(cart);
         order.setCreateDate(new Date());
-        order.setStatus(OrderStatus.UNPAID);
+        order.setStatus(OrderStatusEnum.UNPAID);
         order.setUserId(user.getId());
     }
 
     @Override
     public void pay(Integer orderId) {
 
-        setStatus(OrderStatus.PAID, orderId);
+        setStatus(OrderStatusEnum.PAID, orderId);
         decreaseStocks(orderRepository.getOne(orderId));
     }
 
     @Override
     public void cancel(Integer orderId) {
 
-        setStatus(OrderStatus.CANCELLED, orderId);
+        setStatus(OrderStatusEnum.CANCELLED, orderId);
         rollBackStocks(orderRepository.getOne(orderId));
     }
 

@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.OrderStatus;
+import com.lxc.constants.OrderStatusEnum;
 import com.lxc.entity.*;
 import com.lxc.helper.CartManager;
 import com.lxc.helper.CurrentCart;
@@ -66,7 +66,7 @@ public class OrderController {
     public String refund(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatus.UNPAID, id);
+        orderService.setStatus(OrderStatusEnum.UNPAID, id);
         return "forward:/order/orders";
     }
 
@@ -74,7 +74,7 @@ public class OrderController {
     public String recover(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatus.UNPAID, id);
+        orderService.setStatus(OrderStatusEnum.UNPAID, id);
         return "forward:/order/orders";
     }
 }

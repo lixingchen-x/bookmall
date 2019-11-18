@@ -1,6 +1,6 @@
 package com.lxc.entity;
 
-import com.lxc.constants.OrderStatus;
+import com.lxc.constants.OrderStatusEnum;
 import com.lxc.testUtils.DateUtils;
 import org.junit.Test;
 import java.text.ParseException;
@@ -57,9 +57,9 @@ public class OrderTest {
     @Test
     public void getStatus_happyPath() {
 
-        order.setStatus(OrderStatus.PAID);
+        order.setStatus(OrderStatusEnum.PAID);
 
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+        assertThat(order.getStatus()).isEqualTo(OrderStatusEnum.PAID);
     }
 
     @Test

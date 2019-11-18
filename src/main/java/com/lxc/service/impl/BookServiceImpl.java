@@ -1,7 +1,7 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResult;
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void update(Book newBook) {
 
-        newBook.setStatus(BookStatus.AVAILABLE);
+        newBook.setStatus(BookStatusEnum.AVAILABLE);
         Book temp = this.findById(newBook.getId());
         if (null != temp) {
             BeanUtils.copyProperties(newBook, temp);
@@ -76,7 +76,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void setStatus(BookStatus status, Integer id) {
+    public void setStatus(BookStatusEnum status, Integer id) {
 
         Book book = this.findById(id);
         if (null != book) {
@@ -97,14 +97,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public AddResult addBook(Book book) {
+    public AddResultEnum addBook(Book book) {
 
         if (bookRepository.findByIsbn(book.getIsbn()) == null) {
-            book.setStatus(BookStatus.AVAILABLE);
+            book.setStatus(BookStatusEnum.AVAILABLE);
             bookRepository.saveAndFlush(book);
-            return AddResult.SUCCESS;
+            return AddResultEnum.SUCCESS;
         }
-        return AddResult.FAIL;
+        return AddResultEnum.FAIL;
     }
 
     @Override

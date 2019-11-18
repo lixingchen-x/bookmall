@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.OrderStatus;
+import com.lxc.constants.OrderStatusEnum;
 import com.lxc.entity.*;
 import com.lxc.helper.CartManager;
 import com.lxc.service.OrderService;
@@ -102,7 +102,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
+        verify(orderService).setStatus(OrderStatusEnum.UNPAID, 1);
     }
 
     @Test
@@ -113,6 +113,6 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
+        verify(orderService).setStatus(OrderStatusEnum.UNPAID, 1);
     }
 }

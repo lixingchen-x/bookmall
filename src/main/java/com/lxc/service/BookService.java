@@ -1,7 +1,7 @@
 package com.lxc.service;
 
-import com.lxc.constants.AddResult;
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import org.springframework.data.domain.Page;
@@ -18,11 +18,11 @@ public interface BookService {
 
     void deleteById(Integer id);
 
-    void setStatus(BookStatus status, Integer id);
+    void setStatus(BookStatusEnum status, Integer id);
 
     Book findById(Integer id);
 
-    AddResult addBook(Book book);
+    AddResultEnum addBook(Book book);
 
     void decreaseStock(Integer id, Integer decrement) throws StockNotEnoughException;
 

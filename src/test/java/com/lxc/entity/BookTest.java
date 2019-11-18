@@ -1,6 +1,6 @@
 package com.lxc.entity;
 
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.exception.StockNotEnoughException;
 import org.junit.Test;
 
@@ -70,9 +70,9 @@ public class BookTest {
     public void getStatus_happyPath() {
 
         Book book = new Book();
-        book.setStatus(BookStatus.AVAILABLE);
+        book.setStatus(BookStatusEnum.AVAILABLE);
 
-        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+        assertThat(book.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class BookTest {
     public void builder_happyPath() throws ParseException {
 
         Book book = Book.builder().id(1).bookName("a").isbn("123").stock(1).price(100.0).author("a")
-                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatus.AVAILABLE).imgUrl("a").build();
+                .intro("a").publishDate(DateUtils.parse("2019-10-29")).status(BookStatusEnum.AVAILABLE).imgUrl("a").build();
 
         assertThat(book.getId()).isEqualTo(1);
         assertThat(book.getBookName()).isEqualTo("a");
@@ -140,7 +140,7 @@ public class BookTest {
         assertThat(book.getAuthor()).isEqualTo("a");
         assertThat(book.getIntro()).isEqualTo("a");
         assertThat(book.getPublishDate()).isEqualTo("2019-10-29");
-        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+        assertThat(book.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
         assertThat(book.getImgUrl()).isEqualTo("a");
     }
 }

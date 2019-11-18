@@ -9,9 +9,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-/**
- * 用户的实体类
- */
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})

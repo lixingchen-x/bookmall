@@ -1,7 +1,7 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.lxc.constants.BookStatus;
+import com.lxc.constants.BookStatusEnum;
 import com.lxc.exception.StockNotEnoughException;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,9 +9,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 书的实体类
- */
 @Entity
 @Table(name = "book")
 @JsonIgnoreProperties(value={"hibernateLazyInitializer"})
@@ -45,13 +42,13 @@ public class Book extends BaseEntity implements Serializable {
 
     @Column(name = "book_status")
     @Enumerated(value = EnumType.STRING)
-    private BookStatus status;
+    private BookStatusEnum status;
 
     @Column(name = "img_url")
     private String imgUrl;
 
     @Builder
-    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatus status, String imgUrl) {
+    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatusEnum status, String imgUrl) {
         super(id);
         this.bookName = bookName;
         this.author = author;

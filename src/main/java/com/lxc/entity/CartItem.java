@@ -4,10 +4,6 @@ import lombok.*;
 
 import java.io.Serializable;
 
-/**
- * 购物车里物品的实体类
- * 对书的数量、用户id等属性进行封装
- */
 @Getter
 @Setter
 @Builder

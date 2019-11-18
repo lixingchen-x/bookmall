@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.OrderStatus;
+import com.lxc.constants.OrderStatusEnum;
 import com.lxc.entity.*;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.OrderRepository;
@@ -62,9 +62,9 @@ public class OrderServiceImplTest {
         Order order = new Order();
         when(orderRepository.getOne(1)).thenReturn(order);
 
-        orderService.setStatus(OrderStatus.PAID, 1);
+        orderService.setStatus(OrderStatusEnum.PAID, 1);
 
-        assertThat(orderRepository.getOne(1).getStatus()).isEqualTo(OrderStatus.PAID);
+        assertThat(orderRepository.getOne(1).getStatus()).isEqualTo(OrderStatusEnum.PAID);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class OrderServiceImplTest {
 
         when(orderRepository.getOne(1)).thenThrow(EntityNotFoundException.class);
 
-        orderService.setStatus(OrderStatus.PAID, 1);
+        orderService.setStatus(OrderStatusEnum.PAID, 1);
 
         verify(orderRepository, never()).saveAndFlush(any());
     }
@@ -84,7 +84,7 @@ public class OrderServiceImplTest {
 
         orderService.completeOrderInfo(User.builder().id(1).build(), mock(Cart.class), order);
 
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.UNPAID);
+        assertThat(order.getStatus()).isEqualTo(OrderStatusEnum.UNPAID);
         assertThat(order.getUserId()).isEqualTo(1);
     }
 
@@ -106,7 +106,7 @@ public class OrderServiceImplTest {
 
         orderService.pay(1);
 
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+        assertThat(order.getStatus()).isEqualTo(OrderStatusEnum.PAID);
         verify(bookService).decreaseStock(1, 1);
     }
 
@@ -128,7 +128,7 @@ public class OrderServiceImplTest {
 
         orderService.cancel(1);
 
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+        assertThat(order.getStatus()).isEqualTo(OrderStatusEnum.CANCELLED);
         verify(bookService).increaseStock(1, 1);
     }
 

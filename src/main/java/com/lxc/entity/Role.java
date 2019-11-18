@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * 角色类
+ * 用户角色
  */
 @Entity
 @Table(name = "role")
