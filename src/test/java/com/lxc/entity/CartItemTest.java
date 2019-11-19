@@ -72,8 +72,10 @@ public class CartItemTest {
         Book book = Book.builder().id(1).build();
         CartItem cartItem = CartItem.builder().book(book).quantity(1).build();
 
-        assertThat(cartItem.transferToOrderItem(1).getBookId()).isEqualTo(1);
-        assertThat(cartItem.transferToOrderItem(1).getQuantity()).isEqualTo(1);
-        assertThat(cartItem.transferToOrderItem(1).getOrderId()).isEqualTo(1);
+        OrderItem orderItem = cartItem.transferToOrderItem(1);
+
+        assertThat(orderItem.getBookId()).isEqualTo(1);
+        assertThat(orderItem.getQuantity()).isEqualTo(1);
+        assertThat(orderItem.getOrderId()).isEqualTo(1);
     }
 }

@@ -19,7 +19,7 @@ public class MyRealm extends AuthorizingRealm {
 
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         User user = (User) principalCollection.getPrimaryPrincipal();
-        simpleAuthorizationInfo.addRole(user.getRole().getName());
+        simpleAuthorizationInfo.addRole(user.getRoleName());
         return simpleAuthorizationInfo;
     }
 

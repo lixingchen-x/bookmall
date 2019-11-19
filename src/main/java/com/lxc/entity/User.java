@@ -42,6 +42,11 @@ public class User extends BaseEntity implements Serializable {
         this.role = role;
     }
 
+    public String getRoleName() {
+
+        return this.role.getName();
+    }
+
     public void changeRoleToAdmin() {
 
         this.role = new Role(Role.ADMIN_ROLE_CODE);

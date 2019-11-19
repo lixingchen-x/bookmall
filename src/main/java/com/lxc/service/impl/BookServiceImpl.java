@@ -142,7 +142,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    public Page<Book> bookToBookPage(Book book) {
+    protected Page<Book> bookToBookPage(Book book) {
 
         List<Book> books = book != null ? List.of(book) : List.of();
         Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));

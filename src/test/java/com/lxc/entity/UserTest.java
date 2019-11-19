@@ -46,9 +46,10 @@ public class UserTest {
     public void getRole_happyPath() {
 
         User user = new User();
-        user.setRole(new Role(Role.ADMIN_ROLE_CODE));
+        Role admin = new Role(Role.ADMIN_ROLE_CODE);
+        user.setRole(admin);
 
-        assertEquals("ADMIN", user.getRole().getName());
+        assertThat(user.getRole()).isEqualTo(admin);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class UserTest {
         assertThat(user.getUsername()).isEqualTo("a");
         assertThat(user.getPassword()).isEqualTo("123456");
         assertThat(user.getEmail()).isEqualTo("123@123");
-        assertThat(user.getRole().getName()).isEqualTo("ADMIN");
+        assertThat(user.getRoleName()).isEqualTo("ADMIN");
     }
 
     @Test
@@ -77,7 +78,7 @@ public class UserTest {
 
         user.changeRoleToAdmin();
 
-        assertThat(user.getRole().getName()).isEqualTo("ADMIN");
+        assertThat(user.getRoleName()).isEqualTo("ADMIN");
     }
 
     @Test
@@ -87,6 +88,6 @@ public class UserTest {
 
         user.changeRoleToCustomer();
 
-        assertThat(user.getRole().getName()).isEqualTo("CUSTOMER");
+        assertThat(user.getRoleName()).isEqualTo("CUSTOMER");
     }
 }

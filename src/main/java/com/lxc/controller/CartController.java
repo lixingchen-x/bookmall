@@ -1,7 +1,10 @@
 package com.lxc.controller;
 
+import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
+import com.lxc.entity.CartItem;
 import com.lxc.helper.CurrentCart;
+import com.lxc.service.BookService;
 import com.lxc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,9 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private BookService bookService;
+
     @RequestMapping("cartItems")
     public String cartItems() {
 
@@ -24,7 +30,9 @@ public class CartController {
     @RequestMapping("increase/{bookId}")
     public String increase(@PathVariable("bookId") Integer id, @CurrentCart Cart cart) {
 
-        cartService.increaseQuantity(id, cart);
+        if (stockIsEnough(id, cart)) {
+            cartService.increaseQuantity(id, cart);
+        }
         return "redirect:/cart/cartItems";
     }
 
@@ -53,5 +61,14 @@ public class CartController {
     public String confirm() {
 
         return "redirect:/book/books";
+    }
+
+    private boolean stockIsEnough(Integer id, Cart cart) {
+
+        Book book = bookService.findById(id);
+        int bookStock = book.getStock();
+        CartItem cartItem = cart.getByBookId(id);
+        int bookStockInCart = cartItem.getQuantity();
+        return bookStock >= (bookStockInCart + 1);
     }
 }

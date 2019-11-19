@@ -104,7 +104,7 @@ public class UserServiceImplTest {
         userService.saveAsCustomer(user);
 
         verify(userRepository).saveAndFlush(user);
-        assertThat(user.getRole().getName()).isEqualTo(Role.CUSTOMER_ROLE_CODE);
+        assertThat(user.getRoleName()).isEqualTo(Role.CUSTOMER_ROLE_CODE);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class UserServiceImplTest {
 
         userService.changeRoleToAdmin(1);
 
-        assertThat(userRepository.getOne(1).getRole().getName()).isEqualTo("ADMIN");
+        assertThat(userRepository.getOne(1).getRoleName()).isEqualTo("ADMIN");
         verify(userRepository).saveAndFlush(user);
     }
 
@@ -182,7 +182,7 @@ public class UserServiceImplTest {
 
         userService.changeRoleToCustomer(1);
 
-        assertThat(userRepository.getOne(1).getRole().getName()).isEqualTo("CUSTOMER");
+        assertThat(userRepository.getOne(1).getRoleName()).isEqualTo("CUSTOMER");
         verify(userRepository).saveAndFlush(user);
     }
 

@@ -1,13 +1,17 @@
 package com.lxc.controller;
 
 import com.lxc.entity.User;
+import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.service.UserService;
+import com.lxc.utils.MailUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.ui.Model;
+
+import javax.mail.MessagingException;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -22,6 +26,9 @@ public class RegisterControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private MailUtils mailUtils;
+
     @Test
     public void toRegister() {
 
@@ -29,7 +36,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void doRegister_whenUsernameExists() {
+    public void doRegister_whenUsernameExists() throws FailedSendingEmailException {
 
         User user = User.builder().username("a").build();
         Model mockedModel = mock(Model.class);
@@ -40,7 +47,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void doRegister_whenPasswordLessThanSix() {
+    public void doRegister_whenPasswordLessThanSix() throws FailedSendingEmailException {
 
         User user = User.builder().username("a").password("123").build();
         Model mockedModel = mock(Model.class);
@@ -49,8 +56,19 @@ public class RegisterControllerTest {
         assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("register");
     }
 
+    @Test(expected = FailedSendingEmailException.class)
+    public void doRegister_shouldThrowException_whenEmailInvalid() throws FailedSendingEmailException, MessagingException {
+
+        User user = User.builder().username("a").password("123456").email("123").build();
+        Model mockedModel = mock(Model.class);
+        when(userService.findByUsername("a")).thenReturn(null);
+        doThrow(MessagingException.class).when(mailUtils).sendMail("123", "注册成功！");
+
+        registerController.doRegister(user, mockedModel);
+    }
+
     @Test
-    public void doRegister_happyPath() {
+    public void doRegister_happyPath() throws FailedSendingEmailException {
 
         User user = User.builder().username("a").password("123456").build();
         Model mockedModel = mock(Model.class);

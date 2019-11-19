@@ -3,6 +3,7 @@ package com.lxc.controller;
 import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
 import com.lxc.entity.CartItem;
+import com.lxc.service.BookService;
 import com.lxc.service.CartService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,9 @@ public class CartControllerTest {
     @Mock
     private CartService cartService;
 
+    @Mock
+    private BookService bookService;
+
     @Before
     public void setUp() {
 
@@ -50,10 +54,26 @@ public class CartControllerTest {
     public void increaseQuantity_happyPath() {
 
         Cart cart = createCart(1, 1);
+        Book book = mock(Book.class);
+        when(bookService.findById(1)).thenReturn(book);
+        when(book.getStock()).thenReturn(2);
 
         assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
         verify(cartService).increaseQuantity(1, cart);
+    }
+
+    @Test
+    public void increaseQuantity_shouldDoNothing_ifStockIsNotEnough() {
+
+        Cart cart = createCart(1, 1);
+        Book book = mock(Book.class);
+        when(bookService.findById(1)).thenReturn(book);
+        when(book.getStock()).thenReturn(0);
+
+        assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
+
+        verify(cartService, never()).increaseQuantity(1, cart);
     }
 
     @Test

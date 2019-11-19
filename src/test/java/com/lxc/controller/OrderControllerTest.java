@@ -2,8 +2,10 @@ package com.lxc.controller;
 
 import com.lxc.constants.OrderStatusEnum;
 import com.lxc.entity.*;
+import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.helper.CartManager;
 import com.lxc.service.OrderService;
+import com.lxc.utils.MailUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import javax.mail.MessagingException;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -34,6 +38,9 @@ public class OrderControllerTest {
 
     @Mock
     private CartManager cartManager;
+
+    @Mock
+    private MailUtils mailUtils;
 
     @Before
     public void setUp() {
@@ -79,11 +86,23 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void pay_happyPath() {
+    public void pay_happyPath() throws Exception {
 
-        assertThat(orderController.pay(1, 0, mock(Model.class))).isEqualTo("forward:/order/orders");
-
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/order/pay")
+                .param("orderId", String.valueOf(1)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
+                .andReturn();
         verify(orderService).pay(1);
+    }
+
+    @Test(expected = FailedSendingEmailException.class)
+    public void pay_shouldThrowException_ifEmailSendingFailed() throws FailedSendingEmailException, MessagingException {
+
+        User user = User.builder().id(1).username("a").email("123").build();
+        doThrow(MessagingException.class).when(mailUtils).sendMail("123", "付款成功，请耐心等待发货哦~");
+
+        orderController.pay(user, 1, 0, mock(Model.class));
     }
 
     @Test

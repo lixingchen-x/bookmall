@@ -3,6 +3,8 @@ package com.lxc.service;
 import com.lxc.constants.AddResultEnum;
 import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
+import com.lxc.entity.User;
+import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.exception.StockNotEnoughException;
 import org.springframework.data.domain.Page;
 
