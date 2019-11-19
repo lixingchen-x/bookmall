@@ -68,7 +68,7 @@ public class CartController {
         Book book = bookService.findById(id);
         int bookStock = book.getStock();
         CartItem cartItem = cart.getByBookId(id);
-        int bookStockInCart = cartItem.getQuantity();
-        return bookStock >= (bookStockInCart + 1);
+        int bookQuantityInCart = cartItem.getQuantity();
+        return bookStock >= (bookQuantityInCart + 1);
     }
 }
