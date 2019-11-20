@@ -2,13 +2,13 @@ package com.lxc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 import java.util.List;
 
 @Configuration
-public class WebSecurityConfig extends WebMvcConfigurerAdapter {
+public class WebResolverConfig implements WebMvcConfigurer {
 
     @Bean
     public CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {
@@ -27,6 +27,6 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
 
         argumentResolvers.add(currentUserMethodArgumentResolver());
         argumentResolvers.add(currentCartMethodArgumentResolver());
-        super.addArgumentResolvers(argumentResolvers);
+        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
     }
 }

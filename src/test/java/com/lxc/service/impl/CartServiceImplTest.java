@@ -33,7 +33,7 @@ public class CartServiceImplTest {
 
         cartService.increaseQuantity(1, cart);
 
-        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(2);
+        assertThat(cart.getQuantity(1)).isEqualTo(2);
         verify(cartManager).updateCart(cart);
     }
 
@@ -44,7 +44,7 @@ public class CartServiceImplTest {
 
         cartService.decreaseQuantity(1, cart);
 
-        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(0);
+        assertThat(cart.getQuantity(1)).isEqualTo(0);
         verify(cartManager).updateCart(cart);
     }
 
@@ -55,7 +55,7 @@ public class CartServiceImplTest {
 
         cartService.decreaseQuantity(1, cart);
 
-        assertThat(cart.getByBookId(1).getQuantity()).isEqualTo(0);
+        assertThat(cart.getQuantity(1)).isEqualTo(0);
         verify(cartManager).updateCart(cart);
     }
 
@@ -101,7 +101,7 @@ public class CartServiceImplTest {
 
         Book book = Book.builder().id(id).build();
         Cart cart = new Cart();
-        cart.updateCart(CartItem.builder().book(book).quantity(quantity).build());
+        cart.addBook(book, quantity);
         return cart;
     }
 }

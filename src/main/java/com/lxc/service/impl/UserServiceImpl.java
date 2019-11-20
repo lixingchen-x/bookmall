@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.ResultEnum;
 import com.lxc.entity.User;
 import com.lxc.helper.CartManager;
 import com.lxc.helper.UserManager;
@@ -46,15 +46,14 @@ public class UserServiceImpl implements UserService {
             oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
             userRepository.saveAndFlush(oldUser);
+            userManager.updateUser(oldUser);
         }
     }
 
     @Override
     public void deleteById(Integer id) {
 
-        if (null != this.findById(id)) {
-            userRepository.deleteById(id);
-        }
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -76,13 +75,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddResultEnum addUser(User user) {
+    public ResultEnum addUser(User user) {
 
         if (userRepository.findByUsername(user.getUsername()) == null) {
             saveAsCustomer(user);
-            return AddResultEnum.SUCCESS;
+            return ResultEnum.SUCCESS;
         }
-        return AddResultEnum.FAIL;
+        return ResultEnum.FAIL;
     }
 
     @Override

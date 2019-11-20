@@ -25,6 +25,7 @@ public class BaseEntity {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (!(o instanceof BaseEntity)) return false;
         BaseEntity baseEntity = (BaseEntity) o;

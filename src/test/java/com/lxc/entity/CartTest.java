@@ -135,7 +135,7 @@ public class CartTest {
 
         cart.decreaseQuantity(1);
 
-        assertThat(cart.getByBookId(1).getQuantity(), is(0));
+        assertThat(cart.getQuantity(1), is(0));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class CartTest {
 
         cart.decreaseQuantity(2);
 
-        assertThat(cart.getByBookId(1).getQuantity(), is(1));
+        assertThat(cart.getQuantity(1), is(1));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class CartTest {
 
         cart.decreaseQuantity(1);
 
-        assertThat(cart.getByBookId(1).getQuantity(), is(0));
+        assertThat(cart.getQuantity(1), is(0));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class CartTest {
 
         cart.increaseQuantity(1);
 
-        assertThat(cart.getByBookId(1).getQuantity(), is(2));
+        assertThat(cart.getQuantity(1), is(2));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class CartTest {
 
         cart.increaseQuantity(2);
 
-        assertThat(cart.getByBookId(1).getQuantity(), is(1));
+        assertThat(cart.getQuantity(1), is(1));
     }
 
     @Test
@@ -195,25 +195,25 @@ public class CartTest {
     }
 
     @Test
-    public void updateCart_CartItemsSizeDoNotChange_ifBookExists() {
+    public void updateCart_cartItemsSizeDoNotChange_ifBookExists() {
 
         Cart cart = createCart(1, 1);
 
         cart.updateCart(createCartItem(1, 1));
 
         assertThat(cart.getCartItems()).hasSize(1);
-        assertThat(cart.getByBookId(1).getQuantity(), is(2));
+        assertThat(cart.getQuantity(1), is(2));
     }
 
     @Test
-    public void updateCart_CartItemsSizeChange_ifBookDoesNotExist() {
+    public void updateCart_cartItemsSizeChange_ifBookDoesNotExist() {
 
         Cart cart = createCart(1, 1);
 
         cart.updateCart(createCartItem(2, 1));
 
         assertThat(cart.getCartItems()).hasSize(2);
-        assertThat(cart.getByBookId(1).getQuantity(), is(1));
+        assertThat(cart.getQuantity(1), is(1));
     }
 
     private Cart createCart(Integer id) {

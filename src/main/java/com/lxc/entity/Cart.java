@@ -74,4 +74,15 @@ public class Cart implements Serializable {
         }
         cartItems.add(cartItem);
     }
+
+    public Integer getQuantity(Integer bookId) {
+
+        return this.getByBookId(bookId).getQuantity();
+    }
+
+    public void addBook(Book book, Integer quantity) {
+
+        CartItem cartItem = CartItem.builder().book(book).quantity(quantity).build();
+        updateCart(cartItem);
+    }
 }

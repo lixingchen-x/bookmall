@@ -1,6 +1,6 @@
 package com.lxc.service;
 
-import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.ResultEnum;
 import com.lxc.entity.User;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface UserService {
 
     void saveAsCustomer(User user);
 
-    AddResultEnum addUser(User user);
+    ResultEnum addUser(User user);
 
     List<User> findAll();
 

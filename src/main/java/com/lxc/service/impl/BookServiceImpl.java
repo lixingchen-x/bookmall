@@ -1,12 +1,12 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.ResultEnum;
 import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
 import com.lxc.service.BookService;
-import com.lxc.utils.ListConvertor;
+import com.lxc.utils.PageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +49,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(Integer id) {
 
-        if (null != this.findById(id)) {
-            bookRepository.deleteById(id);
-        }
+        bookRepository.deleteById(id);
     }
 
     @Override
@@ -97,14 +95,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public AddResultEnum addBook(Book book) {
+    public ResultEnum addBook(Book book) {
 
         if (bookRepository.findByIsbn(book.getIsbn()) == null) {
             book.setStatus(BookStatusEnum.AVAILABLE);
             bookRepository.saveAndFlush(book);
-            return AddResultEnum.SUCCESS;
+            return ResultEnum.SUCCESS;
         }
-        return AddResultEnum.FAIL;
+        return ResultEnum.FAIL;
     }
 
     @Override
@@ -146,6 +144,6 @@ public class BookServiceImpl implements BookService {
 
         List<Book> books = book != null ? List.of(book) : List.of();
         Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
-        return ListConvertor.listConvertToPage(books, pageable);
+        return PageUtils.getPageFromList(books, pageable);
     }
 }

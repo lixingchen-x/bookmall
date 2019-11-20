@@ -9,7 +9,7 @@
 <div th:switch="${session.user.username}">
     <div th:case="'admin'">
         <a href="/book/books">图书后台管理</a><br>
-        <a href="/user/users">用户管理系统</a><br>
+        <a href="/admin/user/users">用户管理系统</a><br>
     </div>
     <div th:case="*">
         <a href="/book/books">图书列表</a><br>

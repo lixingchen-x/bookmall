@@ -1,5 +1,6 @@
 package com.lxc.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -10,10 +11,27 @@ import java.util.Properties;
 @Component
 public class MailUtils {
 
-    private static final String SENDER = "lxc305717@163.com";
-    private static final String AUTH_CODE = "lxc5178";
+    @Value("${sender.email}")
+    private String SENDER;
+    @Value("${sender.auth_code}")
+    private String AUTH_CODE;
 
-    public void sendMail(String email, String msg) throws MessagingException {
+    @Value("${property.protocol}")
+    private String protocol;
+    @Value("${property.protocol-value}")
+    private String protocolValue;
+
+    @Value("${property.host}")
+    private String host;
+    @Value("${property.host-value}")
+    private String hostValue;
+
+    @Value("${property.auth}")
+    private String auth;
+    @Value("${property.auth-value}")
+    private String authValue;
+
+    public void sendMail(String email, String msg, String subject) throws MessagingException {
 
         Properties props = initProperties();
 
@@ -21,7 +39,7 @@ public class MailUtils {
 
         Session session = Session.getInstance(props, authenticator);
 
-        Message message = createMessage(session, email, msg);
+        Message message = createMessage(session, email, msg, subject);
 
         Transport.send(message);
     }
@@ -29,9 +47,9 @@ public class MailUtils {
     private Properties initProperties() {
 
         Properties props = new Properties();
-        props.setProperty("mail.transport.protocol", "SMTP");
-        props.setProperty("mail.host", "smtp.163.com");
-        props.setProperty("mail.smtp.auth", "true");
+        props.setProperty(protocol, protocolValue);
+        props.setProperty(host, hostValue);
+        props.setProperty(auth, authValue);
         return props;
     }
 
@@ -45,12 +63,12 @@ public class MailUtils {
         };
     }
 
-    private Message createMessage(Session session, String email, String msg) throws MessagingException {
+    private Message createMessage(Session session, String email, String msg, String subject) throws MessagingException {
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SENDER));
         message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        message.setSubject("图书商城官方邮件");
+        message.setSubject(subject);
         message.setContent(msg, "text/html;charset=utf-8");
         return message;
     }

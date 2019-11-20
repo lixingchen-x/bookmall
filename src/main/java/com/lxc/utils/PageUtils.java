@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public class ListConvertor {
+public class PageUtils {
 
-    public static <T> Page<T> listConvertToPage(List<T> list, Pageable pageable) {
+    public static <T> Page<T> getPageFromList(List<T> list, Pageable pageable) {
 
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());

@@ -37,7 +37,7 @@ public class FileServiceImplTest {
     public void upload_happyPath() throws IOException {
 
         MultipartFile file = mockMultipartFile();
-        when(fileUtils.filenameGenerator("a.jpg")).thenReturn("123.jpg");
+        when(fileUtils.generateRandomFilename("a.jpg")).thenReturn("123.jpg");
 
         assertThat(fileService.upload(file)).isEqualTo("\\images\\"+"123.jpg");
     }

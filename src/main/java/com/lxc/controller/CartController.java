@@ -2,7 +2,6 @@ package com.lxc.controller;
 
 import com.lxc.entity.Book;
 import com.lxc.entity.Cart;
-import com.lxc.entity.CartItem;
 import com.lxc.helper.CurrentCart;
 import com.lxc.service.BookService;
 import com.lxc.service.CartService;
@@ -66,9 +65,6 @@ public class CartController {
     private boolean stockIsEnough(Integer id, Cart cart) {
 
         Book book = bookService.findById(id);
-        int bookStock = book.getStock();
-        CartItem cartItem = cart.getByBookId(id);
-        int bookQuantityInCart = cartItem.getQuantity();
-        return bookStock >= (bookQuantityInCart + 1);
+        return book.getStock() >= (cart.getQuantity(id) + 1);
     }
 }

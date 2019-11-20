@@ -5,7 +5,7 @@ import com.lxc.entity.*;
 import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.helper.CartManager;
 import com.lxc.service.OrderService;
-import com.lxc.utils.MailUtils;
+import com.lxc.utils.DefaultMailSender;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +40,7 @@ public class OrderControllerTest {
     private CartManager cartManager;
 
     @Mock
-    private MailUtils mailUtils;
+    private DefaultMailSender mailSender;
 
     @Before
     public void setUp() {
@@ -100,7 +100,7 @@ public class OrderControllerTest {
     public void pay_shouldThrowException_ifEmailSendingFailed() throws FailedSendingEmailException, MessagingException {
 
         User user = User.builder().id(1).username("a").email("123").build();
-        doThrow(MessagingException.class).when(mailUtils).sendMail("123", "付款成功，请耐心等待发货哦~");
+        doThrow(MessagingException.class).when(mailSender).send("123", "付款成功，请耐心等待发货哦~");
 
         orderController.pay(user, 1, 0, mock(Model.class));
     }

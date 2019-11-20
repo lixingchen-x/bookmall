@@ -35,6 +35,7 @@ public class User extends BaseEntity implements Serializable {
 
     @Builder
     public User(Integer id, String username, String password, String email, Role role) {
+
         super(id);
         this.username = username;
         this.password = password;

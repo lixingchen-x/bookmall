@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.ResultEnum;
 import com.lxc.entity.Role;
 import com.lxc.entity.User;
 import com.lxc.helper.CartManager;
@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class UserServiceImplTest {
         userService.update(newUser);
 
         verify(userRepository).saveAndFlush(oldUser);
+        verify(userManager).updateUser(oldUser);
         assertThat(oldUser.getPassword()).isEqualTo("123456");
         assertThat(oldUser.getEmail()).isEqualTo("abc@abc");
     }
@@ -62,21 +64,17 @@ public class UserServiceImplTest {
     @Test
     public void deleteById_happyPath() {
 
-        when(userService.findById(1)).thenReturn(mock(User.class));
-
         userService.deleteById(1);
 
         verify(userRepository).deleteById(1);
     }
 
-    @Test
-    public void deleteById_shouldDoNothing_ifUserDoesNotExist() {
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void deleteById_shouldThrowException_ifUserDoesNotExist() {
 
-        when(userService.findById(1)).thenReturn(null);
+        doThrow(EmptyResultDataAccessException.class).when(userRepository).deleteById(1);
 
         userService.deleteById(1);
-
-        verify(userRepository, never()).deleteById(1);
     }
 
     @Test
@@ -113,7 +111,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(null);
 
-        assertThat(userService.addUser(user)).isEqualTo(AddResultEnum.SUCCESS);
+        assertThat(userService.addUser(user)).isEqualTo(ResultEnum.SUCCESS);
         verify(userRepository).saveAndFlush(user);
     }
 
@@ -123,7 +121,7 @@ public class UserServiceImplTest {
         User user = User.builder().username("a").build();
         when(userRepository.findByUsername("a")).thenReturn(user);
 
-        assertThat(userService.addUser(user)).isEqualTo(AddResultEnum.FAIL);
+        assertThat(userService.addUser(user)).isEqualTo(ResultEnum.FAIL);
     }
 
     @Test

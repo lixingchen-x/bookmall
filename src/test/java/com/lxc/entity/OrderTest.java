@@ -82,15 +82,36 @@ public class OrderTest {
     @Test
     public void loadOrderItemsFromCart_happyPath() {
 
-        Cart cart = mock(Cart.class);
-        CartItem cartItem = getCartItem(cart);
-        OrderItem orderItem = getOrderItem(cartItem);
-        Order order = getOrder(orderItem);
+        CartItem cartItem = mockCartItem(1);
+        Cart cart = mockCart(cartItem);
+        OrderItem expected = mockTransferToOrderItem(cartItem, 1);
 
+        Order order = createOrder(1);
         order.loadOrderItemsFromCart(cart);
 
-        assertThat(orderItem.getBookId()).isEqualTo(cartItem.getBookId());
-        assertThat(orderItem.getQuantity()).isEqualTo(cartItem.getQuantity());
+        assertThat(order.getOrderItems()).contains(expected);
+    }
+
+    private CartItem mockCartItem(Integer bookId) {
+
+        CartItem cartItem = mock(CartItem.class);
+        Book book = Book.builder().id(bookId).build();
+        when(cartItem.getBook()).thenReturn(book);
+        return cartItem;
+    }
+
+    private Cart mockCart(CartItem cartItem) {
+
+        Cart cart = mock(Cart.class);
+        when(cart.getCartItems()).thenReturn(List.of(cartItem));
+        return cart;
+    }
+
+    private OrderItem mockTransferToOrderItem(CartItem cartItem, Integer orderId) {
+
+        OrderItem orderItem = new OrderItem();
+        when(cartItem.transferToOrderItem(orderId)).thenReturn(orderItem);
+        return orderItem;
     }
 
     private Order createOrder(Integer orderId) {
@@ -98,27 +119,5 @@ public class OrderTest {
         Order order = new Order();
         order.setId(orderId);
         return order;
-    }
-
-    private CartItem getCartItem(Cart cart) {
-
-        Book book = Book.builder().id(1).build();
-        CartItem cartItem = CartItem.builder().book(book).quantity(1).build();
-        when(cart.getByBookId(1)).thenReturn(null);
-        cart.updateCart(cartItem);
-        when(cart.getCartItems()).thenReturn(List.of(cartItem));
-        return cartItem;
-    }
-
-    private Order getOrder(OrderItem orderItem) {
-
-        Order order = createOrder(1);
-        order.addOrderItem(orderItem);
-        return order;
-    }
-
-    private OrderItem getOrderItem(CartItem cartItem) {
-
-        return cartItem.transferToOrderItem(1);
     }
 }

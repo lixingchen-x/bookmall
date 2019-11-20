@@ -32,7 +32,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div th:switch="${session.user.username}">
                 <div th:case="admin">
-                    <h3><a th:href="@{/book/add}" class="btn btn-primary">新增图书</a></h3>
+                    <h3><a th:href="@{/admin/book/add}" class="btn btn-primary">新增图书</a></h3>
                 </div>
                 <div th:case="*">
                     <h3><a th:href="@{/shopping/cart}" class="btn btn-primary">去我的购物车</a></h3>
@@ -93,12 +93,12 @@
                                     <div th:case="admin">
                                         <div th:switch="${book.status.getMsg()}">
                                             <div th:case="'WITHDRAW'">
-                                                <a class="btn btn-sm btn-primary" th:href="@{/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
-                                                <a class="btn btn-sm btn-primary" th:href="@{/book/delete/}+${book.id}">删除</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/admin/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/admin/book/delete/}+${book.id}">删除</a>
                                             </div>
                                             <div th:case="'AVAILABLE'">
-                                                <a class="btn btn-sm btn-primary" th:href="@{/book/update/}+${book.id}">编辑</a>
-                                                <a class="btn btn-sm btn-primary" th:href="@{/book/withdraw(bookId = ${book.id}, page = ${page})}">下架</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/admin/book/update/}+${book.id}">编辑</a>
+                                                <a class="btn btn-sm btn-primary" th:href="@{/admin/book/withdraw(bookId = ${book.id}, page = ${page})}">下架</a>
                                             </div>
                                         </div>
                                     </div>

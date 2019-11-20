@@ -7,7 +7,7 @@ import com.lxc.helper.CartManager;
 import com.lxc.helper.CurrentCart;
 import com.lxc.helper.CurrentUser;
 import com.lxc.service.OrderService;
-import com.lxc.utils.MailUtils;
+import com.lxc.utils.DefaultMailSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,7 +31,7 @@ public class OrderController {
     private CartManager cartManager;
 
     @Autowired
-    private MailUtils mailUtils;
+    private DefaultMailSender mailSender;
 
     @RequestMapping("orders")
     public String orders(Model model, @RequestParam(defaultValue = "0") Integer page, @CurrentUser User user) {
@@ -94,7 +94,7 @@ public class OrderController {
     private void sendEmail(User user) throws FailedSendingEmailException {
 
         try {
-            mailUtils.sendMail(user.getEmail(), PAY_SUCCESS);
+            mailSender.send(user.getEmail(), PAY_SUCCESS);
         } catch (MessagingException e) {
             log.error("用户{}的付款成功邮件发送失败", user.getUsername());
             throw new FailedSendingEmailException("付款成功邮件发送失败，等待重发请求");

@@ -25,8 +25,8 @@ public class ShoppingController {
     @RequestMapping("add")
     public String addToCart(@RequestParam(value = "bookId") Integer id,
                             @RequestParam(defaultValue = "0") Integer page,
-                            @RequestParam(value = "condition", required = false) String condition,
-                            @RequestParam(value = "keyword", required = false) String keyword, Model model,
+                            @RequestParam(required = false) String condition,
+                            @RequestParam(required = false) String keyword, Model model,
                             @CurrentCart Cart cart) {
 
         cart.updateCart(cartService.createCartItem(id, 1));

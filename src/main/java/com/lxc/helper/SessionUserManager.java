@@ -47,5 +47,11 @@ public class SessionUserManager implements UserManager {
 
         removeAttribute(SESSION_USER);
     }
+
+    @Override
+    public void updateUser(User user) {
+
+        setAttribute(SESSION_USER, user);
+    }
 }
 

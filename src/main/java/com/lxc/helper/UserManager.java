@@ -9,4 +9,6 @@ public interface UserManager {
     void login(User user);
 
     void logout();
+
+    void updateUser(User user);
 }

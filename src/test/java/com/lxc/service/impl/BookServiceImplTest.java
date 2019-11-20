@@ -1,6 +1,6 @@
 package com.lxc.service.impl;
 
-import com.lxc.constants.AddResultEnum;
+import com.lxc.constants.ResultEnum;
 import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,12 +61,13 @@ public class BookServiceImplTest {
     public void update_happyPath() {
 
         Book newBook = Book.builder().id(1).build();
-        Book temp = mock(Book.class);
+        Book temp = new Book();
         when(bookService.findById(1)).thenReturn(temp);
 
         bookService.update(newBook);
 
         verify(bookRepository).saveAndFlush(temp);
+        assertThat(temp.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
     }
 
     @Test
@@ -82,21 +84,17 @@ public class BookServiceImplTest {
     @Test
     public void deleteById_happyPath() {
 
-        when(bookService.findById(1)).thenReturn(mock(Book.class));
-
         bookService.deleteById(1);
 
         verify(bookRepository).deleteById(1);
     }
 
-    @Test
-    public void deleteById_shouldDoNothing_ifBookIdDoesNotExist() {
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void deleteById_shouldThrowException_ifBookDoesNotExist() {
 
-        when(bookService.findById(1)).thenReturn(null);
+        doThrow(EmptyResultDataAccessException.class).when(bookRepository).deleteById(1);
 
         bookService.deleteById(1);
-
-        verify(bookRepository, never()).deleteById(1);
     }
 
     @Test
@@ -195,7 +193,8 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn("123")).thenReturn(null);
 
-        assertThat(bookService.addBook(book)).isEqualTo(AddResultEnum.SUCCESS);
+        assertThat(bookService.addBook(book)).isEqualTo(ResultEnum.SUCCESS);
+        assertThat(book.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
         verify(bookRepository).saveAndFlush(book);
     }
 
@@ -205,7 +204,7 @@ public class BookServiceImplTest {
         Book book = Book.builder().isbn("123").build();
         when(bookRepository.findByIsbn(book.getIsbn())).thenReturn(book);
 
-        assertThat(bookService.addBook(book)).isEqualTo(AddResultEnum.FAIL);
+        assertThat(bookService.addBook(book)).isEqualTo(ResultEnum.FAIL);
     }
 
     @Test

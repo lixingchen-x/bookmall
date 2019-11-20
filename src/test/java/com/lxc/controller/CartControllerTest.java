@@ -54,9 +54,8 @@ public class CartControllerTest {
     public void increaseQuantity_happyPath() {
 
         Cart cart = createCart(1, 1);
-        Book book = mock(Book.class);
+        Book book = createBook(1, 2);
         when(bookService.findById(1)).thenReturn(book);
-        when(book.getStock()).thenReturn(2);
 
         assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
@@ -67,9 +66,8 @@ public class CartControllerTest {
     public void increaseQuantity_shouldDoNothing_ifStockIsNotEnough() {
 
         Cart cart = createCart(1, 1);
-        Book book = mock(Book.class);
+        Book book = createBook(1, 0);
         when(bookService.findById(1)).thenReturn(book);
-        when(book.getStock()).thenReturn(0);
 
         assertThat(cartController.increase(1, cart)).isEqualTo("redirect:/cart/cartItems");
 
@@ -119,7 +117,12 @@ public class CartControllerTest {
 
         Book book = Book.builder().id(id).build();
         Cart cart = new Cart();
-        cart.updateCart(CartItem.builder().book(book).quantity(quantity).build());
+        cart.addBook(book, quantity);
         return cart;
+    }
+
+    private Book createBook(Integer bookId, Integer stock) {
+
+        return Book.builder().id(bookId).stock(stock).build();
     }
 }

@@ -11,18 +11,14 @@ import java.io.IOException;
 @Component
 public class FileUtils {
 
-    public String filenameGenerator(String filename) {
+    public String generateRandomFilename(String filename) {
 
         return UUIDGenerator.generate()+getSuffix(filename);
     }
 
-    public void write(MultipartFile file, File destination) {
+    public void write(MultipartFile file, File destination) throws IOException {
 
-        try {
-            file.transferTo(destination);
-        } catch (IOException e) {
-            log.error("{} failed writing into directory.", file.getOriginalFilename());
-        }
+        file.transferTo(destination);
     }
 
     private String getSuffix(String filename) {

@@ -49,6 +49,7 @@ public class Book extends BaseEntity implements Serializable {
 
     @Builder
     public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatusEnum status, String imgUrl) {
+
         super(id);
         this.bookName = bookName;
         this.author = author;

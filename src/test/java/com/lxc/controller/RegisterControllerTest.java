@@ -1,9 +1,11 @@
 package com.lxc.controller;
 
+import com.lxc.constants.RegisterMsgEnum;
+import com.lxc.constants.Result;
 import com.lxc.entity.User;
 import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.service.UserService;
-import com.lxc.utils.MailUtils;
+import com.lxc.utils.DefaultMailSender;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,7 +29,7 @@ public class RegisterControllerTest {
     private UserService userService;
 
     @Mock
-    private MailUtils mailUtils;
+    private DefaultMailSender mailSender;
 
     @Test
     public void toRegister() {
@@ -43,7 +45,7 @@ public class RegisterControllerTest {
         User mockedUser = mock(User.class);
         when(userService.findByUsername("a")).thenReturn(mockedUser);
 
-        assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("register");
+        assertUsernameExists(registerController.doRegister(user, mockedModel));
     }
 
     @Test
@@ -53,7 +55,7 @@ public class RegisterControllerTest {
         Model mockedModel = mock(Model.class);
         when(userService.findByUsername("a")).thenReturn(null);
 
-        assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("register");
+        assertPasswordLessThanSix(registerController.doRegister(user, mockedModel));
     }
 
     @Test(expected = FailedSendingEmailException.class)
@@ -62,20 +64,39 @@ public class RegisterControllerTest {
         User user = User.builder().username("a").password("123456").email("123").build();
         Model mockedModel = mock(Model.class);
         when(userService.findByUsername("a")).thenReturn(null);
-        doThrow(MessagingException.class).when(mailUtils).sendMail("123", "注册成功！");
+        doThrow(MessagingException.class).when(mailSender).send("123", "注册成功！");
 
         registerController.doRegister(user, mockedModel);
     }
 
     @Test
-    public void doRegister_happyPath() throws FailedSendingEmailException {
+    public void doRegister_happyPath() throws FailedSendingEmailException, MessagingException {
 
-        User user = User.builder().username("a").password("123456").build();
+        User user = User.builder().username("a").password("123456").email("123").build();
         Model mockedModel = mock(Model.class);
         when(userService.findByUsername("a")).thenReturn(null);
 
-        assertThat(registerController.doRegister(user, mockedModel)).isEqualTo("login");
+        assertRegisterSuccess(registerController.doRegister(user, mockedModel));
 
         verify(userService).saveAsCustomer(user);
+        verify(mailSender).send(user.getEmail(), "注册成功！");
+    }
+
+    private void assertUsernameExists(Result result) {
+
+        assertThat(result.getCode()).isEqualTo(RegisterMsgEnum.USERNAME_EXISTS.getCode());
+        assertThat(result.getMsg()).isEqualTo(RegisterMsgEnum.USERNAME_EXISTS.getMsg());
+    }
+
+    private void assertPasswordLessThanSix(Result result) {
+
+        assertThat(result.getCode()).isEqualTo(RegisterMsgEnum.PASSWORD_SHORT.getCode());
+        assertThat(result.getMsg()).isEqualTo(RegisterMsgEnum.PASSWORD_SHORT.getMsg());
+    }
+
+    private void assertRegisterSuccess(Result result) {
+
+        assertThat(result.getCode()).isEqualTo(RegisterMsgEnum.REGISTER_SUCCESS.getCode());
+        assertThat(result.getMsg()).isEqualTo(RegisterMsgEnum.REGISTER_SUCCESS.getMsg());
     }
 }

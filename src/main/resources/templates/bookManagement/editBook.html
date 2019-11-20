@@ -10,10 +10,10 @@
 </head>
 
 <body>
-<h3><a th:href="@{/book/upload}" class="btn btn-primary">上传图片</a></h3>
+<h3><a th:href="@{/admin/book/upload}" class="btn btn-primary">上传图片</a></h3>
 <div>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-        <form role="form" method="post" th:action="@{/book/update}">
+        <form role="form" method="post" th:action="@{/admin/book/update}">
             <input type="hidden" name="_method" value="put" th:if="${book!=null}"/>
             <input type="hidden" name="id" th:if="${book!=null}" th:value="${book.id}">
             <div class="form-group">
