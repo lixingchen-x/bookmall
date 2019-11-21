@@ -2,11 +2,11 @@ package com.lxc.constants;
 
 public enum RegisterMsgEnum {
 
-    USERNAME_EXISTS(0, "USERNAME_EXISTS"),
-    PASSWORD_SHORT(1, "PASSWORD_SHORT"),
-    REGISTER_SUCCESS(2,"REGISTER_SUCCESS");
+    USERNAME_EXISTS(0, "USERNAME_EXISTS"), // 用户名已存在
+    PASSWORD_SHORT(1, "PASSWORD_SHORT"),  // 密码少于6位
+    REGISTER_SUCCESS(2,"REGISTER_SUCCESS");  // 注册成功
 
-    private RegisterMsgEnum(Integer code, String msg) {
+    RegisterMsgEnum(Integer code, String msg) {
 
         this.code = code;
         this.msg = msg;

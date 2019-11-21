@@ -1,7 +1,7 @@
 package com.lxc.controller;
 
-import com.lxc.constants.Result;
-import com.lxc.constants.Results;
+import com.lxc.result.Result;
+import com.lxc.result.Results;
 import com.lxc.entity.User;
 import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.service.UserService;
@@ -28,6 +28,9 @@ public class RegisterController {
     @Autowired
     private DefaultMailSender mailSender;
 
+    @Autowired
+    private Results results;
+
     @RequestMapping("/register")
     public String register() {
         return "register";
@@ -39,10 +42,10 @@ public class RegisterController {
 
         User u = userService.findByUsername(user.getUsername());
         if (u != null) {
-            return Results.usernameExists();
+            return results.usernameExists();
         }
         if (user.getPassword().length() < MINIMUM_PASSWORD_SIZE) {
-            return Results.passwordShort();
+            return results.passwordShort();
         }
         userService.saveAsCustomer(user);
         try {
@@ -51,6 +54,6 @@ public class RegisterController {
             log.error("用户{}的注册激活邮件发送失败", user.getUsername());
             throw new FailedSendingEmailException("Email does not work, please update a valid email.");
         }
-        return Results.registerSuccess();
+        return results.registerSuccess();
     }
 }

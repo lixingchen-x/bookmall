@@ -28,6 +28,9 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private PageUtils pageUtils;
+
     @Override
     public Page<Book> findAllByPage(int pageNum) {
 
@@ -144,6 +147,6 @@ public class BookServiceImpl implements BookService {
 
         List<Book> books = book != null ? List.of(book) : List.of();
         Pageable pageable = PageRequest.of(0, 1, new Sort(Sort.Direction.ASC, "id"));
-        return PageUtils.getPageFromList(books, pageable);
+        return pageUtils.getPageFromList(books, pageable);
     }
 }

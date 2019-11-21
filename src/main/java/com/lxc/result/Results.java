@@ -1,8 +1,13 @@
-package com.lxc.constants;
+package com.lxc.result;
 
+import com.lxc.constants.RegisterMsgEnum;
+import com.lxc.constants.ResultEnum;
+import org.springframework.stereotype.Component;
+
+@Component
 public class Results {
 
-    public static Result success() {
+    public Result success() {
 
         Result result = new Result();
         result.setCode(ResultEnum.SUCCESS.getCode());
@@ -10,7 +15,7 @@ public class Results {
         return result;
     }
 
-    public static Result success(Object data) {
+    public Result success(Object data) {
 
         Result result = new Result();
         result.setCode(ResultEnum.SUCCESS.getCode());
@@ -19,7 +24,7 @@ public class Results {
         return result;
     }
 
-    public static Result fail() {
+    public Result fail() {
 
         Result result = new Result();
         result.setCode(ResultEnum.FAIL.getCode());
@@ -28,7 +33,7 @@ public class Results {
     }
 
     // 下列为注册的状态返回
-    public static Result registerSuccess() {
+    public Result registerSuccess() {
 
         Result result = new Result();
         result.setCode(RegisterMsgEnum.REGISTER_SUCCESS.getCode());
@@ -36,7 +41,7 @@ public class Results {
         return result;
     }
 
-    public static Result usernameExists() {
+    public Result usernameExists() {
 
         Result result = new Result();
         result.setCode(RegisterMsgEnum.USERNAME_EXISTS.getCode());
@@ -44,7 +49,7 @@ public class Results {
         return result;
     }
 
-    public static Result passwordShort() {
+    public Result passwordShort() {
 
         Result result = new Result();
         result.setCode(RegisterMsgEnum.PASSWORD_SHORT.getCode());

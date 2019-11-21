@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -18,6 +19,20 @@ public class Cart implements Serializable {
 
     public Cart(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof Cart)) return false;
+        Cart cart = (Cart) o;
+        return getUser().equals(cart.getUser());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUser());
     }
 
     public Double getTotalPrice() {

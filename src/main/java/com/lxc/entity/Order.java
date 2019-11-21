@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class Order extends BaseEntity implements Serializable {
 
-    @OneToMany(targetEntity = OrderItem.class,cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = OrderItem.class, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems = new ArrayList<>();

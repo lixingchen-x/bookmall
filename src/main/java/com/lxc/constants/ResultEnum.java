@@ -5,7 +5,7 @@ public enum ResultEnum {
     SUCCESS(0, "success"),
     FAIL(1, "fail");
 
-    private ResultEnum(Integer code, String msg) {
+    ResultEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }

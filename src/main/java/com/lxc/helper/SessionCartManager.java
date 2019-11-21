@@ -12,7 +12,7 @@ public class SessionCartManager implements CartManager {
     @Autowired
     private UserManager userManager;
 
-    private final static String SESSION_CART = "cart";
+    private static String SESSION_CART = "cart";
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -20,16 +20,7 @@ public class SessionCartManager implements CartManager {
     private void setAttribute(String name, Object value) {
 
         if (request != null) {
-
             request.getSession().setAttribute(name, value);
-        }
-    }
-
-    private void removeAttribute(String name) {
-
-        if (request != null) {
-
-            request.getSession().removeAttribute(name);
         }
     }
 

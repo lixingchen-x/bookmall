@@ -1,4 +1,4 @@
-package com.lxc.constants;
+package com.lxc.result;
 
 public class Result<T> {
 

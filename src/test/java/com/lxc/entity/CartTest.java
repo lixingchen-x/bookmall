@@ -25,6 +25,57 @@ public class CartTest {
     }
 
     @Test
+    public void equals_shouldEqual_ifUserIsSame() {
+
+        Cart cart1 = createCartWithUserId(1);
+        Cart cart2 = createCartWithUserId(1);
+        assertThat(cart1).isEqualTo(cart2);
+    }
+
+    @Test
+    public void equals_shouldNotEqual_ifUserIsDifferent() {
+
+        Cart cart1 = createCartWithUserId(1);
+        Cart cart2 = createCartWithUserId(2);
+        assertThat(cart1).isNotEqualTo(cart2);
+    }
+
+    @Test
+    public void equals_shouldHaveReflexivity() {
+
+        Cart cart = createCartWithUserId(1);
+
+        assertThat(cart).isEqualTo(cart);
+    }
+
+    @Test
+    public void equals_shouldBeFalse_ifOtherIsNull() {
+
+        Cart cart = createCartWithUserId(1);
+        Cart other = null;
+
+        assertThat(cart).isNotEqualTo(other);
+    }
+
+    @Test
+    public void hashCode_shouldEqual_whenComparedWithSameUser() {
+
+        Cart cart1 = createCartWithUserId(1);
+        Cart cart2 = createCartWithUserId(1);
+
+        assertThat(cart1.hashCode()).isEqualTo(cart2.hashCode());
+    }
+
+    @Test
+    public void hashCode_shouldNotEqual_whenComparedWithDifferentUser() {
+
+        Cart cart1 = createCartWithUserId(1);
+        Cart cart2 = createCartWithUserId(2);
+
+        assertThat(cart1.hashCode()).isNotEqualTo(cart2.hashCode());
+    }
+
+    @Test
     public void getUser_happyPath() {
 
         User user = new User();
@@ -214,6 +265,11 @@ public class CartTest {
 
         assertThat(cart.getCartItems()).hasSize(2);
         assertThat(cart.getQuantity(1), is(1));
+    }
+
+    private Cart createCartWithUserId(Integer id) {
+
+        return new Cart(User.builder().id(id).build());
     }
 
     private Cart createCart(Integer id) {

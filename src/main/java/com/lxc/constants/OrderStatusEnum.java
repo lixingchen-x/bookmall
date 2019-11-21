@@ -6,7 +6,7 @@ public enum OrderStatusEnum {
     PAID("PAID"),     // 订单状态-已支付
     CANCELLED("CANCELLED"); // 订单状态-已取消
 
-    private OrderStatusEnum(String msg) {
+    OrderStatusEnum(String msg) {
         this.msg = msg;
     }
 

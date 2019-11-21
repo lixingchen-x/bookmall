@@ -5,7 +5,7 @@ public enum BookStatusEnum {
     AVAILABLE("AVAILABLE"), // 商品状态-在售中
     WITHDRAW("WITHDRAW");  // 商品状态-已下架
 
-    private BookStatusEnum(String msg) {
+    BookStatusEnum(String msg) {
         this.msg = msg;
     }
 

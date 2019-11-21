@@ -1,6 +1,7 @@
 package com.lxc.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,9 +12,12 @@ import java.io.IOException;
 @Component
 public class FileUtils {
 
+    @Autowired
+    private UUIDGenerator uuidGenerator;
+
     public String generateRandomFilename(String filename) {
 
-        return UUIDGenerator.generate()+getSuffix(filename);
+        return uuidGenerator.generate()+getSuffix(filename);
     }
 
     public void write(MultipartFile file, File destination) throws IOException {

@@ -5,6 +5,7 @@ import com.lxc.constants.BookStatusEnum;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
+import com.lxc.utils.PageUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -33,6 +36,9 @@ public class BookServiceImplTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private PageUtils pageUtils;
 
     @InjectMocks
     private BookServiceImpl bookService;
@@ -137,7 +143,10 @@ public class BookServiceImplTest {
         Book book = mock(Book.class);
         when(bookRepository.findByIsbn("123")).thenReturn(book);
 
-        assertThat(bookService.bookToBookPage(book)).isEqualTo(bookService.findByIsbn("123"));
+        Page<Book> actual = bookService.findByIsbn("123");
+        Page<Book> expected = pageUtils.getPageFromList(List.of(book), mock(Pageable.class));
+
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
@@ -145,7 +154,10 @@ public class BookServiceImplTest {
 
         when(bookRepository.findByIsbn("123")).thenThrow(EntityNotFoundException.class);
 
-        assertThat(bookService.bookToBookPage(null)).isEqualTo(bookService.findByIsbn("123"));
+        Page<Book> actual = bookService.findByIsbn("123");
+        Page<Book> expected = pageUtils.getPageFromList(List.of(), mock(Pageable.class));
+
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
