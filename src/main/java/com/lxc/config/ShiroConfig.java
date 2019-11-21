@@ -1,6 +1,5 @@
 package com.lxc.config;
 
-import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.lxc.shiro.MyRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -51,10 +50,5 @@ public class ShiroConfig {
     @Bean(name = "myRealm")
     public MyRealm getRealm() {
         return new MyRealm();
-    }
-
-    @Bean(name = "shiroDialect")
-    public ShiroDialect shiroDialect() {
-        return new ShiroDialect();
     }
 }
