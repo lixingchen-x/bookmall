@@ -7,8 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultMailSenderTest {

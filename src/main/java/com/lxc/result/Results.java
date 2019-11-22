@@ -32,7 +32,9 @@ public class Results {
         return result;
     }
 
-    // 下列为注册的状态返回
+    /**
+     * 下列三个methods为注册的状态返回
+     */
     public Result registerSuccess() {
 
         Result result = new Result();

@@ -2,7 +2,13 @@ package com.lxc.constants;
 
 public enum ResultEnum {
 
+    /**
+     * 成功码
+     */
     SUCCESS(0, "success"),
+    /**
+     * 失败码
+     */
     FAIL(1, "fail");
 
     ResultEnum(Integer code, String msg) {

@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/shopping")
 public class ShoppingController {
 
+    private final String CONDITION_NAME = "name";
+    private final String CONDITION_AUTHOR = "author";
+    private final String CONDITION_ISBN = "isbn";
+
     @Autowired
     private CartService cartService;
 
@@ -33,11 +37,11 @@ public class ShoppingController {
         model.addAttribute("page", page);
         model.addAttribute("condition", condition);
         model.addAttribute("keyword", keyword);
-        if ("name".equals(condition)) {
+        if (CONDITION_NAME.equals(condition)) {
             return "forward:/book/findByName";
-        }else if ("author".equals(condition)) {
+        }else if (CONDITION_AUTHOR.equals(condition)) {
             return "forward:/book/findByAuthor";
-        }else if ("isbn".equals(condition)) {
+        }else if (CONDITION_ISBN.equals(condition)) {
             return "forward:/book/findByIsbn";
         }else {
             return "forward:/book/books";

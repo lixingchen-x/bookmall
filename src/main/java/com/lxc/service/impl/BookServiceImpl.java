@@ -24,6 +24,7 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private final int PAGE_SIZE = 10;
+    private final String CONDITION_NAME = "name";
 
     @Autowired
     private BookRepository bookRepository;
@@ -59,7 +60,7 @@ public class BookServiceImpl implements BookService {
     public Page<Book> findPageableByCondition(String condition, String keyword, int pageNum) {
 
         Pageable pageable = PageRequest.of(pageNum, PAGE_SIZE, new Sort(Sort.Direction.ASC, "id"));
-        if ("name".equals(condition)) {
+        if (CONDITION_NAME.equals(condition)) {
             return bookRepository.findByBookName(keyword, pageable);
         }
         return bookRepository.findByAuthor(keyword, pageable);

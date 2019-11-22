@@ -2,8 +2,15 @@ package com.lxc.constants;
 
 public enum BookStatusEnum {
 
-    AVAILABLE("AVAILABLE"), // 商品状态-在售中
-    WITHDRAW("WITHDRAW");  // 商品状态-已下架
+    /**
+     * 商品状态-在售中
+     */
+    AVAILABLE("AVAILABLE"),
+
+    /**
+     * 商品状态-已下架
+     */
+    WITHDRAW("WITHDRAW");
 
     BookStatusEnum(String msg) {
         this.msg = msg;

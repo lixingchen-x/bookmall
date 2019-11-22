@@ -51,7 +51,7 @@ public class OrderController {
     @PostMapping("orderInfo")
     public String completeOrderInfoThenSave(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
 
-        orderService.completeOrderInfo(user, cart, order);
+        orderService.loadOrderItemAndComplete(user, cart, order);
         orderService.save(order);
         cartManager.initCart();
         return "index";

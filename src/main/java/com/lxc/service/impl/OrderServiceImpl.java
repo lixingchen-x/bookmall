@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void completeOrderInfo(User user, Cart cart, Order order) {
+    public void loadOrderItemAndComplete(User user, Cart cart, Order order) {
 
         order.loadOrderItemsFromCart(cart);
         order.setCreateDate(new Date());

@@ -12,9 +12,9 @@ import java.util.Properties;
 public class MailUtils {
 
     @Value("${sender.email}")
-    private String SENDER;
+    private String sender;
     @Value("${sender.auth_code}")
-    private String AUTH_CODE;
+    private String authCode;
 
     @Value("${property.protocol}")
     private String protocol;
@@ -58,7 +58,7 @@ public class MailUtils {
         return new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER, AUTH_CODE);
+                return new PasswordAuthentication(sender, authCode);
             }
         };
     }
@@ -66,7 +66,7 @@ public class MailUtils {
     private Message createMessage(Session session, String email, String msg, String subject) throws MessagingException {
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER));
+        message.setFrom(new InternetAddress(sender));
         message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
         message.setSubject(subject);
         message.setContent(msg, "text/html;charset=utf-8");

@@ -78,11 +78,11 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    public void completeOrderInfo_happyPath() {
+    public void loadOrderItemAndComplete_happyPath() {
 
         Order order = createOrder(1, 1, 1);
 
-        orderService.completeOrderInfo(User.builder().id(1).build(), mock(Cart.class), order);
+        orderService.loadOrderItemAndComplete(User.builder().id(1).build(), mock(Cart.class), order);
 
         assertThat(order.getStatus()).isEqualTo(OrderStatusEnum.UNPAID);
         assertThat(order.getUserId()).isEqualTo(1);

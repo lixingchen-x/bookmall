@@ -31,10 +31,10 @@ public class CartItem implements Serializable {
         return this.book.getPrice() * this.quantity;
     }
 
-    public OrderItem transferToOrderItem(Integer OrderId) {
+    public OrderItem transferToOrderItem(Integer orderId) {
 
         OrderItem orderItem = new OrderItem();
-        orderItem.setOrderId(OrderId);
+        orderItem.setOrderId(orderId);
         orderItem.setBookId(this.book.getId());
         orderItem.setQuantity(this.quantity);
         return orderItem;

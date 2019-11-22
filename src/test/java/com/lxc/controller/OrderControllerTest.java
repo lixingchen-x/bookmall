@@ -80,7 +80,7 @@ public class OrderControllerTest {
 
         assertThat(orderController.completeOrderInfoThenSave(user, cart, order)).isEqualTo("index");
 
-        verify(orderService).completeOrderInfo(user, cart, order);
+        verify(orderService).loadOrderItemAndComplete(user, cart, order);
         verify(orderService).save(order);
         verify(cartManager).initCart();
     }

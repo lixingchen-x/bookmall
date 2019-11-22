@@ -11,6 +11,8 @@ public class BookmallApplicationTests {
 
     @Test
     public void contextLoads() {
-    }
 
+        String[] args = {""};
+        BookmallApplication.main(args);
+    }
 }
