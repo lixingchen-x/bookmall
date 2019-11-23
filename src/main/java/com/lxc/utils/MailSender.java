@@ -9,7 +9,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Component
-public class MailUtils {
+public class MailSender {
 
     @Value("${sender.email}")
     private String sender;

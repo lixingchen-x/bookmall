@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static org.mockito.Mockito.*;
@@ -22,7 +21,7 @@ public class SessionUserManagerTest {
     private SessionUserManager sessionUserManager;
 
     @Mock
-    private HttpServletRequest request;
+    private HttpSession session;
 
     @Before
     public void setUp() {
@@ -33,7 +32,6 @@ public class SessionUserManagerTest {
     @Test
     public void getCurrentUser_happyPath() {
 
-        HttpSession session = mockSession();
         User user = mock(User.class);
         when(session.getAttribute("user")).thenReturn(user);
 
@@ -44,7 +42,6 @@ public class SessionUserManagerTest {
     public void login_happyPath() {
 
         User user = mock(User.class);
-        HttpSession session = mockSession();
 
         sessionUserManager.login(user);
 
@@ -54,17 +51,16 @@ public class SessionUserManagerTest {
     @Test
     public void login_shouldDoNothing_ifRequestIsNull() {
 
-        ReflectionTestUtils.setField(sessionUserManager, "request", null);
+        ReflectionTestUtils.setField(sessionUserManager, "session", null);
+        User user = mock(User.class);
 
-        sessionUserManager.login(mock(User.class));
+        sessionUserManager.login(user);
 
-        verify(request, never()).getSession();
+        verify(session, never()).setAttribute("user", user);
     }
 
     @Test
     public void logout_happyPath() {
-
-        HttpSession session = mockSession();
 
         sessionUserManager.logout();
 
@@ -74,38 +70,20 @@ public class SessionUserManagerTest {
     @Test
     public void logout_shouldDoNothing_ifRequestIsNull() {
 
-        ReflectionTestUtils.setField(sessionUserManager, "request", null);
+        ReflectionTestUtils.setField(sessionUserManager, "session", null);
 
         sessionUserManager.logout();
 
-        verify(request, never()).getSession();
+        verify(session, never()).removeAttribute("user");
     }
 
     @Test
     public void updateCart_happyPath() {
 
         User user = mock(User.class);
-        HttpSession session = mockSession();
 
         sessionUserManager.updateUser(user);
 
         verify(session).setAttribute("user", user);
-    }
-
-    @Test
-    public void updateCart_shouldDoNothing_ifRequestIsNull() {
-
-        ReflectionTestUtils.setField(sessionUserManager, "request", null);
-
-        sessionUserManager.updateUser(mock(User.class));
-
-        verify(request, never()).getSession();
-    }
-
-    private HttpSession mockSession() {
-
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
-        return session;
     }
 }

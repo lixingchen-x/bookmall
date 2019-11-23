@@ -1,6 +1,6 @@
 package com.lxc.service;
 
-import com.lxc.constants.OrderStatusEnum;
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.Cart;
 import com.lxc.entity.Order;
 import com.lxc.entity.User;
@@ -8,51 +8,21 @@ import org.springframework.data.domain.Page;
 
 public interface OrderService {
 
-    /**
-     * retrieve orders by userId
-     *
-     * @param userId
-     * @param pageNum
-     * @return
-     */
     Page<Order> findByUserId(Integer userId, int pageNum);
 
-    /**
-     * set order's status
-     *
-     * @param status
-     * @param orderId
-     */
-    void setStatus(OrderStatusEnum status, Integer orderId);
+    void setStatus(OrderStatus status, Integer orderId);
 
     /**
-     * load orderItems from cart
-     * then complete all the other necessary information
-     *
-     * @param user
-     * @param cart
-     * @param order
+     * To get a complete order there are three steps:
+     * 1. get user's order form information
+     * 2. load orderItems from cart
+     * 3. complete all the other necessary information
      */
-    void loadOrderItemAndComplete(User user, Cart cart, Order order);
+    void completeOrder(User user, Cart cart, Order order);
 
-    /**
-     * pay order by orderId
-     *
-     * @param orderId
-     */
     void pay(Integer orderId);
 
-    /**
-     * cancel order by orderId
-     *
-     * @param orderId
-     */
     void cancel(Integer orderId);
 
-    /**
-     * save order
-     *
-     * @param order
-     */
     void save(Order order);
 }

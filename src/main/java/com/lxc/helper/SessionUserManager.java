@@ -4,34 +4,34 @@ import com.lxc.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Component
 public class SessionUserManager implements UserManager {
 
     private static String SESSION_USER = "user";
 
-    @Autowired(required = false)
-    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
 
     private void setAttribute(String name, Object value) {
 
-        if (request != null) {
-            request.getSession().setAttribute(name, value);
+        if (session != null) {
+            session.setAttribute(name, value);
         }
     }
 
     private void removeAttribute(String name) {
 
-        if (request != null) {
-            request.getSession().removeAttribute(name);
+        if (session != null) {
+            session.removeAttribute(name);
         }
     }
 
     @Override
     public User getCurrentUser() {
 
-        return (User) request.getSession().getAttribute(SESSION_USER);
+        return (User) session.getAttribute(SESSION_USER);
     }
 
     @Override

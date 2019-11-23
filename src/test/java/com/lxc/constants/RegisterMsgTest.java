@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class ResultEnumTest {
+public class RegisterMsgTest {
 
     @Test
     public void getCode_happyPath() {
 
-        assertThat(ResultEnum.SUCCESS.getCode()).isEqualTo(0);
+        assertThat(RegisterMsg.REGISTER_SUCCESS.getCode()).isEqualTo(2);
     }
 }

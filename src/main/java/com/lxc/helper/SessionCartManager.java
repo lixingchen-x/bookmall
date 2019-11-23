@@ -4,30 +4,30 @@ import com.lxc.entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Component
 public class SessionCartManager implements CartManager {
 
+    private static String SESSION_CART = "cart";
+
     @Autowired
     private UserManager userManager;
 
-    private static String SESSION_CART = "cart";
-
-    @Autowired(required = false)
-    private HttpServletRequest request;
+    @Autowired
+    private HttpSession session;
 
     private void setAttribute(String name, Object value) {
 
-        if (request != null) {
-            request.getSession().setAttribute(name, value);
+        if (session != null) {
+            session.setAttribute(name, value);
         }
     }
 
     @Override
     public Cart getCurrentCart() {
 
-        return (Cart) request.getSession().getAttribute(SESSION_CART);
+        return (Cart) session.getAttribute(SESSION_CART);
     }
 
     @Override

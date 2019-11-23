@@ -87,11 +87,11 @@
                             <td th:text="${book.price}"></td>
                             <td th:text="${book.stock}"></td>
                             <td th:text="${book.intro}"></td>
-                            <td th:text="${book.status.getMsg()}"></td>
+                            <td th:text="${book.status.toString()}"></td>
                             <td>
                                 <div th:switch="${session.user.username}">
                                     <div th:case="admin">
-                                        <div th:switch="${book.status.getMsg()}">
+                                        <div th:switch="${book.status.toString()}">
                                             <div th:case="'WITHDRAW'">
                                                 <a class="btn btn-sm btn-primary" th:href="@{/admin/book/onSale(bookId = ${book.id}, page = ${page})}">上架</a>
                                                 <a class="btn btn-sm btn-primary" th:href="@{/admin/book/delete/}+${book.id}">删除</a>
@@ -103,8 +103,8 @@
                                         </div>
                                     </div>
                                     <div th:case="*">
-                                        <a th:if="${book.status.getMsg()} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page}, condition = ${condition}, keyword = ${keyword})}">添加到购物车</a>
-                                        <span th:if="${book.status.getMsg()} eq 'WITHDRAW'">已下架</span>
+                                        <a th:if="${book.status.toString()} eq 'AVAILABLE'" class="btn btn-sm btn-primary" th:href="@{/shopping/add(bookId = ${book.id}, page = ${page}, condition = ${condition}, keyword = ${keyword})}">添加到购物车</a>
+                                        <span th:if="${book.status.toString()} eq 'WITHDRAW'">已下架</span>
                                     </div>
                                 </div>
                             </td>

@@ -35,21 +35,21 @@ public class CurrentUserMethodArgumentResolverTest {
     }
 
     @Test
-    public void supportsParameter_shouldFalse_ifClassWrong() {
+    public void supportsParameter_shouldBeFalse_ifClassWrong() {
 
         MethodParameter parameter = createParameter(Book.class, true);
         assertThat(resolver.supportsParameter(parameter)).isFalse();
     }
 
     @Test
-    public void supportsParameter_shouldFalse_ifAnnotationWrong() {
+    public void supportsParameter_shouldBeFalse_ifAnnotationWrong() {
 
         MethodParameter parameter = createParameter(User.class, false);
         assertThat(resolver.supportsParameter(parameter)).isFalse();
     }
 
     @Test
-    public void supportsParameter_shouldFalse_ifBothWrong() {
+    public void supportsParameter_shouldBeFalse_ifBothWrong() {
 
         MethodParameter parameter = createParameter(Book.class, false);
         assertThat(resolver.supportsParameter(parameter)).isFalse();

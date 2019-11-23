@@ -1,9 +1,10 @@
 package com.lxc.repository;
 
 import com.lxc.entity.User;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class UserRepositoryTest extends BaseEntityRepositoryTest {
 
@@ -17,7 +18,7 @@ public class UserRepositoryTest extends BaseEntityRepositoryTest {
 
         User result = userRepository.findByUsername("abc");
 
-        Assert.assertSame(user, result);
+        assertThat(result).isEqualTo(user);
     }
 
     @Test
@@ -25,7 +26,7 @@ public class UserRepositoryTest extends BaseEntityRepositoryTest {
 
         insertTestUser("abc");
 
-        Assert.assertNull(userRepository.findByUsername("def"));
+        assertThat(userRepository.findByUsername("def")).isNull();
     }
 
     private User insertTestUser(String username) {

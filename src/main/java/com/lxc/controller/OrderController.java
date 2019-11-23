@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.OrderStatusEnum;
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
 import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.helper.CartManager;
@@ -51,7 +51,7 @@ public class OrderController {
     @PostMapping("orderInfo")
     public String completeOrderInfoThenSave(@CurrentUser User user, @CurrentCart Cart cart, Order order) {
 
-        orderService.loadOrderItemAndComplete(user, cart, order);
+        orderService.completeOrder(user, cart, order);
         orderService.save(order);
         cartManager.initCart();
         return "index";
@@ -79,7 +79,7 @@ public class OrderController {
     public String refund(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatusEnum.UNPAID, id);
+        orderService.setStatus(OrderStatus.UNPAID, id);
         return "forward:/order/orders";
     }
 
@@ -87,7 +87,7 @@ public class OrderController {
     public String recover(@RequestParam(value = "orderId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        orderService.setStatus(OrderStatusEnum.UNPAID, id);
+        orderService.setStatus(OrderStatus.UNPAID, id);
         return "forward:/order/orders";
     }
 

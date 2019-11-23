@@ -1,6 +1,6 @@
 package com.lxc.controller.admin;
 
-import com.lxc.constants.BookStatusEnum;
+import com.lxc.constants.BookStatus;
 import com.lxc.constants.ResultEnum;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
@@ -105,7 +105,7 @@ public class BookManageControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus(BookStatusEnum.WITHDRAW, book.getId());
+        verify(bookService).setStatus(BookStatus.WITHDRAW, book.getId());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class BookManageControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/book/books"))
                 .andReturn();
-        verify(bookService).setStatus(BookStatusEnum.AVAILABLE, book.getId());
+        verify(bookService).setStatus(BookStatus.AVAILABLE, book.getId());
     }
 
     @Test

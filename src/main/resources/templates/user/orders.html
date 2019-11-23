@@ -45,9 +45,9 @@
                         <td th:text="${order.phoneNumber}"></td>
                         <td th:text="${order.address}"></td>
                         <td th:text="${order.createDate}"></td>
-                        <td th:text="${order.status.getMsg()}"></td>
+                        <td th:text="${order.status.toString()}"></td>
                         <td>
-                            <div th:switch="${order.status.getMsg()}">
+                            <div th:switch="${order.status.toString()}">
                                 <div th:case="'PAID'">
                                     <a class="btn btn-sm btn-primary" th:href="@{/order/refund(orderId = ${order.id}, page = ${page})}">退款</a>
                                 </div>

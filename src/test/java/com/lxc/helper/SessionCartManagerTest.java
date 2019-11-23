@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
@@ -27,7 +26,7 @@ public class SessionCartManagerTest {
     private UserManager userManager;
 
     @Mock
-    private HttpServletRequest request;
+    private HttpSession session;
 
     @Before
     public void setUp() {
@@ -38,7 +37,6 @@ public class SessionCartManagerTest {
     @Test
     public void getCurrentCart_happyPath() {
 
-        HttpSession session = mockSession();
         Cart cart = mock(Cart.class);
         when(session.getAttribute("cart")).thenReturn(cart);
 
@@ -48,8 +46,7 @@ public class SessionCartManagerTest {
     @Test
     public void initCart_happyPath() {
 
-        Cart cart = createCart();
-        HttpSession session = mockSession();
+        Cart cart = mockCart();
 
         sessionCartManager.initCart();
 
@@ -59,45 +56,27 @@ public class SessionCartManagerTest {
     @Test
     public void initCart_shouldDoNothing_ifRequestIsNull() {
 
-        ReflectionTestUtils.setField(sessionCartManager, "request", null);
+        ReflectionTestUtils.setField(sessionCartManager, "session", null);
+        Cart cart = mockCart();
 
         sessionCartManager.initCart();
 
-        verify(request, never()).getSession();
+        verify(session, never()).setAttribute("cart", cart);
     }
 
     @Test
     public void updateCart_happyPath() {
 
-        Cart cart = createCart();
-        HttpSession session = mockSession();
+        Cart cart = mockCart();
 
         sessionCartManager.updateCart(cart);
 
         verify(session).setAttribute("cart", cart);
     }
 
-    @Test
-    public void updateCart_shouldDoNothing_ifRequestIsNull() {
+    private Cart mockCart() {
 
-        ReflectionTestUtils.setField(sessionCartManager, "request", null);
-
-        sessionCartManager.updateCart(mock(Cart.class));
-
-        verify(request, never()).getSession();
-    }
-
-    private HttpSession mockSession() {
-
-        HttpSession session = mock(HttpSession.class);
-        when(request.getSession()).thenReturn(session);
-        return session;
-    }
-
-    private Cart createCart() {
-
-        User user = mockUser();
-        return new Cart(user);
+        return new Cart(mockUser());
     }
 
     private User mockUser() {

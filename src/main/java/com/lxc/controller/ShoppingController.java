@@ -39,11 +39,11 @@ public class ShoppingController {
         model.addAttribute("keyword", keyword);
         if (CONDITION_NAME.equals(condition)) {
             return "forward:/book/findByName";
-        }else if (CONDITION_AUTHOR.equals(condition)) {
+        } else if (CONDITION_AUTHOR.equals(condition)) {
             return "forward:/book/findByAuthor";
-        }else if (CONDITION_ISBN.equals(condition)) {
+        } else if (CONDITION_ISBN.equals(condition)) {
             return "forward:/book/findByIsbn";
-        }else {
+        } else {
             return "forward:/book/books";
         }
     }

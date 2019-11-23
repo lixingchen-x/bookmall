@@ -56,9 +56,26 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ['**/MailUtils.class'])
+                    exclude: ['**/MailSender.class'])
         }))
     }
 }
 
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['**/MailSender.class'])
+        }))
+    }
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.99
+            }
+        }
+    }
+}
+
 check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

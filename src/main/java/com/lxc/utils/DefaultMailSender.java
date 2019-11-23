@@ -9,11 +9,11 @@ import javax.mail.MessagingException;
 public class DefaultMailSender {
 
     @Autowired
-    private MailUtils mailUtils;
+    private MailSender mailSender;
 
     public void send(String email, String msg) throws MessagingException {
 
         String defaultSubject = "图书商城官方邮件";
-        mailUtils.sendMail(email, msg, defaultSubject);
+        mailSender.sendMail(email, msg, defaultSubject);
     }
 }

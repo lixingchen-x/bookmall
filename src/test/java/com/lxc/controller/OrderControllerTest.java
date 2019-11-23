@@ -1,6 +1,6 @@
 package com.lxc.controller;
 
-import com.lxc.constants.OrderStatusEnum;
+import com.lxc.constants.OrderStatus;
 import com.lxc.entity.*;
 import com.lxc.exception.FailedSendingEmailException;
 import com.lxc.helper.CartManager;
@@ -80,7 +80,7 @@ public class OrderControllerTest {
 
         assertThat(orderController.completeOrderInfoThenSave(user, cart, order)).isEqualTo("index");
 
-        verify(orderService).loadOrderItemAndComplete(user, cart, order);
+        verify(orderService).completeOrder(user, cart, order);
         verify(orderService).save(order);
         verify(cartManager).initCart();
     }
@@ -121,7 +121,7 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus(OrderStatusEnum.UNPAID, 1);
+        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
     }
 
     @Test
@@ -132,6 +132,6 @@ public class OrderControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("forward:/order/orders"))
                 .andReturn();
-        verify(orderService).setStatus(OrderStatusEnum.UNPAID, 1);
+        verify(orderService).setStatus(OrderStatus.UNPAID, 1);
     }
 }

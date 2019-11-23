@@ -1,7 +1,7 @@
 package com.lxc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.lxc.constants.BookStatusEnum;
+import com.lxc.constants.BookStatus;
 import com.lxc.exception.StockNotEnoughException;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,13 +42,13 @@ public class Book extends BaseEntity implements Serializable {
 
     @Column(name = "book_status")
     @Enumerated(value = EnumType.STRING)
-    private BookStatusEnum status;
+    private BookStatus status;
 
     @Column(name = "img_url")
     private String imgUrl;
 
     @Builder
-    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatusEnum status, String imgUrl) {
+    public Book(Integer id, String bookName, String author, String isbn, Date publishDate, String intro, Double price, Integer stock, BookStatus status, String imgUrl) {
 
         super(id);
         this.bookName = bookName;

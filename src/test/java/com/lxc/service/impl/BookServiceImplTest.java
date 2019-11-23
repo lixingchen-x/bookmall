@@ -1,7 +1,7 @@
 package com.lxc.service.impl;
 
 import com.lxc.constants.ResultEnum;
-import com.lxc.constants.BookStatusEnum;
+import com.lxc.constants.BookStatus;
 import com.lxc.entity.Book;
 import com.lxc.exception.StockNotEnoughException;
 import com.lxc.repository.BookRepository;
@@ -73,7 +73,7 @@ public class BookServiceImplTest {
         bookService.update(newBook);
 
         verify(bookRepository).saveAndFlush(temp);
-        assertThat(temp.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
+        assertThat(temp.getStatus()).isEqualTo(BookStatus.AVAILABLE);
     }
 
     @Test
@@ -166,10 +166,10 @@ public class BookServiceImplTest {
         Book actual = new Book();
         when(bookService.findById(1)).thenReturn(actual);
 
-        bookService.setStatus(BookStatusEnum.AVAILABLE, 1);
+        bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository).saveAndFlush(actual);
-        assertThat(actual.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
+        assertThat(actual.getStatus()).isEqualTo(BookStatus.AVAILABLE);
     }
 
     @Test
@@ -177,7 +177,7 @@ public class BookServiceImplTest {
 
         when(bookService.findById(1)).thenReturn(null);
 
-        bookService.setStatus(BookStatusEnum.AVAILABLE, 1);
+        bookService.setStatus(BookStatus.AVAILABLE, 1);
 
         verify(bookRepository, never()).saveAndFlush(null);
     }
@@ -206,7 +206,7 @@ public class BookServiceImplTest {
         when(bookRepository.findByIsbn("123")).thenReturn(null);
 
         assertThat(bookService.addBook(book)).isEqualTo(ResultEnum.SUCCESS);
-        assertThat(book.getStatus()).isEqualTo(BookStatusEnum.AVAILABLE);
+        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
         verify(bookRepository).saveAndFlush(book);
     }
 

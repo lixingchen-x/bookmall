@@ -1,6 +1,6 @@
 package com.lxc.entity;
 
-import com.lxc.constants.OrderStatusEnum;
+import com.lxc.constants.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Fetch;
@@ -36,7 +36,7 @@ public class Order extends BaseEntity implements Serializable {
 
     @Column
     @Enumerated(value = EnumType.STRING)
-    private OrderStatusEnum status;
+    private OrderStatus status;
 
     @Column
     private String receiver;

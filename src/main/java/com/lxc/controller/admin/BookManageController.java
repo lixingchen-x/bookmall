@@ -1,6 +1,6 @@
 package com.lxc.controller.admin;
 
-import com.lxc.constants.BookStatusEnum;
+import com.lxc.constants.BookStatus;
 import com.lxc.constants.ResultEnum;
 import com.lxc.entity.Book;
 import com.lxc.service.BookService;
@@ -56,7 +56,7 @@ public class BookManageController {
     public String withdrawBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus(BookStatusEnum.WITHDRAW, id);
+        bookService.setStatus(BookStatus.WITHDRAW, id);
         return "redirect:/book/books";
     }
 
@@ -64,7 +64,7 @@ public class BookManageController {
     public String onSaleBook(@RequestParam(value = "bookId") Integer id, @RequestParam(defaultValue = "0") Integer page, Model model) {
 
         model.addAttribute("page", page);
-        bookService.setStatus(BookStatusEnum.AVAILABLE, id);
+        bookService.setStatus(BookStatus.AVAILABLE, id);
         return "redirect:/book/books";
     }
 
